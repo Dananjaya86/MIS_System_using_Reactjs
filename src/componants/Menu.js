@@ -2,8 +2,7 @@ import React from 'react'
 import './menubar.css'
 import { NavLink } from 'react-router-dom'
 
-export default function 
-()
+export default function Menu ()
 
 
 
