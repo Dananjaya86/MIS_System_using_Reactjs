@@ -1,0 +1,73 @@
+* { margin:0; 
+    padding:0; 
+    box-sizing:border-box; 
+    font-family: Arial, sans-serif; 
+}
+.login-page {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+}
+
+/* Login card */
+.login-card {
+    background: rgba(255,255,255,0.95);
+    padding: 40px;
+    border-radius: 12px;
+    width: 350px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    animation: fadeIn 1s ease;
+}
+
+/* Welcome note */
+.login-card h2 {
+    margin-bottom: 25px;
+    color: #333;
+}
+
+/* Input fields */
+.login-card input {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s;
+}
+.login-card input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0,123,255,0.3);
+}
+
+/* Buttons */
+.btn {
+    width: 48%;
+    padding: 12px 0;
+    margin: 10px 1%;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.btn-login {
+    background-color: #28a745;
+    color: white;
+}
+.btn-login:hover { background-color: #218838; }
+.btn-cancel {
+    background-color: #dc3545;
+    color: white;
+}
+.btn-cancel:hover { background-color: #c82333; }
+
+/* Fade in animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px);}
+    to { opacity: 1; transform: translateY(0);}
+}

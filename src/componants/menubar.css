@@ -1,0 +1,48 @@
+.sidebar {
+  width: 220px;
+  height: 100vh;
+  background: #124186;
+  color: #fff;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.sidebar h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 30px;
+  color: #ecf0f1;
+  background: #1759e9;
+  border-radius: 7px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar ul li {
+  padding: 12px;
+  margin: 6px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 20px;
+}
+
+
+.sidebar a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+
+.sidebar ul li:hover {
+  background: #358ee7;
+}

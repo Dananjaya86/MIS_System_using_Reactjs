@@ -1,0 +1,94 @@
+
+    /* Main */
+    .main {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .card h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: #555;
+    }
+    .card p {
+      font-size: 20px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    /* Section Titles */
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 15px 0 10px;
+    }
+    /* Product & Customer Tables */
+    .table-box {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    th {
+      background: #ecf0f1;
+      font-size: 14px;
+    }
+    td {
+      font-size: 14px;
+    }
+    /* Layout: Products & Customers side by side */
+    .row-tables {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    /* Charts */
+    .charts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px;
+    }
+    .chart-box {
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      min-height: 220px;
+    }
+    .chart-box h3 {
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .dashboard-container {
+  display: flex;           /* make sidebar + content horizontal */
+  min-height: 100vh;       /* full viewport height */
+}
+
+.dashboard-content {
+  flex: 1;                 /* take remaining space */
+  padding: 20px;
+  background: #f0f2f5;     /* your dashboard background */
+}
