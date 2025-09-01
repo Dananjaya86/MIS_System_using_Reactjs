@@ -1,0 +1,96 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: #ecf0f1;
+}
+
+.menu-wrap {
+  padding: 0px;
+}
+
+.page {
+  flex: 1;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  margin: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #124186;
+}
+
+.form-container {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.form-left,
+.form-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+input {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.button-bar {
+  margin: 15px 0;
+  display: flex;
+  gap: 12px;
+}
+
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #124186;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #0d2f60;
+}
+
+.data-grid {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.data-grid th,
+.data-grid td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.data-grid th {
+  background: #124186;
+  color: #fff;
+}
+
+.data-grid tr:hover {
+  background: #f1f1f1;
+  cursor: pointer;
+}

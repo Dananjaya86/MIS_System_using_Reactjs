@@ -25,7 +25,7 @@ const salesByDateRef = useRef(null);
         labels: ["01", "05", "10", "15", "20", "25", "30"],
         datasets: [
           {
-            label: "Sales ($)",
+            label: "Sales (Rs)",
             data: [500, 1500, 2000, 2500, 3000, 4000, 4500],
             borderColor: "#2c3e50",
             backgroundColor: "rgba(44, 62, 80, 0.2)",
@@ -44,7 +44,7 @@ const salesByDateRef = useRef(null);
         labels: ["Last Month", "Current Month"],
         datasets: [
           {
-            label: "Sales ($)",
+            label: "Sales (Rs)",
             data: [20000, 25000],
             backgroundColor: ["#3498db", "#2ecc71"],
           },
@@ -75,7 +75,7 @@ const salesByDateRef = useRef(null);
         labels: ["Budget", "Achieved"],
         datasets: [
           {
-            label: "Amount ($)",
+            label: "Amount (Rs)",
             data: [300000, 255000],
             backgroundColor: ["#9b59b6", "#2ecc71"],
           },
@@ -99,31 +99,34 @@ const salesByDateRef = useRef(null);
       <Menu />
 
       <div className="dashboard-content">
+
         {/* Summary Cards */}
+        
         <div className="cards">
           <div className="card">
             <h3>Total Sale</h3>
-            <p id="totalSale">$25,000</p>
+            <p id="totalSale">Rs.25,000</p>
           </div>
           <div className="card">
             <h3>Total Return</h3>
-            <p id="totalReturn">$1,200</p>
+            <p id="totalReturn">Rs.1,200</p>
           </div>
           <div className="card">
             <h3>Net Sale</h3>
-            <p id="netSale">$23,800</p>
+            <p id="netSale">Rs.23,800</p>
           </div>
           <div className="card">
             <h3>Best Sales Rep</h3>
-            <p>John Doe</p>
+            <p>Dananjaya Dasanayake</p>
           </div>
           <div className="card">
             <h3>Achievements</h3>
-            <p>$80,000 (85%)</p>
+            <p>Rs.80,000 (85%)</p>
           </div>
         </div>
 
         {/* Tables */}
+
         <div className="row-tables">
           <div className="table-box">
             <div className="section-title">Most Selling Products</div>
@@ -132,7 +135,7 @@ const salesByDateRef = useRef(null);
                 <tr>
                   <th>Product</th>
                   <th>Qty</th>
-                  <th>Amount ($)</th>
+                  <th>Amount (Rs)</th>
                 </tr>
               </thead>
               <tbody>
@@ -167,7 +170,7 @@ const salesByDateRef = useRef(null);
                 <tr>
                   <th>Customer</th>
                   <th>Qty</th>
-                  <th>Amount ($)</th>
+                  <th>Amount (Rs)</th>
                 </tr>
               </thead>
               <tbody>
@@ -197,6 +200,7 @@ const salesByDateRef = useRef(null);
         </div>
 
         {/* Charts */}
+
         <div className="charts">
           <div className="chart-box">
             <h3>Sales by Date</h3>
