@@ -8,6 +8,8 @@ import Login from './pages/Login';
 import ProductDetails from './pages/ProductDetails';
 import Production from './pages/Production';
 import GRN from './pages/GRN'
+import Sales from './pages/Sales'
+
 
 function App() {
   return (
@@ -21,6 +23,7 @@ function App() {
         <Route path="/ProductDetails" element={<ProductDetails />} />
         <Route path="/Production" element={<Production />} />
         <Route path="/GRN" element={<GRN/>} />
+        <Route path="/Sales" element={<Sales/>} />
       </Routes>
     
 

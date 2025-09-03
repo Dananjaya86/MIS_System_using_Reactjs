@@ -115,7 +115,7 @@ export default function Production() {
                 setUnitCost(0);
               }}
             >
-              <option value="">--Select--</option>
+              <option value="">Select Item</option>
               <option value="watalappan">Watalappan</option>
               <option value="jelly">Jelly Pudding</option>
               <option value="caramel">Caramel</option>
@@ -130,7 +130,7 @@ export default function Production() {
                 value={selectedRaw}
                 onChange={(e) => setSelectedRaw(e.target.value)}
               >
-                <option value="">--Select--</option>
+                <option value="">Select item</option>
                 {products[selectedProduct].map((item) => (
                   <option key={item} value={item}>
                     {item}
