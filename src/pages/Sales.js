@@ -5,8 +5,8 @@ import "./sales.css";
 const SalesPage = () => {
   const [saleType, setSaleType] = useState("cash");
   const [formData, setFormData] = useState({});
-  const [tempData, setTempData] = useState([]); // Temporary rows
-  const [gridData, setGridData] = useState([]); // Saved rows
+  const [tempData, setTempData] = useState([]); 
+  const [gridData, setGridData] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [isNew, setIsNew] = useState(false);
   const [isModifyMode, setIsModifyMode] = useState(false);
@@ -47,7 +47,9 @@ const SalesPage = () => {
       setSelectedRows(selectedRows.filter((i) => i !== index));
     } else {
       setSelectedRows([...selectedRows, index]);
-      // Fill form for modify mode
+
+
+      // Fill form for modify data
       const allRows = [...tempData, ...gridData];
       setFormData(allRows[index]);
       setIsModifyMode(true);
@@ -63,7 +65,9 @@ const SalesPage = () => {
     let allRows = [...tempData, ...gridData];
     allRows[modifyIndex] = formData;
 
-    // Separate back to tempData and gridData
+
+
+    // Separate back to Data and gridview Data
     const newTemp = allRows.slice(0, tempData.length);
     const newGrid = allRows.slice(tempData.length);
 
@@ -96,7 +100,7 @@ const SalesPage = () => {
     alert("No data to save!");
     return;
   }
-  // Optionally, you can save data to server here
+  
 
   // Clear all grids and form after save
   setTempData([]);
@@ -215,6 +219,7 @@ const SalesPage = () => {
           )}
         </div>
 
+
         {/* Buttons */}
         <div className="button-group1">
           {!isNew ? <button className="newbtn" onClick={handleNew}>New</button> : <button className="btnsave" onClick={handleSaveAll} >Save All</button>}
@@ -222,7 +227,8 @@ const SalesPage = () => {
           <button className="btnexit" onClick={() => { setFormData({}); setTempData([]); setSelectedRows([]); setIsNew(false); setIsModifyMode(false); }}>Exit</button>
         </div>
 
-        {/* Grid */}
+
+        {/* Gridview tuples*/}
         <table className="grid-table">
           <thead>
             <tr>
@@ -256,7 +262,7 @@ const SalesPage = () => {
           </tbody>
         </table>
 
-        {/* Modify / Delete */}
+        {/* Modify and Delete */}
         {selectedRows.length > 0 && (
           <div className="button-group1">
             <button className="btnmodify" onClick={handleModify}>Modify</button>
@@ -271,7 +277,7 @@ const SalesPage = () => {
           <p><b>Total Invoice Amount: Rs {invoiceAmount.toFixed(2)}</b></p>
         </div>
 
-        {/* Print/View */}
+        {/* Print and View */}
         <div className="button-group1">
           <button className="btnprint" onClick={() => alert("Print triggered")}>Print</button>
           <button className="btnview" onClick={() => alert("View details")}>View</button>

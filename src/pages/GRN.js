@@ -22,7 +22,10 @@ export default function GRN() {
 
   const [rows, setRows] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
-  const [mode, setMode] = useState("view"); // view | add | edit
+
+  // view , add , edit need to check again
+
+  const [mode, setMode] = useState("view"); 
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -104,6 +107,7 @@ export default function GRN() {
       <div className="page">
         <h2 className="header">Goods Receive Note</h2>
 
+
         {/* Form */}
         <div className="form-container">
           <div className="form-left">
@@ -156,7 +160,9 @@ export default function GRN() {
           </div>
         </div>
 
-        {/* Buttons */}
+
+
+        {/* Buttons need to style with  */}
         <div className="button-bar">
           {mode === "view" && (
             <>
@@ -212,7 +218,7 @@ export default function GRN() {
           </tbody>
         </table>
 
-        {/* Footer buttons */}
+        {/* print and view buttons */}
         <div className="button-bar">
           <button className="btngrnprint" onClick={handlePrint}>Print</button>
           <button className="btngrnview" onClick={handleView}>View</button>

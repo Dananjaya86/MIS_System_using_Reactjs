@@ -17,9 +17,11 @@ export default function ProductDetails() {
     wholesalePrice: ""
   });
   const [selectedId, setSelectedId] = useState(null);
-  const [mode, setMode] = useState("view"); // view | new | edit
 
-  // Handle form changes
+  // view , new , edit need to check(validate)
+  const [mode, setMode] = useState("view"); 
+
+  // form changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -51,12 +53,14 @@ export default function ProductDetails() {
     }
 
     if (selectedId !== null) {
-      // Modify existing
+      
+      // Edit existing
       setProducts((prev) =>
         prev.map((p) => (p.id === selectedId ? { ...form, id: selectedId } : p))
       );
       alert("Product modified successfully!");
     } else {
+
       // Add new
       const newProduct = { ...form, id: products.length + 1 };
       setProducts([...products, newProduct]);

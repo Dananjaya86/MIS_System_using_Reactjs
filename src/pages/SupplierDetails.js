@@ -19,9 +19,11 @@ export default function SupplierDetails() {
     totalReturn: ""
   });
   const [selectedId, setSelectedId] = useState(null);
-  const [mode, setMode] = useState("view"); // view | new | edit
 
-  // Handle form changes
+  // view , new , edit
+  const [mode, setMode] = useState("view"); 
+
+  //changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -110,7 +112,7 @@ export default function SupplierDetails() {
       {/* Sidebar Menu */}
       <Menu />
 
-      {/* Main Content */}
+      {/* right side contant */}
       <div className="supplier-container">
         <h2>
           Supplier Details{" "}
@@ -212,7 +214,7 @@ export default function SupplierDetails() {
           )}
         </div>
 
-        {/* Grid */}
+        {/* Gridview */}
         <table className="supplier-grid">
           <thead>
             <tr>

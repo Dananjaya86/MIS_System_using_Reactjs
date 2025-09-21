@@ -20,12 +20,13 @@ export default function Expenses() {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // ✅ Reset subExpenses if expensesType changes
+    //  Reset subExpenses if expensesType changes
+
     if (name === "expensesType") {
       setForm((prev) => ({
         ...prev,
         expensesType: value,
-        subExpenses: "", // <-- Reset when type changes
+        subExpenses: "", 
       }));
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
@@ -86,8 +87,11 @@ export default function Expenses() {
         <h1 className="title">Expenses</h1>
 
         {/* Form Grid */}
+
         <div className="form-grid">
+
           {/* Left Column */}
+
           <div className="form-column">
             <label>Expenses Type</label>
             <select
@@ -144,6 +148,7 @@ export default function Expenses() {
           </div>
 
           {/* Right Column */}
+
           <div className="form-column">
             <label>Payment Mode</label>
             <select
@@ -189,6 +194,7 @@ export default function Expenses() {
         </div>
 
         {/* Buttons */}
+
         <div className="button-group">
           <button className="btn btn-new" onClick={handleNew}>New</button>
           {isAdding && (
@@ -201,6 +207,7 @@ export default function Expenses() {
         </div>
 
         {/* Grid View */}
+
         <table className="data-grid">
           <thead>
             <tr>
@@ -236,11 +243,13 @@ export default function Expenses() {
         </table>
 
         {/* Save Button */}
+
         {gridData.length > 0 && (
           <button className="btn btn-save" onClick={handleSave}>Save</button>
         )}
 
-        {/* Print / View Buttons */}
+        {/* Print and View Buttons */}
+
         <div className="button-group">
           <button className="btn btn-print">Print</button>
           <button className="btn btn-view">View</button>

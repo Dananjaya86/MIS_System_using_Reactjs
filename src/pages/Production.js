@@ -3,6 +3,8 @@ import "./production.css";
 import Menu from "../componants/Menu";
 
 export default function Production() {
+
+  /* need to add other product detais */
   const products = {
     watalappan: ["Eggs", "Jaggery", "Vanilla", "Cups", "Cardomum", "Sticker"],
     jelly: ["Jelly", "Sugar", "Gelatine", "Cups", "Sticker", "Milk"],
@@ -19,6 +21,8 @@ export default function Production() {
     ],
   };
 
+
+  /* need to add other product detais with prices */
   const initialRawMaterialPrices = {
     Eggs: { price: 29, stock: 260 },
     Cardomum: { price: 9, stock: 1500 },
@@ -80,6 +84,7 @@ export default function Production() {
     if (editIndex !== null) {
       const updatedMaterials = [...rawMaterials];
       const oldRow = updatedMaterials[editIndex];
+
 
       // Return previous qty back to stock
       setRawMaterialPrices((prev) => ({
@@ -189,7 +194,8 @@ export default function Production() {
         <div className="production-container">
           <h2>Production</h2>
 
-          {/* Batch details */}
+
+          {/* Batch details and need to implement batch number auto generate*/}
           <div className="batch-details">
             <div className="form-row">
               <label>Batch No:</label>

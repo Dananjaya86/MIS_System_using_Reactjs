@@ -62,16 +62,20 @@ const AdvancePayment = () => {
   let updatedSelected;
 
   if (selectedRows.includes(row.code)) {
+
     // deselect
-    updatedSelected = selectedRows.filter(c => c !== row.code);
-  } else {
+    updatedSelected = selectedRows.filter(c => c !== row.code);} 
+    
+    else {
     // select
     updatedSelected = [...selectedRows, row.code];
   }
 
   setSelectedRows(updatedSelected);
 
-  // If exactly one row is selected → fill fields
+  // If exactly one row is selected to fill fields
+
+
   if (updatedSelected.length === 1) {
     const selectedRow = gridData.find(r => r.code === updatedSelected[0]);
     if (selectedRow) {
@@ -80,7 +84,9 @@ const AdvancePayment = () => {
       setType(selectedRow.type);
     }
   } else {
-    // If 0 or multiple rows → clear fields
+
+    // If 0 or multiple rows to clear fields
+
     setFormData({});
     setSelectedCombo(null);
   }
@@ -121,6 +127,7 @@ const AdvancePayment = () => {
         <h2>Advance Payment</h2>
 
         {/* Type selection */}
+
         <div className="form-group">
           <label>Type:</label>
           <select value={type} onChange={handleTypeChange}>
@@ -131,6 +138,7 @@ const AdvancePayment = () => {
         </div>
 
         {/* Combo Box */}
+
         <div className="form-group">
           <label>{type === "customer" ? "Select Customer" : "Select Supplier"}</label>
           <select value={selectedCombo?.code || ""} onChange={handleComboChange}>
@@ -142,6 +150,7 @@ const AdvancePayment = () => {
         </div>
 
         {/* Inputs */}
+
         <div className="form-group">
           <label>Code</label>
           <input name="code" value={formData.code || ""} onChange={handleChange} />
@@ -162,7 +171,10 @@ const AdvancePayment = () => {
           <textarea name="remarks" value={formData.remarks || ""} onChange={handleChange} rows={3}></textarea>
         </div>
 
+
+
         {/* Buttons */}
+
         <div className="buttons">
           {gridData.length === 0 && (
             <>
@@ -199,7 +211,11 @@ const AdvancePayment = () => {
           )}
         </div>
 
+
+
         {/* Grid */}
+
+        
         {gridData.length > 0 && (
           <table className="grid">
             <thead>

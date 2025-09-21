@@ -8,6 +8,8 @@ export default function Login() {
 
 const navigate = useNavigate();
 
+/* need to check with backend database*/
+
   function login() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;

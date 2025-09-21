@@ -84,7 +84,7 @@ const salesByDateRef = useRef(null);
     });
     chartInstances.current.push(yearlyBudgetChart);
 
-    // Cleanup charts on unmount
+    // Cleanup charts on unamount
     return () => {
       chartInstances.current.forEach((chart) => chart.destroy());
     };

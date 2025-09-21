@@ -110,7 +110,7 @@ export default function StockControl() {
           </div>
         </div>
 
-        {/* Top Buttons */}
+        {/*Buttons */}
         {!showNewButtons ? (
           <button className="btn new" onClick={() => setShowNewButtons(true)}>New</button>
         ) : (
@@ -123,7 +123,7 @@ export default function StockControl() {
           </div>
         )}
 
-        {/* Grid View */}
+        {/* Gridview */}
         <table className="stock-table">
           <thead>
             <tr>
@@ -158,7 +158,7 @@ export default function StockControl() {
           </tbody>
         </table>
 
-        {/* Bottom Buttons */}
+        {/* below Buttons */}
         <div className="button-row">
           <button className="btn save">Save</button>
           <button className="btn print">Print</button>

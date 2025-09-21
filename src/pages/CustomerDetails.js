@@ -19,13 +19,16 @@ export default function CustomerDetails() {
     totalReturn: ""
   });
   const [selectedId, setSelectedId] = useState(null);
-  const [mode, setMode] = useState("view"); // view | new | edit
+
+  // view | new | edit
+  const [mode, setMode] = useState("view"); 
 
   // Handle form changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
+
 
   // New button
   const handleNew = () => {
@@ -46,6 +49,7 @@ export default function CustomerDetails() {
     setSelectedId(null);
     setMode("new");
   };
+
 
   // Save button
   const handleSave = () => {
@@ -74,6 +78,8 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
   });
 });
 
+
+
   // Clear button
   const handleClear = () => {
     setForm({
@@ -93,11 +99,15 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
     setSelectedId(null);
   };
 
+
+
   // Exit button
   const handleExit = () => {
     setMode("view");
     setSelectedId(null);
   };
+
+
 
   // Delete button
   const handleDelete = () => {
@@ -121,6 +131,8 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
       {/* Sidebar Menu */}
       <Menu />
 
+
+
       {/* Main Content */}
       <div className="customer-containerc">
         <h2>
@@ -131,6 +143,8 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
             className="title-icon"
           />
         </h2>
+
+
 
         {/* Form */}
         <div className="form-section">
@@ -199,6 +213,9 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
           </div>
         </div>
 
+
+
+
         {/* Buttons */}
         <div className="button-section2">
           {mode === "view" && (
@@ -222,6 +239,8 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
             </> 
           )}
         </div>
+
+        
 
         {/* Grid */}
         <table className="customer-gridc">

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Menu from "../componants/Menu";
-import "./paymentsetoff.css"; // <-- Import the CSS file
+import "./paymentsetoff.css"; 
 
 export default function PaymentSetoff() {
   const [type, setType] = useState("select");
@@ -65,6 +65,7 @@ export default function PaymentSetoff() {
       <div className="payment-setoff-content">
         <h1 className="title">Payment Setoff</h1>
 
+
         {/* Type Selector */}
         <div className="type-selector">
           <label className="label-bold">Select Type: </label>
@@ -79,6 +80,7 @@ export default function PaymentSetoff() {
             
           </select>
         </div>
+
 
         {/* Form */}
         <div className="form-grid">
@@ -148,6 +150,7 @@ export default function PaymentSetoff() {
           </div>
         </div>
 
+
         {/* Buttons */}
         <div className="button-group">
           <button className="btn btn-new" onClick={handleNew}>New</button>
@@ -162,7 +165,8 @@ export default function PaymentSetoff() {
           <button className="btn btn-exit">Exit</button>
         </div>
 
-        {/* Grid */}
+
+        {/* Gridview */}
         <table className="data-grid">
           <thead>
             <tr>
@@ -189,12 +193,13 @@ export default function PaymentSetoff() {
           </tbody>
         </table>
 
-        {/* Save Button */}
+
+        {/* Save Button frm google */}
         {gridData.length > 0 && (
           <button className="btn btn-save" onClick={handleSave}>Save</button>
         )}
 
-        {/* Print & View */}
+        {/* Print and View Buttons */}
         <div className="button-group">
           <button className="btn btn-print">Print</button>
           <button className="btn btn-view">View</button>

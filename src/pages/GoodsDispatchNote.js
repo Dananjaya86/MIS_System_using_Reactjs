@@ -34,13 +34,16 @@ export default function GoodsDispatchNote() {
     } else {
       setForm((f) => ({ ...f, totalAmount: "" }));
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.qty, form.unitPrice]);
 
   function handleChange(e) {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
-    setErrors((err) => ({ ...err, [name]: "" })); // clear error on change
+    
+    // clear error on change from google
+    setErrors((err) => ({ ...err, [name]: "" })); 
   }
 
   function validateForm() {
@@ -363,7 +366,7 @@ export default function GoodsDispatchNote() {
           </div>
         </section>
 
-        {/* Preview Modal */}
+        
         
       </main>
     </div>

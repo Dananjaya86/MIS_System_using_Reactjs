@@ -21,13 +21,13 @@ export default function MaterialOrderWindow() {
 
   const [advancePay, setAdvancePay] = useState(0);
 
-  // Handle input change
+  // input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Add or update row in grid
+  // Add or update row to grid
   const handleAddOrUpdate = () => {
     if (isEditing) {
       const updatedOrders = [...orders];
@@ -39,7 +39,7 @@ export default function MaterialOrderWindow() {
       setOrders([...orders, formData]);
     }
 
-    // Clear product-related fields, keep supplier
+    // Clear product related fields, keep supplier
     setFormData((prev) => ({
       ...prev,
       productCode: "",
@@ -83,7 +83,7 @@ export default function MaterialOrderWindow() {
     setEditIndex(null);
   };
 
-  // Calculate totals
+  // Calculate totals need to verify
   const totalAmount = orders.reduce(
     (sum, item) => sum + parseFloat(item.amount || 0),
     0
@@ -91,7 +91,7 @@ export default function MaterialOrderWindow() {
   const balance = totalAmount - parseFloat(advancePay || 0);
 
   return (
-    
+
     <div className="container3">
       {/* Sidebar Menu */}
       <Menu />
@@ -99,6 +99,7 @@ export default function MaterialOrderWindow() {
       {/* Right Content */}
       <div className="content3">
         <h2>Material Order Window</h2>
+
 
         {/* Form */}
         <div className="form-section">
@@ -127,6 +128,7 @@ export default function MaterialOrderWindow() {
           </div>
         </div>
 
+
         {/* Buttons */}
         <div className="buttons">
           <button onClick={handleAddOrUpdate}>{isEditing ? "Update" : "Add"}</button>
@@ -134,7 +136,8 @@ export default function MaterialOrderWindow() {
           <button>Exit</button>
         </div>
 
-        {/* Grid */}
+
+        {/* Gridview */}
         <table>
           <thead>
             <tr>
@@ -168,7 +171,7 @@ export default function MaterialOrderWindow() {
           </tbody>
         </table>
 
-        {/* Summary */}
+        {/*show Summary  */}
         <div className="summary">
           <label>Total Order Amount:</label>
           <input value={totalAmount} readOnly />
@@ -182,7 +185,7 @@ export default function MaterialOrderWindow() {
           <input value={balance} readOnly />
         </div>
 
-        {/* Print + View */}
+        {/* Print and View  Buttons*/}
         <div className="buttons">
           <button>Print</button>
           <button>View</button>
