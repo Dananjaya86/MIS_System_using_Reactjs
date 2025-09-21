@@ -154,7 +154,7 @@ const SalesPage = () => {
 
         {/* Form */}
         <div className="form-grid">
-          <div className="form-left">
+          <div className="form-lefts">
             <label>Invoice No</label>
             <input name="invoiceNo" value={formData.invoiceNo || ""} onChange={handleChange} />
             <label>Customer Code</label>
@@ -165,6 +165,8 @@ const SalesPage = () => {
             <input name="productCode" value={formData.productCode || ""} onChange={handleChange} />
             <label>Product Name</label>
             <input name="productName" value={formData.productName || ""} onChange={handleChange} />
+            <label>Advance Pay</label>
+            <input type="number" name="advancePay" value={formData.advancePay || ""} onChange={handleChange} />
             <label>Price</label>
             <input type="number" name="price" value={formData.price || ""} onChange={handleChange} />
             <label>Quantity</label>
@@ -172,16 +174,15 @@ const SalesPage = () => {
           </div>
 
           {saleType === "cash" ? (
-            <div className="form-right">
+            <div className="form-rights">
               <label>Date</label>
               <input type="date" name="date" value={formData.date || ""} onChange={handleChange} />
               <label>Manual Bill No</label>
               <input name="manualBillNo" value={formData.manualBillNo || ""} onChange={handleChange} />
-              <label>Advance Pay</label>
-              <input type="number" name="advancePay" value={formData.advancePay || ""} onChange={handleChange} />
+              
               <label>Status</label>
               <input name="status" value={formData.status || ""} onChange={handleChange} />
-              <label>Credit Amount</label>
+              <label>Credit Limit</label>
               <input type="number" name="creditAmount" value={formData.creditAmount || ""} onChange={handleChange} />
               <label>Return Amount</label>
               <input type="number" name="returnAmount" value={formData.returnAmount || ""} onChange={handleChange} />
@@ -190,11 +191,11 @@ const SalesPage = () => {
               {!isModifyMode && <button onClick={handleAdd}>Add</button>}
             </div>
           ) : (
-            <div className="form-right">
+            <div className="form-rights">
+              <label>Date</label>
+              <input type="date" name="date" value={formData.date || ""} onChange={handleChange} />
               <label>Manual Bill No</label>
               <input name="manualBillNo" value={formData.manualBillNo || ""} onChange={handleChange} />
-              <label>Advance Pay</label>
-              <input type="number" name="advancePay" value={formData.advancePay || ""} onChange={handleChange} />
               <label>Last Payment Date</label>
               <input type="date" name="lastPaymentDate" value={formData.lastPaymentDate || ""} onChange={handleChange} />
               <label>Last Payment Amount</label>
@@ -215,10 +216,10 @@ const SalesPage = () => {
         </div>
 
         {/* Buttons */}
-        <div className="button-group">
-          {!isNew ? <button onClick={handleNew}>New</button> : <button onClick={handleSaveAll} >Save All</button>}
-          <button onClick={handleClear}>Clear</button>
-          <button onClick={() => { setFormData({}); setTempData([]); setSelectedRows([]); setIsNew(false); setIsModifyMode(false); }}>Exit</button>
+        <div className="button-group1">
+          {!isNew ? <button className="newbtn" onClick={handleNew}>New</button> : <button className="btnsave" onClick={handleSaveAll} >Save All</button>}
+          <button className="btnclear" onClick={handleClear}>Clear</button>
+          <button className="btnexit" onClick={() => { setFormData({}); setTempData([]); setSelectedRows([]); setIsNew(false); setIsModifyMode(false); }}>Exit</button>
         </div>
 
         {/* Grid */}
@@ -257,9 +258,9 @@ const SalesPage = () => {
 
         {/* Modify / Delete */}
         {selectedRows.length > 0 && (
-          <div className="button-group">
-            <button onClick={handleModify}>Modify</button>
-            <button onClick={handleDelete}>Delete</button>
+          <div className="button-group1">
+            <button className="btnmodify" onClick={handleModify}>Modify</button>
+            <button className="btndelete" onClick={handleDelete}>Delete</button>
           </div>
         )}
 
@@ -271,9 +272,9 @@ const SalesPage = () => {
         </div>
 
         {/* Print/View */}
-        <div className="button-group">
-          <button onClick={() => alert("Print triggered")}>Print</button>
-          <button onClick={() => alert("View details")}>View</button>
+        <div className="button-group1">
+          <button className="btnprint" onClick={() => alert("Print triggered")}>Print</button>
+          <button className="btnview" onClick={() => alert("View details")}>View</button>
         </div>
       </div>
     </div>

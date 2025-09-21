@@ -1,0 +1,98 @@
+.stock-control-container {
+  display: flex;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.stock-control-content {
+  flex: 1;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.form-grid {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.stockconleft,
+.stockconright {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 6px rgba(173, 111, 111, 0.1);
+  width: 50%;
+}
+
+.stockconleft label,
+.stockconright label {
+  font-weight: bold;
+  font-size: 20px;
+  color: #03069b;
+}
+
+input,
+textarea {
+  padding: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.stock-table th,
+.stock-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn {
+  padding: 8px 15px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* Button Colors */
+.btn.new { background: rgb(66, 126, 216); }
+.btn.new:hover { background: rgb(48, 68, 158); }
+
+.btn.add { background: green; }
+.btn.clear { background: rgb(150, 149, 148); }
+.btn.clear:hover { background: rgb(109, 109, 108); }
+.btn.exit { background: rgb(224, 55, 55); }
+.btn.exit:hover { background: rgb(158, 41, 41); }
+
+.btn.save { background: rgb(33, 156, 33); }
+.btn.save:hover { background: rgb(52, 121, 49); }
+
+.btn.edit { background: rgb(25, 25, 206); }
+.btn.edit:hover { background: rgb(11, 11, 156); }
+
+.btn.delete { background: rgb(238, 76, 76); }
+.btn.delete:hover { background: rgb(153, 35, 35); }
+
+.btn.print { background: rgb(38, 136, 128); }
+.btn.print:hover { background: rgb(14, 109, 101); }
+
+.btn.view { background: rgb(146, 8, 146); }
+.btn.view:hover { background: rgb(92, 5, 92); }

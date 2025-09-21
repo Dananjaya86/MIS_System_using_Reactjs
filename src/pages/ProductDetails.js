@@ -91,14 +91,14 @@ export default function ProductDetails() {
   };
 
   return (
-    <div className="container">
+    <div className="containerpr">
       <Menu />
 
-      <div className="right-content">
+      <div className="right-contentpr">
         <h2>Product Details</h2>
 
-        <div className="form-section">
-          <div className="form-left">
+        <div className="form-sectionpr">
+          <div className="form-leftpr">
             <label>Code:</label>
             <input name="code" value={form.code} onChange={handleChange} />
 
@@ -108,8 +108,12 @@ export default function ProductDetails() {
             <label>Units:</label>
             <select name="units" value={form.units} onChange={handleChange}>
               <option value="Nos">Nos</option>
+              <option value="L">Unit</option>
               <option value="Kg">Kg</option>
+              <option value="L">g</option>
               <option value="L">L</option>
+              <option value="L">ml</option>
+
             </select>
 
             <label>Supplier Code:</label>
@@ -119,7 +123,7 @@ export default function ProductDetails() {
             <input name="supplierName" value={form.supplierName} onChange={handleChange} />
           </div>
 
-          <div className="form-right">
+          <div className="form-rightpr">
             <label>Available Qty:</label>
             <input name="availableQty" value={form.availableQty} onChange={handleChange} />
 
@@ -138,12 +142,12 @@ export default function ProductDetails() {
         </div>
 
         <div className="button-section">
-          {mode === "view" && <button onClick={handleNew}>New</button>}
+          {mode === "view" && <button className="btnprnew" onClick={handleNew}>New</button>}
           {(mode === "new" || mode === "edit") && (
             <>
-              <button onClick={handleSave}>Save</button>
-              {mode === "edit" && <button onClick={handleDelete}>Delete</button>}
-              <button onClick={handleExit}>Exit</button>
+              <button className="btnprsave" onClick={handleSave}>Save</button>
+              {mode === "edit" && <button className="btnprdelete" onClick={handleDelete}>Delete</button>}
+              <button className="btnprexit" onClick={handleExit}>Exit</button>
             </>
           )}
         </div>

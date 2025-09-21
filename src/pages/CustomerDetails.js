@@ -63,6 +63,17 @@ export default function CustomerDetails() {
     setMode("view");
   };
 
+
+document.querySelectorAll('input[type="text"]').forEach(input => {
+  input.addEventListener('input', () => {
+    if (input.value.trim() !== "") {
+      input.classList.add("has-text");
+    } else {
+      input.classList.remove("has-text");
+    }
+  });
+});
+
   // Clear button
   const handleClear = () => {
     setForm({
@@ -106,12 +117,12 @@ export default function CustomerDetails() {
   };
 
   return (
-    <div className="page-layout">
+    <div className="page-layoutc">
       {/* Sidebar Menu */}
       <Menu />
 
       {/* Main Content */}
-      <div className="customer-container">
+      <div className="customer-containerc">
         <h2>
           Customer Details{" "}
           <img
@@ -123,7 +134,7 @@ export default function CustomerDetails() {
 
         {/* Form */}
         <div className="form-section">
-          <div className="form-left">
+          <div className="form-leftc">
             <label>Code:</label>
             <input name="code" value={form.code} onChange={handleChange} />
 
@@ -151,7 +162,7 @@ export default function CustomerDetails() {
             />
           </div>
 
-          <div className="form-right">
+          <div className="form-rightc">
             <label>Date:</label>
             <input
               type="date"
@@ -189,31 +200,31 @@ export default function CustomerDetails() {
         </div>
 
         {/* Buttons */}
-        <div className="button-section">
+        <div className="button-section2">
           {mode === "view" && (
             <>
-              <button onClick={handleNew}>New</button>
-              <button onClick={handleExit}>Exit</button>
+              <button className="btncnew" onClick={handleNew}>New</button>
+              <button className="btncexit" onClick={handleExit}>Exit</button>
             </>
           )}
           {mode === "new" && (
             <>
-              <button onClick={handleSave}>Save</button>
-              <button onClick={handleClear}>Clear</button>
-              <button onClick={handleExit}>Exit</button>
+              <button className="btncsave" onClick={handleSave}>Save</button>
+              <button className="btncclear" onClick={handleClear}>Clear</button>
+              <button className="btncexit" onClick={handleExit}>Exit</button>
             </>
           )}
           {mode === "edit" && (
             <>
-              <button onClick={handleSave}>Save</button>
-              <button onClick={handleDelete}>Delete</button>
-              <button onClick={handleExit}>Exit</button>
-            </>
+              <button className="btncmodify" onClick={handleSave}>Modify </button>
+              <button className="btncdelete" onClick={handleDelete}>Delete</button>
+              <button className="btnexit" onClick={handleExit}>Exit</button>
+            </> 
           )}
         </div>
 
         {/* Grid */}
-        <table className="customer-grid">
+        <table className="customer-gridc">
           <thead>
             <tr>
               <th>ID</th>

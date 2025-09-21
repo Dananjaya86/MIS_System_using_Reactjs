@@ -1,0 +1,96 @@
+/* Container */
+.advance-container {
+  display: flex;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+}
+
+
+
+/* Content */
+.content {
+  flex: 1;
+  padding: 20px 40px;
+  overflow-y: auto;
+  background-color: #f7f7f7;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+/* Form Group */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin: 8px 0 4px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Buttons */
+.buttons {
+  margin-bottom: 20px;
+}
+
+.buttons button {
+  margin-right: 10px;
+  padding: 8px 14px;
+  border: none;
+  background-color: #3498db;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.buttons button:hover {
+  background-color: #2980b9;
+}
+
+/* Grid */
+.grid {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.grid th, .grid td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.grid th {
+  background-color: #34495e;
+  color: white;
+}
+
+.grid tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.grid tr.selected-row {
+  background-color: #d1e7fd;
+}
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus {
+  
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+  color: #007bff;  /* text color while typing */
+}

@@ -4,12 +4,14 @@
       flex: 1;
       padding: 20px;
       overflow-y: auto;
+      
     }
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 15px;
       margin-bottom: 20px;
+      
     }
     .card {
       background: #fff;
@@ -91,4 +93,5 @@
   flex: 1;                 /* take remaining space */
   padding: 20px;
   background: #f0f2f5;     /* your dashboard background */
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }

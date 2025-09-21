@@ -111,7 +111,7 @@ export default function SupplierDetails() {
       <Menu />
 
       {/* Main Content */}
-      <div className="customer-container">
+      <div className="supplier-container">
         <h2>
           Supplier Details{" "}
           <img
@@ -122,8 +122,8 @@ export default function SupplierDetails() {
         </h2>
 
         {/* Form */}
-        <div className="form-section">
-          <div className="form-left">
+        <div className="form-sectionsu">
+          <div className="form-leftsu">
             <label>Code:</label>
             <input name="code" value={form.code} onChange={handleChange} />
 
@@ -151,7 +151,7 @@ export default function SupplierDetails() {
             />
           </div>
 
-          <div className="form-right">
+          <div className="form-rightsu">
             <label>Date:</label>
             <input
               type="date"
@@ -189,31 +189,31 @@ export default function SupplierDetails() {
         </div>
 
         {/* Buttons */}
-        <div className="button-section">
+        <div className="button-sectionsu">
           {mode === "view" && (
             <>
-              <button onClick={handleNew}>New</button>
-              <button onClick={handleExit}>Exit</button>
+              <button className="btnsunew" onClick={handleNew}>New</button>
+              <button className="btnsuexit" onClick={handleExit}>Exit</button>
             </>
           )}
           {mode === "new" && (
             <>
-              <button onClick={handleSave}>Save</button>
-              <button onClick={handleClear}>Clear</button>
-              <button onClick={handleExit}>Exit</button>
+              <button className="btnsusave" onClick={handleSave}>Save</button>
+              <button className="btnsuclear" onClick={handleClear}>Clear</button>
+              <button className="btnsuexit" onClick={handleExit}>Exit</button>
             </>
           )}
           {mode === "edit" && (
             <>
-              <button onClick={handleSave}>Save</button>
-              <button onClick={handleDelete}>Delete</button>
-              <button onClick={handleExit}>Exit</button>
+              <button className="btnsumodify" onClick={handleSave}>Modify</button>
+              <button className="btnsudelete" onClick={handleDelete}>Delete</button>
+              <button className="btnsuexit" onClick={handleExit}>Exit</button>
             </>
           )}
         </div>
 
         {/* Grid */}
-        <table className="customer-grid">
+        <table className="supplier-grid">
           <thead>
             <tr>
               <th>ID</th>

@@ -47,6 +47,17 @@
     box-shadow: 0 0 8px rgba(0,123,255,0.3);
 }
 
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus {
+  transform: scale(1.05);
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+  color: #007bff;  
+}
+
+
 /* Buttons */
 .btn {
     width: 48%;

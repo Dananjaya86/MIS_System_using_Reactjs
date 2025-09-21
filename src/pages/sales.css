@@ -18,10 +18,29 @@ h2 {
 .sale-type {
   text-align: center;
   margin-bottom: 20px;
+  
 }
+.sale-type input {
+  transform: scale(1.5);
+  margin: 10px;
+  margin-bottom: 5px;
+ 
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus {
+  
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+  color: #007bff;  
+}
+
 .sale-type label {
   margin: 0 15px;
   font-weight: bold;
+  font-size: 20px;
+  
 }
 
 .form-grid {
@@ -31,45 +50,88 @@ h2 {
   margin-bottom: 15px;
 }
 
-.form-left,
-.form-right {
+.form-lefts,
+.form-rights {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 2px;
   background: #fff;
   padding: 15px;
   border-radius: 10px;
-  box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0px 2px 6px rgba(173, 111, 111, 0.1);
 }
 
-label {
-  font-size: 14px;
+.form-lefts,.form-rights label {
+  font-size: 30x;
   margin-bottom: 3px;
-  color: #333;
+  color: #03069b;
+}
+.form-rights button{
+    background: rgb(32, 145, 32);
+    padding: 10px;
+    font-size: 20px;
+}
+.form-rights button:hover{
+    background: rgb(2, 110, 2);
+    
 }
 
-input {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
 
-.button-group {
+
+
+.button-group1 {
   text-align: center;
   margin: 15px 0;
 }
-.button-group button {
+.button-group1 button {
   margin: 5px;
-  padding: 8px 16px;
+  padding: 15px 30px;
   border: none;
-  background: #2c3e50;
   color: white;
   border-radius: 6px;
   cursor: pointer;
 }
-.button-group button:hover {
-  background: #34495e;
+
+.newbtn{
+    background: rgb(66, 126, 216);
+}
+.newbtn:hover{
+    background: rgb(48, 68, 158);
+}
+.btnsave{
+    background: rgb(33, 156, 33);
+}
+.btnsave:hover{
+    background: rgb(52, 121, 49);
+}
+.btnclear{
+    background: rgb(150, 149, 148);
+}
+.btnclear:hover{
+    background: rgb(109, 109, 108);
+
+}
+.btnexit{
+    background: rgb(224, 55, 55);
+}
+.btnexit:hover{
+    background: rgb(158, 41, 41);
+}
+.addbtn{
+    background:green;
+}
+.btnmodify{
+    background: rgb(25, 25, 206);
+}
+.btnmodify:hover{
+    background: rgb(11, 11, 156);
+}
+.btndelete{
+    background: rgb(238, 76, 76);
+}
+.btndelete:hover{
+    background: rgb(153, 35, 35);
 }
 
 .grid-table {
@@ -85,7 +147,7 @@ input {
   text-align: center;
 }
 .grid-table th {
-  background: #2c3e50;
+  background: #3a45dd;
   color: white;
 }
 
@@ -97,6 +159,21 @@ input {
   margin-top: 20px;
   text-align: right;
   font-size: 16px;
+}
+.addbtn{
+  background: rgb(45, 148, 45);
+}
+.btnprint{
+    background: rgb(38, 136, 128);
+}
+.btnprint:hover{
+    background: rgb(14, 109, 101);
+}
+.btnview{
+    background: rgb(146, 8, 146);
+}
+.btnview:hover{
+    background: rgb(92, 5, 92);
 }
 
 @media(max-width: 900px){

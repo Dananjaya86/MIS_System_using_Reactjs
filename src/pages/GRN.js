@@ -160,24 +160,24 @@ export default function GRN() {
         <div className="button-bar">
           {mode === "view" && (
             <>
-              <button onClick={handleAdd}>New</button>
-              <button onClick={handleExit}>Exit</button>
+              <button className="btngrnnew" onClick={handleAdd}>New</button>
+              <button className="btngrnexit" onClick={handleExit}>Exit</button>
             </>
           )}
 
           {mode === "add" && (
             <>
-              <button onClick={handleSave}>Save</button>
-              <button onClick={handleClear}>Clear</button>
-              <button onClick={handleExit}>Exit</button>
+              <button className="btngrnsave" onClick={handleSave}>Save</button>
+              <button className="btngrnclear" onClick={handleClear}>Clear</button>
+              <button className="btngrnexit" onClick={handleExit}>Exit</button>
             </>
           )}
 
           {mode === "edit" && (
             <>
-              <button onClick={handleSave}>Save</button>
-              <button onClick={() => handleDelete(editIndex)}>Delete</button>
-              <button onClick={handleExit}>Exit</button>
+              <button className="btngrnedit" onClick={handleSave}>Modify</button>
+              <button className="btngrndelete" onClick={() => handleDelete(editIndex)}>Delete</button>
+              <button className="btngrnexit" onClick={handleExit}>Exit</button>
             </>
           )}
         </div>
@@ -214,8 +214,8 @@ export default function GRN() {
 
         {/* Footer buttons */}
         <div className="button-bar">
-          <button onClick={handlePrint}>Print</button>
-          <button onClick={handleView}>View</button>
+          <button className="btngrnprint" onClick={handlePrint}>Print</button>
+          <button className="btngrnview" onClick={handleView}>View</button>
         </div>
       </div>
     </div>

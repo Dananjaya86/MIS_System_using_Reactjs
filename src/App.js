@@ -9,6 +9,12 @@ import ProductDetails from './pages/ProductDetails';
 import Production from './pages/Production';
 import GRN from './pages/GRN'
 import Sales from './pages/Sales'
+import AdvancePayment from './pages/AdvancePayment'
+import MeterialOrder from './pages/MeterialOrder'
+import GoodsDispatchNote from './pages/GoodsDispatchNote';
+import StockControl from './pages/StockControl';
+import PaymentSetoff from './pages/PaymentSetoff';
+import Expenses from './pages/Expenses';
 
 
 function App() {
@@ -24,6 +30,13 @@ function App() {
         <Route path="/Production" element={<Production />} />
         <Route path="/GRN" element={<GRN/>} />
         <Route path="/Sales" element={<Sales/>} />
+        <Route path="/AdvancePayment" element={<AdvancePayment/>} />
+        <Route path="/MeterialOrder" element={<MeterialOrder/>} />
+        <Route path="/GoodsDispatchNote" element={<GoodsDispatchNote/>} />
+        <Route path="/StockControl" element={<StockControl/>} />
+        <Route path="/PaymentSetoff" element={<PaymentSetoff/>}/>
+        <Route path='Expenses' element={<Expenses/>} />
+        
       </Routes>
     
 

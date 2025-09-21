@@ -1,4 +1,4 @@
-.customer-container {
+.supplier-container {
   padding: 20px;
 }
 
@@ -8,21 +8,28 @@
   
 }
 
-.form-section {
+.form-sectionsu {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-.form-left, .form-right {
+.form-leftsu, .form-rightsu {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  width: 45%;
+  gap: 2px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 6px rgba(173, 111, 111, 0.1);
+  width: 47%;
 }
 
-.form-left label, .form-right label {
+.form-leftsu label, .form-rightsu label {
   font-weight: bold;
+  font-size: 20px;
+  color: #03069b;
 }
 
 input, select {
@@ -30,37 +37,86 @@ input, select {
   border: 1px solid #ccc;
   border-radius: 6px;
 }
+input[type="text"]:focus {
+  
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
 
-.button-section {
+}
+
+
+
+.button-sectionsu {
   margin-bottom: 20px;
 }
 
-button {
+.button-sectionsu button {
   margin-right: 10px;
-  padding: 8px 16px;
+  padding: 15px 30px;
   border: none;
-  background: #0f4a85;
   color: white;
   border-radius: 6px;
   cursor: pointer;
 }
 
-button:hover {
-  background: #1a242f;
+.btnsusave{
+    background: rgb(33, 156, 33);
+}
+.btnsusave:hover{
+    background: rgb(52, 121, 49);
+}
+.btnsunew{
+    background: rgb(66, 126, 216);
+}
+.btnsunew:hover{
+    background: rgb(48, 68, 158);
+}
+.btnsuclear{
+    background: rgb(150, 149, 148);
+}
+.btnsuclear:hover{
+    background: rgb(109, 109, 108);
+}
+.btnsuexit{
+    background: rgb(224, 55, 55);
+}
+.btnsuexit:hover{
+    background: rgb(158, 41, 41);
+}
+.btnsumodify{
+    background: rgb(25, 25, 206);
+}
+.btnsumodify:hover{
+    background: rgb(11, 11, 156);
+}
+.btnsudelete{
+    background: rgb(238, 76, 76);
+}
+.btnsudelete:hover{
+    background: rgb(153, 35, 35);
 }
 
-.customer-grid {
+.supplier-grid {
   width: 100%;
   border-collapse: collapse;
 }
 
-.customer-grid th, .customer-grid td {
+
+.supplier-grid th  {
   border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+  background: #3a45dd;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.supplier-grid td{
+border: 1px solid #ccc;
   padding: 8px;
   text-align: left;
 }
 
-.customer-grid tr:hover {
+.supplier-grid tr:hover {
   background: #f1f1f1;
   cursor: pointer;
 }
@@ -79,14 +135,16 @@ button:hover {
 }
 
 /* Main content */
-.customer-container {
+.supplier-container {
   flex: 1;
   padding: 20px;
   background: #f9f9f9;
   overflow-y: auto;
 }
 
-.customer-container h2{
+.supplier-container h2{
     font-size: 40px;
     margin-bottom: 30px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: rgb(28, 28, 177);
 }
