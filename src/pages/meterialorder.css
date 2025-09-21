@@ -75,5 +75,5 @@ input[type="date"]:focus {
   
   border-color: #007bff;
   box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
-  color: #007bff;  /* text color while typing */
+  color: #007bff;  
 }

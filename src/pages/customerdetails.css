@@ -128,7 +128,7 @@ border: 1px solid #aaaaaa;
   height: 100vh;
 }
 
-/* Sidebar stays fixed */
+
 .page-layoutc > .menu {
   width: 220px;
   background: #2c3e50;
@@ -136,7 +136,7 @@ border: 1px solid #aaaaaa;
   flex-shrink: 0;
 }
 
-/* Main content */
+
 .customer-containerc {
   flex: 1;
   padding: 20px;
@@ -150,13 +150,13 @@ input[type="text"] {
   transition: all 0.3s ease;
 }
 
-/* While typing */
+
 input[type="text"]:focus {
   border-color: #007bff;
   box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
 }
 
-/* When input has text */
+
 input[type="text"].has-text {
   background-color: #e6f2ff; /* light blue */
   border-color: #007bff;

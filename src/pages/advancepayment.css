@@ -7,7 +7,7 @@
 
 
 
-/* Content */
+
 .content {
   flex: 1;
   padding: 20px 40px;
@@ -19,7 +19,7 @@ h2 {
   margin-bottom: 20px;
 }
 
-/* Form Group */
+
 .form-group {
   margin-bottom: 20px;
 }
@@ -40,7 +40,7 @@ h2 {
   box-sizing: border-box;
 }
 
-/* Buttons */
+
 .buttons {
   margin-bottom: 20px;
 }
@@ -60,7 +60,7 @@ h2 {
   background-color: #2980b9;
 }
 
-/* Grid */
+
 .grid {
   width: 100%;
   border-collapse: collapse;
@@ -92,5 +92,5 @@ input[type="date"]:focus {
   
   border-color: #007bff;
   box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
-  color: #007bff;  /* text color while typing */
+  color: #007bff;  
 }

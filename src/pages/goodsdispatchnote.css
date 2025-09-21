@@ -11,7 +11,7 @@
   display: block;
 }
 
-/* Basic layout */
+
 .gdn-containergdn {
   display: flex;
   min-height: 100vh;
@@ -41,7 +41,7 @@
   font-size: 30px;
 }
 
-/* Buttons */
+
 .btn {
   display: inline-block;
   padding: 10px 25px;
@@ -74,12 +74,12 @@
   border-color: #e74c3c;
 }
 
-/* top buttons area */
+
 .gdn-top-buttons {
   margin-bottom: 14px;
 }
 
-/* form layout - two/three columns */
+
 .gdn-form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -106,7 +106,7 @@
   box-sizing: border-box;
 }
 
-/* table */
+
 .gdn-grid-section {
   background: #fff;
   border: 1px solid #e0e0e0;
@@ -136,13 +136,13 @@
   background: #b9babb;
 }
 
-/* grid actions container */
+
 .gdn-grid-actions {
   display: flex;
   gap: 10px;
 }
 
-/* modal preview */
+
 .gdn-modal {
   position: fixed;
   inset: 0;
@@ -167,13 +167,9 @@
   text-align: right;
 }
 
-/* small table for preview */
-.gdn-table.small th, .gdn-table.small td {
-  padding: 6px;
-  font-size: 13px;
-}
 
-/* responsive */
+
+
 @media (max-width: 900px) {
   .gdn-form-grid { grid-template-columns: 1fr; }
   .gdn-sidebar { display: none; }

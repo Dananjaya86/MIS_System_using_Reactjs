@@ -126,7 +126,7 @@ border: 1px solid #ccc;
   height: 100vh;
 }
 
-/* Sidebar stays fixed */
+
 .page-layout > .menu {
   width: 220px;
   background: #2c3e50;
@@ -134,7 +134,7 @@ border: 1px solid #ccc;
   flex-shrink: 0;
 }
 
-/* Main content */
+
 .supplier-container {
   flex: 1;
   padding: 20px;

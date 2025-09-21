@@ -114,7 +114,7 @@ input, select {
   cursor: pointer;
 }
 
-/* Responsive */
+
 @media (max-width: 900px) {
   .container {
     flex-direction: column;

@@ -59,7 +59,7 @@
   transition: background 0.2s ease;
 }
 
-/* Button Colors */
+
 .btn-new { background: rgb(66, 126, 216); }
 .btn-new:hover { background: rgb(48, 68, 158); }
 
@@ -87,7 +87,7 @@
 .btn-view { background: rgb(146, 8, 146); }
 .btn-view:hover { background: rgb(92, 5, 92); }
 
-/* Table Styling */
+
 .data-grid {
   width: 100%;
   border-collapse: collapse;

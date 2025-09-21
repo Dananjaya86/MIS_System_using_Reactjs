@@ -166,7 +166,7 @@ input[type="date"]:focus {
   color: #007bff;  
 }
 
-/* Styling for Batch No, Production Date, Expiry Date */
+
 .batch-details {
   display: flex;
   gap: 1rem;
