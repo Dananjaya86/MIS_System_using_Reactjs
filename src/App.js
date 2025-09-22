@@ -15,6 +15,7 @@ import GoodsDispatchNote from './pages/GoodsDispatchNote';
 import StockControl from './pages/StockControl';
 import PaymentSetoff from './pages/PaymentSetoff';
 import Expenses from './pages/Expenses';
+import Bank from './pages/Bank';
 
 
 function App() {
@@ -36,6 +37,8 @@ function App() {
         <Route path="/StockControl" element={<StockControl/>} />
         <Route path="/PaymentSetoff" element={<PaymentSetoff/>}/>
         <Route path='Expenses' element={<Expenses/>} />
+        <Route path='Bank' element={<Bank/>} />
+
         
       </Routes>
     

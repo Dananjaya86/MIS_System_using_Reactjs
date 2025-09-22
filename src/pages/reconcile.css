@@ -1,0 +1,129 @@
+.recon-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.recon-modal {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 1200px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.recon-header, .recon-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f4f4f4;
+}
+
+.recon-body {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  overflow: auto;
+  flex: 1;
+}
+
+.recon-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.recon-list {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: auto;
+  max-height: 50vh;
+}
+
+.recon-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.recon-list th, .recon-list td {
+  border-bottom: 1px solid #ddd;
+  padding: 6px;
+  text-align: left;
+}
+
+.recon-list tr.selected {
+  background-color: #e6f0ff;
+}
+
+.recon-controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.bank-entry-form {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.bank-entry-form input {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-match {
+  background: #1e88e5;
+  color: white;
+}
+
+.btn-bulk {
+  background: #4caf50;
+  color: white;
+}
+
+.btn-add {
+  background: green;
+  color: white;
+}
+
+.btn-delete {
+  background: #d9534f;
+  color: white;
+}
+
+.btn-save {
+  background: #33a733;
+  color: white;
+}
+
+.btn-close {
+  background: #ccc;
+}
+
+.muted {
+  text-align: center;
+  color: #777;
+  font-style: italic;
+}

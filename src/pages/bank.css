@@ -1,0 +1,43 @@
+.bank-container { display: flex; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; color:rgb(28, 28, 177) ; }
+.bank-content { flex: 1; padding: 20px; }
+
+.input-field { width: 100%; padding: 5px; margin-bottom: 10px; }
+.form-grid { display: flex; gap: 20px; }
+.form-column { flex: 1; }
+
+.button-group { margin-top: 10px; }
+.btn { padding: 8px 12px; margin-right: 5px; border: none; color: #fff; cursor: pointer; }
+.btn-new { background: rgb(66,126,216); }
+.btn-new:hover { background: rgb(48,68,158); }
+.btn-add { background: green; }
+.btn-clear { background: rgb(150,149,148); }
+.btn-clear:hover { background: rgb(109,109,108); }
+.btn-exit { background: rgb(224,55,55); }
+.btn-exit:hover { background: rgb(158,41,41); }
+.btn-reconcile { background: rgb(38,136,128); }
+.btn-save { background: rgb(33,156,33); }
+.btn-print { background: rgb(38,136,128); }
+.btn-view { background: rgb(146,8,146); }
+.btn-edit { background: rgb(25,25,206); }
+.btn-edit:hover { background: rgb(11,11,156); }
+.btn-delete { background: rgb(238,76,76); }
+.btn-delete:hover { background: rgb(153,35,35); }
+.btn-match { background: rgb(33,156,33); color: #fff; padding: 4px 8px; border: none; cursor: pointer; }
+.btn-add-row { background: rgb(66,126,216); color:#fff; border:none; padding:5px 10px; margin-bottom:5px; cursor:pointer; }
+
+.data-grid { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.data-grid th, .data-grid td { border: 1px solid #ccc; padding: 5px; text-align: center; }
+.row-cleared { background: #c2f0c2; }
+
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center;
+}
+.modal-box { background: #fff; padding: 20px; width: 90%; max-width: 1000px; border-radius: 8px; }
+.modal-grids { display: flex; gap: 20px; }
+.modal-grid { flex: 1; }
+.modal-grid table { width: 100%; border-collapse: collapse; }
+.modal-grid table th, .modal-grid table td { border: 1px solid #ccc; padding: 5px; text-align: center; }
+.bank-row { display: flex; gap: 5px; margin-bottom: 5px; }
+.modal-footer { margin-top: 10px; text-align: right; }
+.row-cleared input { background: #e0e0e0; }

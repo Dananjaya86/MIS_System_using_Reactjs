@@ -59,7 +59,7 @@ export default function Expenses() {
     paymentMadeBy: "",
     remarks: "",
   });
-    setIsAdding(false);
+    setIsAdding(true);
   };
 
   const handleEdit = (id) => {
