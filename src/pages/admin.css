@@ -1,0 +1,178 @@
+/* admin.css */
+
+.admin-containerad {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f6fa;
+}
+
+.admin-contentad {
+  flex: 1;
+  padding: 20px;
+}
+
+.titlead {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.form-boxad {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.form-grid-two-columnad {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.left-boxad, .right-boxad {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-itemad {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-fieldad {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.permission-titlead {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.permission-gridad {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(200px, 1fr));
+  gap: 10px 20px;
+  margin-top: 10px;
+}
+
+.checkbox-itemad {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f8f8;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  font-size: 14px;
+}
+
+.checkbox-itemad input[type="checkbox"] {
+  transform: scale(1.1);
+}
+
+.button-groupad {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.btnad {
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-newad { background: rgb(66, 126, 216); }
+.btn-newad:hover { background: rgb(48, 68, 158); }
+
+.btn-addad { background: green; }
+.btn-clearad { background: rgb(150, 149, 148); }
+.btn-clearad:hover { background: rgb(109, 109, 108); }
+
+.btn-editad { background: rgb(25, 25, 206); }
+.btn-editad:hover { background: rgb(11, 11, 156); }
+
+.btn-deletead { background: rgb(238, 76, 76); }
+.btn-deletead:hover { background: rgb(153, 35, 35); }
+
+.btn-savead { background: rgb(33, 156, 33); }
+.btn-savead:hover { background: rgb(52, 121, 49); }
+
+.btn-exitad { background: rgb(224, 55, 55); }
+.btn-exitad:hover { background: rgb(158, 41, 41); }
+
+.btn-printad { background: rgb(38, 136, 128); }
+.btn-printad:hover { background: rgb(14, 109, 101); }
+
+.btn-viewad { background: rgb(146, 8, 146); }
+.btn-viewad:hover { background: rgb(92, 5, 92); }
+
+.btn-billbookad { background: #ff9800; }
+.btn-billbookad:hover { background: #d17d00; }
+
+.data-gridad {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.data-gridad th, .data-gridad td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  font-size: 14px;
+}
+
+.data-gridad tr:hover {
+  background: #f2f2f2;
+  cursor: pointer;
+}
+
+.billbook-modalad {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.billbook-contentad {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 300px;
+}
+
+.billbook-contentad input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.billbook-buttonsad {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
