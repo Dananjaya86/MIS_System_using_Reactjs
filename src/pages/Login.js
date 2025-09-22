@@ -1,46 +1,59 @@
-import React from 'react'
-import './login.css'
+// src/pages/Login.jsx
+import React, { useState, useContext } from 'react';
+import './login.css';
 import { useNavigate } from 'react-router-dom';
-import loginimage from "../img/login.png"
-
+import loginimage from "../img/login.png";
+import { AppContext } from '../componants/AppContext';
 
 export default function Login() {
+  const navigate = useNavigate();
+  const { allowFullAccess } = useContext(AppContext);
 
-const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-/* need to check with backend database*/
-
-  function login() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-
-    if (username === "" || password === "") {
+  const handleLogin = () => {
+    if (!username || !password) {
       alert("Please enter both username and password!");
       return;
     }
 
-    alert("Login successful! Welcome to Dashboard...");
-    navigate("/dashboard");  
-  }
+    if (username === "dananjaya" && password === "123*") {
+      allowFullAccess();
+      alert("Login successful! Welcome to Dashboard...");
+      navigate("/Dashboard");
+    } else {
+      alert("Invalid username or password!");
+    }
+  };
 
-  function cancel() {
-    document.getElementById("username").value = "";
-    document.getElementById("password").value = "";
-  }
-
+  const handleCancel = () => {
+    setUsername('');
+    setPassword('');
+  };
 
   return (
     <div className="login-page">
-    <div className="login-card">
-      <img src={loginimage} alt="login image"></img>
-      <h2>Welcome to Login Page!</h2>
-      <input type="text" id="username" placeholder="Username" />
-      <input type="password" id="password" placeholder="Password" />
-      <div>
-        <button className="btn btn-login" onClick={login}>Login</button>
-        <button className="btn btn-cancel" onClick={cancel}>Cancel</button>
+      <div className="login-card">
+        <img src={loginimage} alt="login" />
+        <h2>Welcome to Login Page!</h2>
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <div className="login-buttons">
+          <button className="btn btn-login" onClick={handleLogin}>Login</button>
+          <button className="btn btn-cancel" onClick={handleCancel}>Cancel</button>
+        </div>
       </div>
     </div>
-  </div>
-  )
+  );
 }

@@ -150,7 +150,7 @@ const AdvancePayment = () => {
         </div>
 
         {/* Inputs */}
-
+        <div className="form-box">
         <div className="form-group">
           <label>Code</label>
           <input name="code" value={formData.code || ""} onChange={handleChange} />
@@ -169,6 +169,7 @@ const AdvancePayment = () => {
 
           <label>Remarks</label>
           <textarea name="remarks" value={formData.remarks || ""} onChange={handleChange} rows={3}></textarea>
+        </div>
         </div>
 
 
@@ -215,7 +216,7 @@ const AdvancePayment = () => {
 
         {/* Grid */}
 
-        
+
         {gridData.length > 0 && (
           <table className="grid">
             <thead>

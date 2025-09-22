@@ -1,129 +1,128 @@
-.recon-overlay {
+.modal-overlayrec {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
+  inset: 0;
+  background: rgba(0,0,0,0.6);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 999;
 }
 
-.recon-modal {
-  background: white;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 1200px;
+.modal-boxrec {
+  background: #fff;
+  border-radius: 14px;
+  width: 92%;
+  max-width: 1150px;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  font-family: "Segoe UI", sans-serif;
 }
 
-.recon-header, .recon-footer {
+.modal-headerrec {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
-  background: #f4f4f4;
+  padding: 14px 20px;
+  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 600;
+  box-shadow: inset 0 -1px 0 rgba(255,255,255,0.2);
 }
 
-.recon-body {
+.modal-gridsrec {
   display: flex;
-  gap: 12px;
-  padding: 12px;
+  gap: 20px;
+  padding: 16px;
+  flex: 1;
   overflow: auto;
-  flex: 1;
 }
 
-.recon-column {
+.modal-gridrec {
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  background: #fdfdfd;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
 }
 
-.recon-list {
+.table-wrapperrec {
+  max-height: 52vh;
+  overflow-y: auto;
   border: 1px solid #ddd;
   border-radius: 8px;
-  overflow: auto;
-  max-height: 50vh;
 }
 
-.recon-list table {
+.table-rec {
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.9rem;
 }
 
-.recon-list th, .recon-list td {
+.table-rec th, .table-rec td {
+  padding: 8px 6px;
   border-bottom: 1px solid #ddd;
-  padding: 6px;
-  text-align: left;
+  text-align: center;
 }
 
-.recon-list tr.selected {
-  background-color: #e6f0ff;
+.table-rec thead th {
+  position: sticky;
+  top: 0;
+  background: #3a45dd;
+  font-weight: 600;
+  z-index: 2;
 }
 
-.recon-controls {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 6px;
+.ledger-rowrec:hover,
+.bank-rowrec:hover {
+  background: #f0f7ff;
 }
 
-.bank-entry-form {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
+.row-clearedrec {
+  background: #dff7df !important;
 }
 
-.bank-entry-form input {
-  padding: 6px;
+.status-rec.pending { color: #f39c12; font-weight: 600; }
+.status-rec.cleared { color: #27ae60; font-weight: 600; }
+
+.input-rec, .select-rec {
+  padding: 6px 8px;
+  border-radius: 6px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  width: 100%;
+  font-size: 0.85rem;
 }
 
-.btn {
-  padding: 6px 10px;
+.bank-rowrec {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.modal-footerrec {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 14px 18px;
+  background: #f6f6f6;
+}
+
+.btn-matchrec, .btn-add-rowrec, .btn-saverec, .btn-exitrec {
   border: none;
   border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.btn-match {
-  background: #1e88e5;
-  color: white;
-}
+.btn-matchrec { background: #1e88e5; color: #fff; }
+.btn-matchrec:disabled { background: #a6c8f7; cursor: not-allowed; }
 
-.btn-bulk {
-  background: #4caf50;
-  color: white;
-}
-
-.btn-add {
-  background: green;
-  color: white;
-}
-
-.btn-delete {
-  background: #d9534f;
-  color: white;
-}
-
-.btn-save {
-  background: #33a733;
-  color: white;
-}
-
-.btn-close {
-  background: #ccc;
-}
-
-.muted {
-  text-align: center;
-  color: #777;
-  font-style: italic;
-}
+.btn-add-rowrec { background: #427ed8; color: #fff; }
+.btn-saverec { background: #219c21; color: #fff; }
+.btn-exitrec { background: #d9534f; color: #fff; }
+.btn-exitrec:hover { background: #a73b38; }

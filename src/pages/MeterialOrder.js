@@ -103,6 +103,7 @@ export default function MaterialOrderWindow() {
 
         {/* Form */}
         <div className="form-section">
+          
           <div className="form-left">
             <label>Order No:</label>
             <input name="orderNo" value={formData.orderNo} onChange={handleChange} />
@@ -126,7 +127,9 @@ export default function MaterialOrderWindow() {
             <label>Amount:</label>
             <input name="amount" value={formData.amount} onChange={handleChange} />
           </div>
+          
         </div>
+        
 
 
         {/* Buttons */}

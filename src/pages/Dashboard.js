@@ -3,6 +3,7 @@ import Chart from 'chart.js/auto'
 import './dashboard.css'
 import Menu from '../componants/Menu'
 
+
 export default function Dashboard() {
 
 const salesByDateRef = useRef(null);

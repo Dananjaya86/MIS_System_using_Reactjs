@@ -1,107 +1,118 @@
-.customer-containerc {
+/* Container for main content */
+.customer-containercs {
+  flex: 1;
   padding: 20px;
-}
-.customer-containerc h2{
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    color: rgb(28, 28, 177);
+  background: #f9f9f9;
+  overflow-y: auto;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
+/* Page title */
+.customerhe {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  color: rgb(28, 28, 177);
+  display: flex;
+  justify-content: center; /* when i want to centers horizontally can use this (from google) */
+  align-items: center;
+  gap: 10px;
+  font-size: 30px;
+  margin: 20px 0; 
+}
+
+/* Title icon */
 .title-icon {
   width: 30px;
   vertical-align: middle;
-  
 }
 
+/* Form section: two columns */
 .form-section {
   display: flex;
-  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap; /* Stack on smaller screens */
   margin-bottom: 20px;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  
 }
 
-.form-leftc, .form-rightc {
+/* Left and right columns */
+.form-leftc,
+.form-rightc {
+  flex: 1;
+  min-width: 250px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 12px;
   background: #fff;
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0px 2px 6px rgba(173, 111, 111, 0.1);
-  width: 50%;
 }
 
-.form-leftc label, .form-rightc label {
+/* Labels */
+.form-leftc label,
+.form-rightc label {
   font-weight: bold;
-  font-size: 20px;
+  font-size: 16px;
   color: #03069b;
 }
 
+/* Inputs and selects */
 input, select {
-  padding: 6px;
+  padding: 6px 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
+  transition: all 0.3s ease;
 }
 
+input:focus, select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+}
+
+input.has-text {
+  background-color: #e6f2ff;
+  border-color: #007bff;
+}
+
+/* Button section */
 .button-section2 {
   margin-bottom: 10px;
 }
 
 .button-section2 button {
   margin-right: 10px;
-  Padding: 15px 30px;
+  padding: 12px 25px;
   border: none;
   color: white;
   border-radius: 6px;
   cursor: pointer;
-}
-.btncnew{
-    background: rgb(66, 126, 216);
-    
-}
-.btncnew:hover{
-    background: rgb(48, 68, 158);
-}
-.btncexit{
-    background: rgb(224, 55, 55);
-    
-}
-.btncexit:hover{
-    background: rgb(158, 41, 41);
-
-}
-.btncsave{
-    background: rgb(33, 156, 33);
-}
-.btncsave:hover{
-    background: rgb(52, 121, 49);
-}
-.btncclear{
-    background: rgb(150, 149, 148);
-}
-.btncclear{
-    background: rgb(109, 109, 108);
-}
-.btncmodify{
-    background: rgb(25, 25, 206);
-}
-.btncmodify:hover{
-    background: rgb(11, 11, 156);
-}
-.btncdelete{
-    background: rgb(238, 76, 76);
-}
-.btncdelete:hover{
-    background: rgb(153, 35, 35);
+  font-weight: bold;
+  transition: all 0.3s ease;
 }
 
+/* Button colors */
+.btncnew { background: rgb(66, 126, 216); }
+.btncnew:hover { background: rgb(48, 68, 158); }
 
+.btncexit { background: rgb(224, 55, 55); }
+.btncexit:hover { background: rgb(158, 41, 41); }
 
+.btncsave { background: rgb(33, 156, 33); }
+.btncsave:hover { background: rgb(52, 121, 49); }
 
+.btncclear { background: rgb(150, 149, 148); }
+.btncclear:hover { background: rgb(109, 109, 108); }
+
+.btncmodify { background: rgb(25, 25, 206); }
+.btncmodify:hover { background: rgb(11, 11, 156); }
+
+.btncdelete { background: rgb(238, 76, 76); }
+.btncdelete:hover { background: rgb(153, 35, 35); }
+
+/* Grid table */
 .customer-gridc {
   width: 100%;
   border-collapse: collapse;
- 
 }
 
 .customer-gridc th {
@@ -109,11 +120,12 @@ input, select {
   padding: 8px;
   text-align: left;
   background: #3a45dd;
+  color: white;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  
 }
-.customer-gridc td{
-border: 1px solid #aaaaaa;
+
+.customer-gridc td {
+  border: 1px solid #aaaaaa;
   padding: 8px;
   text-align: left;
 }
@@ -123,12 +135,13 @@ border: 1px solid #aaaaaa;
   cursor: pointer;
 }
 
+/* Page layout */
 .page-layoutc {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
 }
 
-
+/* Sidebar */
 .page-layoutc > .menu {
   width: 220px;
   background: #2c3e50;
@@ -136,28 +149,12 @@ border: 1px solid #aaaaaa;
   flex-shrink: 0;
 }
 
-
-.customer-containerc {
-  flex: 1;
-  padding: 20px;
-  background: #f9f9f9;
-  overflow-y: auto;
-}
-
-input[type="text"] {
-  border: 1px solid #ccc;
-  padding: 6px;
-  transition: all 0.3s ease;
-}
-
-
-input[type="text"]:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
-}
-
-
-input[type="text"].has-text {
-  background-color: #e6f2ff; /* light blue */
-  border-color: #007bff;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .form-section {
+    flex-direction: column;
+  }
+  .form-leftc, .form-rightc {
+    width: 100%;
+  }
 }

@@ -1,60 +1,101 @@
 .expenses-container {
   display: flex;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  color:rgb(28, 28, 177); ;
+  min-height: 100vh;
+  background: #f4f4f4;
 }
 
+/* Left menu (imported Menu component stays here) */
+.expenses-container > .menu {
+  width: 220px;
+  background: #2c3e50;
+  color: white;
+  flex-shrink: 0;
+}
+
+/* Right content area */
 .expenses-content {
   flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   padding: 20px;
 }
 
-.title {
-  font-size: 30px;
-  font-weight: bold;
+/* Card around form and table */
+.expenses-card {
+  width: 100%;
+  max-width: 950px;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+}
+
+.expenses-title {
+  text-align: center;
+  font-size: 28px;
+  color: rgb(28, 28, 177);
   margin-bottom: 15px;
 }
 
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+/* Form Box */
+.form-boxex {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 10px;
+  background: #f9f9f9;
   margin-bottom: 20px;
-  
 }
 
-.form-column {
-  display: flex;
+.form-gridex {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* keep two columns */
+  gap: 20px;
+}
+
+.form-columnex {
+   display: flex;
   flex-direction: column;
-  gap: 8px;
-  
+  gap: 12px;
+  width: 100%;
 }
 
-.input-field {
+label {
+  font-weight: bold;
+  color: #333;
+}
+
+.input-fieldex {
+  padding: 10px;
   border: 1px solid #ccc;
-  padding: 8px;
   border-radius: 6px;
+  box-sizing: border-box;
+  width: 95%;       /* Makes input fields wider */
+  max-width: 500px; 
 }
 
-textarea.input-field {
+textarea.input-fieldex {
   resize: none;
-  height: 60px;
+  height: 80px;
+  width: 95%;       /*  Wider textarea */
+  max-width: 500px;
 }
 
+/* Buttons */
 .button-group {
   display: flex;
+  justify-content: center;
   gap: 10px;
-  margin-bottom: 15px;
+  margin: 15px 0;
 }
 
 .btn {
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: 6px;
-  color: white;
   border: none;
   cursor: pointer;
   font-weight: 500;
-  transition: background 0.2s ease;
+  color: white;
 }
 
 .btn-new { background: rgb(66, 126, 216); }
@@ -63,13 +104,13 @@ textarea.input-field {
 .btn-add { background: green; }
 .btn-add:hover { background: darkgreen; }
 
-.btn-clear { background: rgb(150, 149, 148); }
-.btn-clear:hover { background: rgb(109, 109, 108); }
+.btn-clear { background: gray; }
+.btn-clear:hover { background: #555; }
 
 .btn-exit { background: rgb(224, 55, 55); }
 .btn-exit:hover { background: rgb(158, 41, 41); }
 
-.btn-save { background: rgb(33, 156, 33); margin-bottom: 15px; }
+.btn-save { background: rgb(33, 156, 33); }
 .btn-save:hover { background: rgb(52, 121, 49); }
 
 .btn-edit { background: rgb(25, 25, 206); }
@@ -84,23 +125,33 @@ textarea.input-field {
 .btn-view { background: rgb(146, 8, 146); }
 .btn-view:hover { background: rgb(92, 5, 92); }
 
+/* Table */
 .data-grid {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 15px;
+  margin-top: 10px;
 }
 
 .data-grid th, .data-grid td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: left;
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+  text-align: center;
 }
 
 .data-grid th {
   background: #3a45dd;
+  color: white;
 }
 
 .action-buttons {
   display: flex;
-  gap: 8px;
+  gap: 6px;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
 }

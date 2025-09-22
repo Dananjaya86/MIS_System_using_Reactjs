@@ -80,7 +80,7 @@ export default function StockControl() {
         <h1>Stock Control</h1>
 
         {/* Input Form */}
-        <div className="form-grid">
+        <div className="form-gridstok">
           <div className="stockconleft">
             <label>Product Code</label>
             <input type="text" name="code" value={form.code} onChange={handleChange} />

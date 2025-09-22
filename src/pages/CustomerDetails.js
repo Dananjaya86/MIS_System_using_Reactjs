@@ -134,8 +134,8 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
 
 
       {/* Main Content */}
-      <div className="customer-containerc">
-        <h2>
+      <div className="customer-containercs">
+        <h2 className="customerhe">
           Customer Details{" "}
           <img
             src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png"
@@ -240,7 +240,7 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
           )}
         </div>
 
-        
+
 
         {/* Grid */}
         <table className="customer-gridc">
