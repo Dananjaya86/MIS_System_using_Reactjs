@@ -168,7 +168,7 @@ export default function SupplierDetails() {
             <label>Credit Amount:</label>
             <input name="credit" value={form.credit} onChange={handleChange} />
 
-            <label>Status:</label>
+            <label >Status:</label>
             <select name="status" value={form.status} onChange={handleChange}>
               <option value="Good">Good</option>
               <option value="Bad">Bad</option>
