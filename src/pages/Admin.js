@@ -87,49 +87,64 @@ export default function Admin() {
         <div className="form-boxad">
           <div className="form-grid-two-columnad">
             <div className="left-boxad">
-              <div className="form-itemad">
-                <label>Employee Number</label>
-                <input name="employeeNo" value={form.employeeNo} onChange={handleChange} className="input-fieldad" />
-              </div>
-              <div className="form-itemad">
-                <label>ID Number</label>
-                <input name="idNo" value={form.idNo} onChange={handleChange} className="input-fieldad" />
-              </div>
-              <div className="form-itemad">
-                <label>First Name</label>
-                <input name="firstName" value={form.firstName} onChange={handleChange} className="input-fieldad" />
-              </div>
-              <div className="form-itemad">
-                <label>Last Name</label>
-                <input name="lastName" value={form.lastName} onChange={handleChange} className="input-fieldad" />
-              </div>
-              <div className="form-itemad">
-                <label>Calling Name</label>
-                <input name="callingName" value={form.callingName} onChange={handleChange} className="input-fieldad" />
-              </div>
-              <div className="form-itemad">
-                <label>Address</label>
-                <input name="address" value={form.address} onChange={handleChange} className="input-fieldad" />
-              </div>
-              <div className="form-itemad">
-                <label>Position</label>
-                <input name="position" value={form.position} onChange={handleChange} className="input-fieldad" />
-              </div>
+              {[
+                { label: "Employee Number", name: "employeeNo" },
+                { label: "ID Number", name: "idNo" },
+                { label: "First Name", name: "firstName" },
+                { label: "Last Name", name: "lastName" },
+                { label: "Calling Name", name: "callingName" },
+                { label: "Address", name: "address" },
+                { label: "Position", name: "position" },
+              ].map((field) => (
+                <div key={field.name} className="form-itemad">
+                  <label>{field.label}</label>
+                  <input
+                    name={field.name}
+                    value={form[field.name]}
+                    onChange={handleChange}
+                    className="input-fieldad"
+                  />
+                </div>
+              ))}
             </div>
 
             <div className="right-boxad">
               <label className="permission-titlead">Permissions</label>
               <div className="permission-gridad">
-                {["Customer Details","Supplier Details","Product Details","Production","GRN","Sale","Advance Payment","Material Order","Goods Dispatch Note","Stock Control","Payment Setoff","Expenses","Bank","Return","Reports"].map((perm) => (
-                  <label key={perm} className="checkbox-itemad">
-                    <input
-                      type="checkbox"
-                      checked={!!form.permissions[perm]}
-                      onChange={() => handlePermissionChange(perm)}
-                    />
-                    {perm}
-                  </label>
-                ))}
+                <div className="permission-gridad">
+  {[
+    "Customer Details",
+    "Supplier Details",
+    "Product Details",
+    "Production",
+    "GRN",
+    "Sale",
+    "Advance Payment",
+    "Material Order",
+    "Goods Dispatch Note",
+    "Stock Control",
+    "Payment Setoff",
+    "Expenses",
+    "Bank",
+    "Return",
+    "Reports",
+  ].map((perm, index) => {
+    const checkboxId = `perm-${index}`;
+    return (
+      <div key={perm} className="checkbox-itemad">
+        <label htmlFor={checkboxId} className="checkbox-labelad">
+          {perm}
+        </label>
+        <input
+          id={checkboxId}
+          type="checkbox"
+          checked={!!form.permissions[perm]}
+          onChange={() => handlePermissionChange(perm)}
+        />
+      </div>
+    );
+  })}
+</div>
               </div>
             </div>
           </div>
@@ -138,14 +153,18 @@ export default function Admin() {
         {/* Buttons */}
         <div className="button-groupad">
           <button className="btnad btn-newad" onClick={handleNew}>New</button>
-          {isAdding && <>
-            <button className="btnad btn-addad" onClick={handleAdd}>Add</button>
-            {selectedRow && <>
-              <button className="btnad btn-editad" onClick={handleEdit}>Edit</button>
-              <button className="btnad btn-deletead" onClick={handleDelete}>Delete</button>
-            </>}
-            <button className="btnad btn-clearad" onClick={handleNew}>Clear</button>
-          </>}
+          {isAdding && (
+            <>
+              <button className="btnad btn-addad" onClick={handleAdd}>Add</button>
+              {selectedRow && (
+                <>
+                  <button className="btnad btn-editad" onClick={handleEdit}>Edit</button>
+                  <button className="btnad btn-deletead" onClick={handleDelete}>Delete</button>
+                </>
+              )}
+              <button className="btnad btn-clearad" onClick={handleNew}>Clear</button>
+            </>
+          )}
           <button className="btnad btn-exitad" onClick={() => window.close?.()}>Exit</button>
         </div>
 
@@ -153,7 +172,12 @@ export default function Admin() {
         <table className="data-gridad">
           <thead>
             <tr>
-              <th>Emp No</th><th>ID</th><th>First Name</th><th>Last Name</th><th>Position</th><th>Permissions</th>
+              <th>Emp No</th>
+              <th>ID</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Position</th>
+              <th>Permissions</th>
             </tr>
           </thead>
           <tbody>
