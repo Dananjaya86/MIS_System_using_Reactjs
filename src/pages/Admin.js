@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Menu from "../componants/Menu";
 import "./admin.css";
+import { useEffect } from "react";
+
 
 export default function Admin() {
   const [form, setForm] = useState({
@@ -54,22 +56,40 @@ export default function Admin() {
     setSelectedRow(null);
   };
 
+  useEffect(() => {
+  fetch("http://localhost:5000/api/admin")
+    .then(res => res.json())
+    .then(data => setGridData(data));
+}, []);
+
   const handleAdd = () => {
-    setGridData((g) => [...g, { ...form, id: Date.now() }]);
-    handleNew();
-  };
+  fetch("http://localhost:5000/api/admin", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(form),
+  })
+    .then(() => fetch("http://localhost:5000/api/admin"))
+    .then(res => res.json())
+    .then(data => setGridData(data));
+};
 
   const handleEdit = () => {
-    setGridData((g) =>
-      g.map((r) => (r.id === selectedRow.id ? { ...form, id: r.id } : r))
-    );
-    handleNew();
-  };
+  fetch("http://localhost:5000/api/admin", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(form),
+  })
+    .then(() => fetch("http://localhost:5000/api/admin"))
+    .then(res => res.json())
+    .then(data => setGridData(data));
+};
 
   const handleDelete = () => {
-    setGridData((g) => g.filter((r) => r.id !== selectedRow.id));
-    handleNew();
-  };
+  fetch(`http://localhost:5000/api/admin/${form.employeeNo}`, { method: "DELETE" })
+    .then(() => fetch("http://localhost:5000/api/admin"))
+    .then(res => res.json())
+    .then(data => setGridData(data));
+};
 
   const handleRowClick = (row) => {
     setForm(row);

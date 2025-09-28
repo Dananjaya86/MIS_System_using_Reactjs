@@ -12,20 +12,33 @@ export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    if (!username || !password) {
-      alert("Please enter both username and password!");
-      return;
-    }
+  const handleLogin = async () => {
+  if (!username || !password) {
+    alert("Please enter both username and password!");
+    return;
+  }
 
-    if (username === "dananjaya" && password === "123*") {
+  try {
+    const response = await fetch("http://localhost:5000/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
       allowFullAccess();
       alert("Login successful! Welcome to Dashboard...");
       navigate("/Dashboard");
     } else {
-      alert("Invalid username or password!");
+      alert(data.message || "Invalid username or password!");
     }
-  };
+  } catch (error) {
+    console.error("Login Error:", error);
+    alert("Server error. Please try again later.");
+  }
+};
 
   const handleCancel = () => {
     setUsername('');
