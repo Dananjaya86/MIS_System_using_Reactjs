@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import "./customerdetails.css";
 import Menu from "../componants/Menu";
 
@@ -19,18 +20,33 @@ export default function CustomerDetails() {
     totalReturn: ""
   });
   const [selectedId, setSelectedId] = useState(null);
+  const [username, setUsername] = useState("");
+  const [currentDate, setCurrentDate] = useState("");
+  const [mode, setMode] = useState("view");
+  const [searchText, setSearchText] = useState("");
 
-  // view | new | edit
-  const [mode, setMode] = useState("view"); 
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  // Handle form changes
+  useEffect(() => {
+    const storedUser = localStorage.getItem("username") || "Guest";
+    setUsername(storedUser);
+
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+    setCurrentDate(formattedDate);
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-
-  // New button
   const handleNew = () => {
     setForm({
       code: "",
@@ -50,8 +66,6 @@ export default function CustomerDetails() {
     setMode("new");
   };
 
-
-  // Save button
   const handleSave = () => {
     if (selectedId) {
       setCustomers((prev) =>
@@ -67,20 +81,6 @@ export default function CustomerDetails() {
     setMode("view");
   };
 
-
-document.querySelectorAll('input[type="text"]').forEach(input => {
-  input.addEventListener('input', () => {
-    if (input.value.trim() !== "") {
-      input.classList.add("has-text");
-    } else {
-      input.classList.remove("has-text");
-    }
-  });
-});
-
-
-
-  // Clear button
   const handleClear = () => {
     setForm({
       code: "",
@@ -99,17 +99,11 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
     setSelectedId(null);
   };
 
-
-
-  // Exit button
   const handleExit = () => {
     setMode("view");
     setSelectedId(null);
   };
 
-
-
-  // Delete button
   const handleDelete = () => {
     if (selectedId) {
       setCustomers((prev) => prev.filter((c) => c.id !== selectedId));
@@ -119,22 +113,44 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
     }
   };
 
-  // Select row
   const handleRowClick = (customer) => {
     setForm(customer);
     setSelectedId(customer.id);
     setMode("edit");
   };
 
+  
+  const filteredCustomers = customers.filter((c) =>
+    Object.values(c).some(
+      (val) => val && val.toString().toLowerCase().includes(searchText.toLowerCase())
+    )
+  );
+
+  
+  const totalPages = Math.ceil(filteredCustomers.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const currentCustomers = filteredCustomers.slice(startIndex, endIndex);
+
+  const handleRowsPerPageChange = (e) => {
+    setRowsPerPage(parseInt(e.target.value));
+    setCurrentPage(1); 
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="page-layoutc">
-      {/* Sidebar Menu */}
       <Menu />
 
-
-
-      {/* Main Content */}
       <div className="customer-containercs">
+        <div className="user-infoc">
+          <span className="usernamec">👤 {username}</span>
+          <span className="datec">📅 {currentDate}</span>
+        </div>
+
         <h2 className="customerhe">
           Customer Details{" "}
           <img
@@ -144,28 +160,47 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
           />
         </h2>
 
-
-
-        {/* Form */}
+        
         <div className="form-section">
           <div className="form-leftc">
             <label>Code:</label>
-            <input name="code" value={form.code} onChange={handleChange} />
+            <input
+              name="code"
+              value={form.code}
+              onChange={handleChange}
+              readOnly={true} 
+            />
 
             <label>Name:</label>
-            <input name="name" value={form.name} onChange={handleChange} />
+            <input
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              readOnly={mode === "view"}
+            />
 
             <label>Address:</label>
-            <input name="address" value={form.address} onChange={handleChange} />
+            <input
+              name="address"
+              value={form.address}
+              onChange={handleChange}
+              readOnly={mode === "view"}
+            />
 
             <label>Phone:</label>
-            <input name="phone" value={form.phone} onChange={handleChange} />
+            <input
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              readOnly={mode === "view"}
+            />
 
             <label>Contact Person:</label>
             <input
               name="contactPerson"
               value={form.contactPerson}
               onChange={handleChange}
+              readOnly={mode === "view"}
             />
 
             <label>Advance Payment:</label>
@@ -173,6 +208,7 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
               name="advance"
               value={form.advance}
               onChange={handleChange}
+              readOnly={mode === "view"}
             />
           </div>
 
@@ -183,16 +219,32 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
               name="date"
               value={form.date}
               onChange={handleChange}
+              readOnly={mode === "view"}
             />
 
             <label>Route:</label>
-            <input name="route" value={form.route} onChange={handleChange} />
+            <input
+              name="route"
+              value={form.route}
+              onChange={handleChange}
+              readOnly={mode === "view"}
+            />
 
             <label>Credit Amount:</label>
-            <input name="credit" value={form.credit} onChange={handleChange} />
+            <input
+              name="credit"
+              value={form.credit}
+              onChange={handleChange}
+              readOnly={mode === "view"}
+            />
 
             <label>Status:</label>
-            <select name="status" value={form.status} onChange={handleChange}>
+            <select
+              name="status"
+              value={form.status}
+              onChange={handleChange}
+              disabled={mode === "view"}
+            >
               <option value="Good">Good</option>
               <option value="Bad">Bad</option>
             </select>
@@ -202,6 +254,7 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
               name="balance"
               value={form.balance}
               onChange={handleChange}
+              readOnly={mode === "view"}
             />
 
             <label>Total Return:</label>
@@ -209,40 +262,72 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
               name="totalReturn"
               value={form.totalReturn}
               onChange={handleChange}
+              readOnly={mode === "view"}
             />
           </div>
         </div>
 
-
-
-
-        {/* Buttons */}
+        
         <div className="button-section2">
           {mode === "view" && (
             <>
-              <button className="btncnew" onClick={handleNew}>New</button>
-              <button className="btncexit" onClick={handleExit}>Exit</button>
+              <button className="btncnew" onClick={handleNew}>
+                New
+              </button>
+              <button className="btncexit" onClick={handleExit}>
+                Exit
+              </button>
             </>
           )}
           {mode === "new" && (
             <>
-              <button className="btncsave" onClick={handleSave}>Save</button>
-              <button className="btncclear" onClick={handleClear}>Clear</button>
-              <button className="btncexit" onClick={handleExit}>Exit</button>
+              <button className="btncsave" onClick={handleSave}>
+                Save
+              </button>
+              <button className="btncclear" onClick={handleClear}>
+                Clear
+              </button>
+              <button className="btncexit" onClick={handleExit}>
+                Exit
+              </button>
             </>
           )}
           {mode === "edit" && (
             <>
-              <button className="btncmodify" onClick={handleSave}>Modify </button>
-              <button className="btncdelete" onClick={handleDelete}>Delete</button>
-              <button className="btnexit" onClick={handleExit}>Exit</button>
-            </> 
+              <button className="btncmodify" onClick={handleSave}>
+                Modify
+              </button>
+              <button className="btncdelete" onClick={handleDelete}>
+                Delete
+              </button>
+              <button className="btncexit" onClick={handleExit}>
+                Exit
+              </button>
+            </>
           )}
         </div>
 
+       
+        <div className="search-barc">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+        </div>
 
+       
+        <div className="rows-per-pagec">
+        
+          <select value={rowsPerPage} onChange={handleRowsPerPageChange}>
+            <option value={10}>10 Rows</option>
+            <option value={20}>20 Rows</option>
+            <option value={50}>50 Rows</option>
+          </select>
+        </div>
 
-        {/* Grid */}
+       
         <table className="customer-gridc">
           <thead>
             <tr>
@@ -258,7 +343,7 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
             </tr>
           </thead>
           <tbody>
-            {customers.map((c) => (
+            {currentCustomers.map((c) => (
               <tr key={c.id} onClick={() => handleRowClick(c)}>
                 <td>{c.id}</td>
                 <td>{c.code}</td>
@@ -273,6 +358,19 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
             ))}
           </tbody>
         </table>
+
+       
+        <div className="paginationc">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              className={`page-btnc ${currentPage === page ? "activec" : ""}`}
+              onClick={() => handlePageClick(page)}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

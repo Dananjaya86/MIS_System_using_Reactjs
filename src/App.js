@@ -22,6 +22,7 @@ import Bank from './pages/Bank';
 import ReturnPage from './pages/Return';
 import Admin from './pages/Admin';
 import Reports from './pages/Reports';
+import IssueBillBook from './pages/IssueBillBook';
 
 
 function App() {
@@ -50,6 +51,8 @@ function App() {
           <Route path="/Return" element={<ProtectedRoute page="Return"><ReturnPage /></ProtectedRoute>} />
           <Route path="/Admin" element={<ProtectedRoute page="Admin"><Admin/></ProtectedRoute> }/>
           <Route path="/Reports" element={<ProtectedRoute page="Reports"><Reports/></ProtectedRoute> }/>
+          <Route path="/IssueBillBook" element={<ProtectedRoute page="IssueBillBook"><IssueBillBook/></ProtectedRoute> }/>
+          
           
 
         </Routes>

@@ -1,7 +1,7 @@
 const sql = require("mssql/msnodesqlv8");
 
 const config = {
-  server: "localhost\\SQLEXPRESS",   // instance name
+  server: "localhost\\SQLEXPRESS",   
   database: "Milkee_MIS_System",
   driver: "msnodesqlv8",
   options: {

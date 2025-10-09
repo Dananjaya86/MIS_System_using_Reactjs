@@ -1,4 +1,4 @@
-// src/componants/AppContext.js
+
 import { createContext, useState } from "react";
 
 export const AppContext = createContext();
@@ -24,6 +24,7 @@ export function AppProvider({ children }) {
       "Bank",
       "Return",
       "Reports",
+      "IssueBillBook",
       "Admin"
     ];
     const access = {};

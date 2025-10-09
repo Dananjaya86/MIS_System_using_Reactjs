@@ -1,0 +1,24 @@
+.dashboard-headercom {
+  width: 100%;
+  display: flex;
+  justify-content: right;
+ 
+  gap: 20px;
+  padding: 10px 30px;
+  box-sizing: border-box;
+  
+  font-family: Arial, sans-serif;
+  font-size: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.dashboard-usernamecom {
+  font-weight: 600;
+  color: rgb(28, 28, 177);
+}
+
+.dashboard-datecom {
+  color:rgb(28, 28, 177);
+}

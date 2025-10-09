@@ -96,3 +96,26 @@
   background: #f0f2f5;     
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
+
+.dashboard-header {
+  display: flex;
+  justify-content: flex-end; /* Push everything to the right */
+  align-items: center;
+  padding: 10px 20px;
+  font-size:20px;
+
+}
+
+.dashboard-username {
+  font-weight: bold;
+  color: rgb(28, 28, 177);
+  margin-right: 20px; /* Space before the date */
+}
+
+.dashboard-date {
+  color: rgb(28, 28, 177);
+  font-size: 20px;
+}
+
+
+

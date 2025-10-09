@@ -1,18 +1,36 @@
-import { useEffect, useRef } from "react"
-import Chart from 'chart.js/auto'
-import './dashboard.css'
-import Menu from '../componants/Menu'
+import { useEffect, useRef, useState } from "react";
+import Chart from 'chart.js/auto';
+import './dashboard.css';
+import Menu from '../componants/Menu';
 
 
 export default function Dashboard() {
-
-const salesByDateRef = useRef(null);
+  const salesByDateRef = useRef(null);
   const monthlySalesRef = useRef(null);
   const monthlyBudgetRef = useRef(null);
   const yearlyBudgetRef = useRef(null);
 
   // Store chart instances
   const chartInstances = useRef([]);
+
+  //  Username + Date states
+  const [username, setUsername] = useState("");
+  const [currentDate, setCurrentDate] = useState("");
+
+  useEffect(() => {
+    // Get username from localStorage (set after login)
+    const storedUser = localStorage.getItem("username") || "Guest";
+    setUsername(storedUser);
+
+    // Format current date
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+    setCurrentDate(formattedDate);
+  }, []);
 
   useEffect(() => {
     // Destroy any previous charts
@@ -85,24 +103,24 @@ const salesByDateRef = useRef(null);
     });
     chartInstances.current.push(yearlyBudgetChart);
 
-    // Cleanup charts on unamount
+   
     return () => {
       chartInstances.current.forEach((chart) => chart.destroy());
     };
   }, []);
 
-
-
   return (
-    <div>
-
-<div className="dashboard-container">
+    <div className="dashboard-container">
       <Menu />
 
       <div className="dashboard-content">
+       
+        <div className="dashboard-header">
+          <span className="dashboard-username">👤 {username}</span>
+          <span className="dashboard-date">📅 {currentDate}</span>
+        </div>
 
-        {/* Summary Cards */}
-        
+       
         <div className="cards">
           <div className="card">
             <h3>Total Sale</h3>
@@ -127,7 +145,6 @@ const salesByDateRef = useRef(null);
         </div>
 
         {/* Tables */}
-
         <div className="row-tables">
           <div className="table-box">
             <div className="section-title">Most Selling Products</div>
@@ -140,26 +157,10 @@ const salesByDateRef = useRef(null);
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Product A</td>
-                  <td>120</td>
-                  <td>3,600</td>
-                </tr>
-                <tr>
-                  <td>Product B</td>
-                  <td>90</td>
-                  <td>2,700</td>
-                </tr>
-                <tr>
-                  <td>Product C</td>
-                  <td>70</td>
-                  <td>2,100</td>
-                </tr>
-                <tr>
-                  <td>Product D</td>
-                  <td>50</td>
-                  <td>1,500</td>
-                </tr>
+                <tr><td>Product A</td><td>120</td><td>3,600</td></tr>
+                <tr><td>Product B</td><td>90</td><td>2,700</td></tr>
+                <tr><td>Product C</td><td>70</td><td>2,100</td></tr>
+                <tr><td>Product D</td><td>50</td><td>1,500</td></tr>
               </tbody>
             </table>
           </div>
@@ -175,33 +176,16 @@ const salesByDateRef = useRef(null);
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Customer 1</td>
-                  <td>300</td>
-                  <td>9,000</td>
-                </tr>
-                <tr>
-                  <td>Customer 2</td>
-                  <td>250</td>
-                  <td>7,500</td>
-                </tr>
-                <tr>
-                  <td>Customer 3</td>
-                  <td>180</td>
-                  <td>5,400</td>
-                </tr>
-                <tr>
-                  <td>Customer 4</td>
-                  <td>150</td>
-                  <td>4,500</td>
-                </tr>
+                <tr><td>Customer 1</td><td>300</td><td>9,000</td></tr>
+                <tr><td>Customer 2</td><td>250</td><td>7,500</td></tr>
+                <tr><td>Customer 3</td><td>180</td><td>5,400</td></tr>
+                <tr><td>Customer 4</td><td>150</td><td>4,500</td></tr>
               </tbody>
             </table>
           </div>
         </div>
 
         {/* Charts */}
-
         <div className="charts">
           <div className="chart-box">
             <h3>Sales by Date</h3>
@@ -222,9 +206,5 @@ const salesByDateRef = useRef(null);
         </div>
       </div>
     </div>
-  
-
-
-    </div>
-  )
+  );
 }

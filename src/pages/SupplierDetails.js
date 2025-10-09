@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./suplierdetails.css";
 import Menu from "../componants/Menu";
 
+
 export default function SupplierDetails() {
   const [customers, setCustomers] = useState([]);
   const [form, setForm] = useState({
@@ -111,6 +112,7 @@ export default function SupplierDetails() {
     <div className="page-layout">
       {/* Sidebar Menu */}
       <Menu />
+    
 
       {/* right side contant */}
       <div className="supplier-container">

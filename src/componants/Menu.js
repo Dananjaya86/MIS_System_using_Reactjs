@@ -1,4 +1,4 @@
-// src/componants/Menu.js
+
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './menubar.css';
@@ -24,6 +24,7 @@ export default function Menu() {
     { name: "Return", path: "/Return" },
     { name: "Reports", path: "/Reports" },
     { name: "Admin", path: "/Admin" },
+    { name: "Issue Bill Book",path:"/IssueBillBook"},
     { name: "Logout", path: "/" }
   ];
 

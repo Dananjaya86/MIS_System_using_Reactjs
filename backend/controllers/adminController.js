@@ -1,6 +1,7 @@
 const { poolPromise, sql } = require("../db");
+const bcrypt = require("bcryptjs");
 
-// mapping between DB column names and frontend permission labels
+// Map DB permission column with frontend labels
 const PERMISSION_MAP = [
   { col: "customer_details", label: "Customer Details" },
   { col: "supplier_details", label: "Supplier Details" },
@@ -19,181 +20,259 @@ const PERMISSION_MAP = [
   { col: "report", label: "Reports" }
 ];
 
-function rowToFrontend(row) {
-  // Build permissions object expected by frontend
-  const permissions = {};
-  PERMISSION_MAP.forEach(p => {
-    permissions[p.label] = !!row[p.col];
-  });
 
-  // keep other fields
+function mapRowToFrontend(row) {
+  const permissions = {};
+  PERMISSION_MAP.forEach(p => { permissions[p.label] = !!row[p.col]; });
+
   return {
-    id: row.id !== undefined ? row.id : row.employeeNo, // use id if exists otherwise employeeNo for keying
     employeeNo: row.employeeNo,
     idNo: row.idNo,
     firstName: row.firstName,
     lastName: row.lastName,
     callingName: row.callingName,
     address: row.address,
+    phoneNumber: row.phoneNumber,
+    gender: row.gender,
+    birthday: row.birthday,
     position: row.position,
+    active: row.active,
+    username: row.username || "",
+    login_user: row.login_user || "",
+    date: row.date || null,
     permissions
   };
 }
 
-// Add a new admin
-exports.addAdmin = async (req, res) => {
+// GET 
+exports.getAllAdmins = async (req, res) => {
   try {
-    const {
-      employeeNo, idNo, firstName, lastName, callingName, address, position, permissions = {}
-    } = req.body;
-
-    // require employeeNo numeric
-    const empNo = parseInt(employeeNo, 10);
-    if (Number.isNaN(empNo)) {
-      return res.status(400).json({ error: "employeeNo must be a number" });
-    }
-
     const pool = await poolPromise;
-
-    const request = pool.request()
-      .input("employeeNo", sql.Int, empNo)
-      .input("idNo", sql.VarChar(100), idNo || "")
-      .input("firstName", sql.VarChar(100), firstName || "")
-      .input("lastName", sql.VarChar(100), lastName || "")
-      .input("callingName", sql.VarChar(100), callingName || "")
-      .input("address", sql.VarChar(500), address || "")
-      .input("position", sql.VarChar(100), position || "");
-
-    // add permission inputs
-    PERMISSION_MAP.forEach(p => {
-      const val = permissions[p.label] ? 1 : 0;
-      request.input(p.col, sql.Bit, val);
-    });
-
-    await request.query(`
-      INSERT INTO Admin_Panel
-      (employeeNo, idNo, firstName, lastName, callingName, address, position,
-        ${PERMISSION_MAP.map(p => p.col).join(", ")})
-      VALUES
-      (@employeeNo, @idNo, @firstName, @lastName, @callingName, @address, @position,
-        ${PERMISSION_MAP.map(p => "@" + p.col).join(", ")})
+    const result = await pool.request().query(`
+      SELECT a.*, l.username
+      FROM Admin_Panel a
+      LEFT JOIN dbo.login_details l
+        ON a.employeeNo = l.employeeNo AND l.active = 'Yes'
+      WHERE a.active = 'Yes'
+      ORDER BY a.date DESC, a.employeeNo
     `);
-
-    res.json({ message: "✅ Admin added successfully" });
+    const admins = result.recordset.map(mapRowToFrontend);
+    res.json(admins);
   } catch (err) {
-    console.error(err);
-    res.status(500).send(err.message || "Server error");
+    console.error("Error fetching admins:", err);
+    res.status(500).json({ error: "Error fetching admins" });
   }
 };
 
-// Get all admins
-exports.getAdmins = async (req, res) => {
+// GET genarateemployee no
+exports.generateEmployeeNo = async (req, res) => {
   try {
+    const { lastName } = req.params;
+    if (!lastName) return res.status(400).json({ error: "Last name required" });
+
     const pool = await poolPromise;
-    const result = await pool.request().query("SELECT * FROM Admin_Panel ORDER BY employeeNo");
-    const mapped = result.recordset.map(rowToFrontend);
-    res.json(mapped);
+    const countRes = await pool.request().query("SELECT COUNT(*) AS count FROM Admin_Panel");
+    const count = countRes.recordset[0].count || 0;
+    const employeeNo = lastName.charAt(0).toUpperCase() + String(count + 1).padStart(4, "0");
+    res.json({ employeeNo });
   } catch (err) {
-    console.error(err);
-    res.status(500).send(err.message || "Server error");
+    console.error("Error generating employeeNo:", err);
+    res.status(500).json({ error: "Error generating EmployeeNo" });
   }
 };
 
-// Get admin by employeeNo
+
 exports.getAdminById = async (req, res) => {
   try {
     const { employeeNo } = req.params;
-    const empNo = parseInt(employeeNo, 10);
-    if (Number.isNaN(empNo)) {
-      return res.status(400).json({ error: "employeeNo must be a number" });
-    }
+    if (!employeeNo) return res.status(400).json({ error: "employeeNo required" });
 
     const pool = await poolPromise;
     const result = await pool.request()
-      .input("employeeNo", sql.Int, empNo)
-      .query("SELECT * FROM Admin_Panel WHERE employeeNo = @employeeNo");
+      .input("employeeNo", sql.VarChar(50), employeeNo)
+      .query(`
+        SELECT a.*, l.username
+        FROM Admin_Panel a
+        LEFT JOIN dbo.login_details l
+          ON a.employeeNo = l.employeeNo AND l.active='Yes'
+        WHERE a.employeeNo = @employeeNo AND a.active='Yes'
+      `);
 
-    if (!result.recordset || result.recordset.length === 0) {
-      return res.json(null);
-    }
-
-    res.json(rowToFrontend(result.recordset[0]));
+    if (!result.recordset.length) return res.status(404).json({ error: "Admin not found" });
+    res.json(mapRowToFrontend(result.recordset[0]));
   } catch (err) {
-    console.error(err);
-    res.status(500).send(err.message || "Server error");
+    console.error("Error fetching admin by id:", err);
+    res.status(500).json({ error: "Error fetching admin" });
   }
 };
 
-// Update admin (including permissions)
-exports.updateAdmin = async (req, res) => {
+// POST 
+exports.addAdmin = async (req, res) => {
   try {
     const {
-      employeeNo, idNo, firstName, lastName, callingName, address, position, permissions = {}
+      lastName, firstName, idNo, callingName, address,
+      phoneNumber, gender, birthday, position,
+      username, password, permissions = {}
     } = req.body;
 
-    const empNo = parseInt(employeeNo, 10);
-    if (Number.isNaN(empNo)) {
-      return res.status(400).json({ error: "employeeNo must be a number" });
-    }
+    if (!lastName || !username || !password)
+      return res.status(400).json({ error: "Missing required fields" });
 
     const pool = await poolPromise;
-    const request = pool.request()
-      .input("employeeNo", sql.Int, empNo)
+
+    // Generate employeeNo
+    const countRes = await pool.request().query("SELECT COUNT(*) AS count FROM Admin_Panel");
+    const employeeNo = lastName.charAt(0).toUpperCase() + String(countRes.recordset[0].count + 1).padStart(4, "0");
+
+    // Hash password 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Insert into Admin_Panel
+    const reqAdmin = pool.request()
+      .input("employeeNo", sql.VarChar(50), employeeNo)
       .input("idNo", sql.VarChar(100), idNo || "")
       .input("firstName", sql.VarChar(100), firstName || "")
-      .input("lastName", sql.VarChar(100), lastName || "")
+      .input("lastName", sql.VarChar(100), lastName)
       .input("callingName", sql.VarChar(100), callingName || "")
       .input("address", sql.VarChar(500), address || "")
-      .input("position", sql.VarChar(100), position || "");
+      .input("phoneNumber", sql.VarChar(50), phoneNumber || "")
+      .input("gender", sql.VarChar(7), gender || "")
+      .input("birthday", sql.Date, birthday || null)
+      .input("position", sql.VarChar(100), position || "")
+      .input("login_user", sql.VarChar(100), req.user?.username || "")
+      .input("date", sql.DateTime, new Date())
+      .input("active", sql.VarChar(3), "Yes");
 
-    PERMISSION_MAP.forEach(p => {
-      const val = permissions[p.label] ? 1 : 0;
-      request.input(p.col, sql.Bit, val);
-    });
+    PERMISSION_MAP.forEach(p => reqAdmin.input(p.col, sql.Bit, permissions[p.label] ? 1 : 0));
 
-    // Build SET clause for permissions + base fields
-    const setFields = [
-      "idNo = @idNo",
-      "firstName = @firstName",
-      "lastName = @lastName",
-      "callingName = @callingName",
-      "address = @address",
-      "position = @position",
-      ...PERMISSION_MAP.map(p => `${p.col} = @${p.col}`)
-    ];
+    const permCols = PERMISSION_MAP.map(p => p.col).join(", ");
+    const permParams = PERMISSION_MAP.map(p => "@" + p.col).join(",");
 
-    const sqlQuery = `
-      UPDATE [Admin_Panel]
-      SET ${setFields.join(", ")}
-      WHERE employeeNo = @employeeNo
+    const insertSql = `
+      INSERT INTO Admin_Panel (
+        employeeNo, idNo, firstName, lastName, callingName, address,
+        phoneNumber, gender, birthday, position, login_user, date, active, ${permCols}
+      ) VALUES (
+        @employeeNo, @idNo, @firstName, @lastName, @callingName, @address,
+        @phoneNumber, @gender, @birthday, @position, @login_user, @date, @active, ${permParams}
+      )
     `;
+    await reqAdmin.query(insertSql);
 
-    await request.query(sqlQuery);
+    // Insert into login_details
+    await pool.request()
+      .input("employeeNo", sql.VarChar(50), employeeNo)
+      .input("username", sql.VarChar(100), username)
+      .input("password", sql.VarChar(255), hashedPassword)
+      .input("active", sql.VarChar(3), "Yes")
+      .query(`INSERT INTO dbo.login_details (employeeNo, username, password, active) VALUES (@employeeNo, @username, @password, @active)`);
 
-    res.json({ message: "✅ Admin updated successfully" });
+    res.json({ success: true, employeeNo });
+
   } catch (err) {
-    console.error(err);
-    res.status(500).send(err.message || "Server error");
+    console.error("Error adding admin:", err);
+    res.status(500).json({ error: "Error adding admin" });
   }
 };
 
-// Delete admin
+// PUT 
+exports.updateAdmin = async (req, res) => {
+  try {
+    const { employeeNo } = req.params;
+    if (!employeeNo) return res.status(400).json({ error: "employeeNo required" });
+
+    const {
+      idNo, firstName, lastName, callingName, address,
+      phoneNumber, gender, birthday, position,
+      username, password, permissions = {}
+    } = req.body;
+
+    const pool = await poolPromise;
+    const reqAdmin = pool.request()
+      .input("employeeNo", sql.VarChar(50), employeeNo)
+      .input("idNo", sql.VarChar(100), idNo || "")
+      .input("firstName", sql.VarChar(100), firstName || "")
+      .input("lastName", sql.VarChar(100), lastName)
+      .input("callingName", sql.VarChar(100), callingName || "")
+      .input("address", sql.VarChar(500), address || "")
+      .input("phoneNumber", sql.VarChar(50), phoneNumber || "")
+      .input("gender", sql.VarChar(7), gender || "")
+      .input("birthday", sql.Date, birthday || null)
+      .input("position", sql.VarChar(100), position || "")
+      .input("login_user", sql.VarChar(100), req.user?.username || "")
+      .input("date", sql.DateTime, new Date());
+
+    PERMISSION_MAP.forEach(p => reqAdmin.input(p.col, sql.Bit, permissions[p.label] ? 1 : 0));
+    const setPerms = PERMISSION_MAP.map(p => `${p.col}=@${p.col}`).join(", ");
+
+    const updateSql = `
+      UPDATE Admin_Panel SET
+        idNo=@idNo,
+        firstName=@firstName,
+        lastName=@lastName,
+        callingName=@callingName,
+        address=@address,
+        phoneNumber=@phoneNumber,
+        gender=@gender,
+        birthday=@birthday,
+        position=@position,
+        ${setPerms},
+        login_user=@login_user,
+        date=@date
+      WHERE employeeNo=@employeeNo AND active='Yes'
+    `;
+    const result = await reqAdmin.query(updateSql);
+    if (result.rowsAffected[0] === 0) return res.status(404).json({ error: "Admin not found or inactive" });
+
+    // Update login_details
+    if (username || password) {
+      const loginReq = pool.request().input("employeeNo", sql.VarChar(50), employeeNo);
+      if (username) loginReq.input("username", sql.VarChar(100), username);
+      if (password) loginReq.input("password", sql.VarChar(255), await bcrypt.hash(password, 10));
+
+      const setLoginFields = [];
+      if (username) setLoginFields.push("username=@username");
+      if (password) setLoginFields.push("password=@password");
+      setLoginFields.push("active='Yes'");
+
+      await loginReq.query(`
+        IF EXISTS (SELECT 1 FROM dbo.login_details WHERE employeeNo=@employeeNo AND active='Yes')
+          UPDATE dbo.login_details SET ${setLoginFields.join(", ")} WHERE employeeNo=@employeeNo
+        ELSE
+          INSERT INTO dbo.login_details (employeeNo, username, password, active)
+          VALUES (@employeeNo, ${username ? "@username" : "NULL"}, ${password ? "@password" : "NULL"}, 'Yes')
+      `);
+    }
+
+    res.json({ success: true, message: "Admin updated successfully" });
+
+  } catch (err) {
+    console.error("Error updating admin:", err);
+    res.status(500).json({ error: "Error updating admin" });
+  }
+};
+
+// DELETE 
 exports.deleteAdmin = async (req, res) => {
   try {
     const { employeeNo } = req.params;
-    const empNo = parseInt(employeeNo, 10);
-    if (Number.isNaN(empNo)) {
-      return res.status(400).json({ error: "employeeNo must be a number" });
-    }
+    if (!employeeNo) return res.status(400).json({ error: "employeeNo required" });
 
     const pool = await poolPromise;
     await pool.request()
-      .input("employeeNo", sql.Int, empNo)
-      .query("DELETE FROM [Admin_Panel] WHERE employeeNo = @employeeNo");
+      .input("employeeNo", sql.VarChar(50), employeeNo)
+      .input("login_user", sql.VarChar(100), req.user?.username || "")
+      .input("date", sql.DateTime, new Date())
+      .query(`UPDATE Admin_Panel SET active='No', login_user=@login_user, date=@date WHERE employeeNo=@employeeNo AND active='Yes'`);
 
-    res.json({ message: "✅ Admin deleted successfully" });
+    await pool.request()
+      .input("employeeNo", sql.VarChar(50), employeeNo)
+      .query(`UPDATE dbo.login_details SET active='No' WHERE employeeNo=@employeeNo AND active='Yes'`);
+
+    res.json({ success: true, message: "Admin deleted (soft) successfully" });
+
   } catch (err) {
-    console.error(err);
-    res.status(500).send(err.message || "Server error");
+    console.error("Error deleting admin:", err);
+    res.status(500).json({ error: "Error deleting admin" });
   }
 };

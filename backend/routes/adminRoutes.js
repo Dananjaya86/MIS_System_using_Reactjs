@@ -1,11 +1,28 @@
 const express = require("express");
 const router = express.Router();
 const adminController = require("../controllers/adminController");
+const verifyToken = require("../authMiddleware");
 
-router.post("/", adminController.addAdmin);                       // Add new admin
-router.get("/", adminController.getAdmins);                       // Get all admins
-router.get("/:employeeNo", adminController.getAdminById);         // Get admin by employeeNo
-router.put("/", adminController.updateAdmin);                    // Update admin (body contains employeeNo)
-router.delete("/:employeeNo", adminController.deleteAdmin);      // Delete admin
+
+
+
+//  Get all admins
+router.get("/", verifyToken, adminController.getAllAdmins);
+
+// Generate new employee number 
+router.get("/generate/:lastName", verifyToken, adminController.generateEmployeeNo);
+
+// Get admin by employee number
+router.get("/:employeeNo", verifyToken, adminController.getAdminById);
+
+//  Add new admin
+router.post("/add", verifyToken, adminController.addAdmin);
+
+// Update admin with employee number 
+router.put("/update/:employeeNo", verifyToken, adminController.updateAdmin);
+
+//  delete admin with employee number 
+router.put("/delete/:employeeNo", verifyToken, adminController.deleteAdmin);
 
 module.exports = router;
+

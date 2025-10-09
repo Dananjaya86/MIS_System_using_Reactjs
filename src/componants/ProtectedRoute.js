@@ -1,4 +1,4 @@
-// src/componants/ProtectedRoute.js
+
 import { useContext } from "react";
 import { AppContext } from "./AppContext";
 import { Navigate } from "react-router-dom";
