@@ -1,5 +1,5 @@
-/* Container for main content */
-.customer-containercs {
+/* ================= Container ================= */
+.customer-containercus {
   flex: 1;
   padding: 20px;
   background: #f9f9f9;
@@ -7,36 +7,53 @@
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-/* Page title */
-.customerhe {
+/* ================= Title ================= */
+.customerhecus {
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   color: rgb(28, 28, 177);
   display: flex;
-  justify-content: center; /* when i want to centers horizontally can use this (from google) */
+  justify-content: center;
   align-items: center;
   gap: 10px;
   font-size: 30px;
-  margin: 20px 0; 
+  margin: 20px 0;
 }
 
-
-.title-icon {
+.title-iconcus {
   width: 30px;
   vertical-align: middle;
 }
 
-
-.form-section {
+/* ================= User Info ================= */
+.user-infocus {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap; 
-  margin-bottom: 20px;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px 20px;
+  font-size: 20px;
 }
 
+.usernamecus {
+  font-weight: bold;
+  color: #2c3e50;
+  margin-right: 15px;
+}
 
-.form-leftc,
-.form-rightc {
+.datecus {
+  color: #555;
+  font-size: 20px;
+}
+
+/* ================= Form ================= */
+.form-sectioncus {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.form-leftcus,
+.form-rightcus {
   flex: 1;
   min-width: 250px;
   display: flex;
@@ -48,14 +65,12 @@
   box-shadow: 0px 2px 6px rgba(173, 111, 111, 0.1);
 }
 
-
-.form-leftc label,
-.form-rightc label {
+.form-leftcus label,
+.form-rightcus label {
   font-weight: bold;
   font-size: 16px;
   color: #03069b;
 }
-
 
 input, select {
   padding: 6px 10px;
@@ -74,12 +89,12 @@ input.has-text {
   border-color: #007bff;
 }
 
-
-.button-section2 {
+/* ================= Buttons ================= */
+.button-sectioncus {
   margin-bottom: 10px;
 }
 
-.button-section2 button {
+.button-sectioncus button {
   margin-right: 10px;
   padding: 12px 25px;
   border: none;
@@ -90,32 +105,31 @@ input.has-text {
   transition: all 0.3s ease;
 }
 
+.btncnewcus { background: rgb(66, 126, 216); }
+.btncnewcus:hover { background: rgb(48, 68, 158); }
 
-.btncnew { background: rgb(66, 126, 216); }
-.btncnew:hover { background: rgb(48, 68, 158); }
+.btncexitcus { background: rgb(224, 55, 55); }
+.btncexitcus:hover { background: rgb(158, 41, 41); }
 
-.btncexit { background: rgb(224, 55, 55); }
-.btncexit:hover { background: rgb(158, 41, 41); }
+.btncsavecus { background: rgb(33, 156, 33); }
+.btncsavecus:hover { background: rgb(52, 121, 49); }
 
-.btncsave { background: rgb(33, 156, 33); }
-.btncsave:hover { background: rgb(52, 121, 49); }
+.btncclearcus { background: rgb(150, 149, 148); }
+.btncclearcus:hover { background: rgb(109, 109, 108); }
 
-.btncclear { background: rgb(150, 149, 148); }
-.btncclear:hover { background: rgb(109, 109, 108); }
+.btncmodifycus { background: rgb(25, 25, 206); }
+.btncmodifycus:hover { background: rgb(11, 11, 156); }
 
-.btncmodify { background: rgb(25, 25, 206); }
-.btncmodify:hover { background: rgb(11, 11, 156); }
+.btncdeletecus { background: rgb(238, 76, 76); }
+.btncdeletecus:hover { background: rgb(153, 35, 35); }
 
-.btncdelete { background: rgb(238, 76, 76); }
-.btncdelete:hover { background: rgb(153, 35, 35); }
-
-
-.customer-gridc {
+/* ================= Table ================= */
+.customer-gridcus {
   width: 100%;
   border-collapse: collapse;
 }
 
-.customer-gridc th {
+.customer-gridcus th {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: left;
@@ -124,69 +138,41 @@ input.has-text {
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-.customer-gridc td {
+.customer-gridcus td {
   border: 1px solid #aaaaaa;
   padding: 8px;
   text-align: left;
 }
 
-.customer-gridc tr:hover {
+.customer-gridcus tr:hover {
   background: #f1f1f1;
   cursor: pointer;
 }
 
-
-.page-layoutc {
-  display: flex;
-  min-height: 100vh;
-}
-
-
-.user-infoc {
-  display: flex;
-  justify-content: flex-end; 
-  align-items: center;
-  padding: 10px 20px;
-  font-size:20px;
-}
-
-.usernamec {
-    font-weight: bold;
-  color: #2c3e50;
-  margin-right: 15px;
-}
-
-.datec {
-   color: #555;
-  font-size: 20px;
-}
-
-
-.search-barc {
+/* ================= Search & Rows ================= */
+.search-barcus {
   margin: 10px 0;
   text-align: left;
 }
 
-.search-barc input {
+.search-barcus input {
   width: 300px;
   padding: 5px 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-
-
-.rows-per-pagec {
+.rows-per-pagecus {
   margin-bottom: 10px;
   text-align: left;
 }
 
-
-.paginationc {
+/* ================= Pagination ================= */
+.paginationcus {
   margin-top: 5px;
 }
 
-.paginationc .page-btnc {
+.paginationcus .page-btncus {
   padding: 5px 10px;
   margin: 0 3px;
   border: 1px solid #ccc;
@@ -195,31 +181,38 @@ input.has-text {
   cursor: pointer;
 }
 
-.paginationc .page-btnc.activec {
+.paginationcus .page-btncus.activecus {
   background: #007bff;
   color: white;
   border-color: #007bff;
 }
 
-
-
-
-
+/* ================= Layout ================= */
+.page-layoutcus {
+  display: flex;
+  min-height: 100vh;
+}
 
 /* Sidebar */
-.page-layoutc > .menu {
+.page-layoutcus > .menu {
   width: 220px;
   background: #2c3e50;
   color: white;
   flex-shrink: 0;
 }
 
-/* Responsive adjustments */
+/* ================= Responsive ================= */
 @media (max-width: 768px) {
-  .form-section {
+  .form-sectioncus {
     flex-direction: column;
   }
-  .form-leftc, .form-rightc {
+  .form-leftcus, .form-rightcus {
     width: 100%;
   }
 }
+
+.input-errorcus {
+  border: 2px solid red;
+  background-color: #ffe6e6;
+}
+

@@ -1,15 +1,18 @@
 .main-layout {
   display: flex;
-  height: 100vh;
+ 
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   color: rgb(28, 28, 177);
   font-size: 20px;
+   min-height: 100vh;
 }
 
 .menu-section {
   width: 247px;
   background: #f8f8f8;
   color: white;
+   
+  
 }
 
 .content-section {

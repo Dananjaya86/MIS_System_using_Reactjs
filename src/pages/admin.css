@@ -227,19 +227,19 @@
 .page-btnad {
   padding: 6px 12px;
   border: 1px solid #ccc;
-  background: #f8f8f8;
+  background: #5fbff7;
   border-radius: 6px;
   cursor: pointer;
 }
 
 .page-btnad:hover {
-  background: #e0e0e0;
+  background: #28a0e6;
 }
 
 .page-btnad.activead {
-  background: #4a90e2;
+  background: #3a45dd;
   color: white;
-  border-color: #4a90e2;
+  border-color: #3a45dd;
 }
 
 

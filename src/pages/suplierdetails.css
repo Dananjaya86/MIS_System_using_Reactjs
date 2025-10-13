@@ -1,5 +1,6 @@
 .supplier-container {
   padding: 20px;
+   min-height: 1000px;
 }
 
 .title-icon {
@@ -24,6 +25,7 @@
   border-radius: 10px;
   box-shadow: 0px 2px 6px rgba(173, 111, 111, 0.1);
   width: 47%;
+  
 }
 
 .form-leftsu label, .form-rightsu label {
@@ -124,7 +126,7 @@ border: 1px solid #ccc;
 
 .page-layout {
   display: flex;
-  height: 100vh;
+   min-height: 100vh;
 }
 
 
@@ -133,6 +135,7 @@ border: 1px solid #ccc;
   background: #2c3e50;
   color: white;
   flex-shrink: 0;
+  
 }
 
 
@@ -141,6 +144,7 @@ border: 1px solid #ccc;
   padding: 20px;
   background: #f9f9f9;
   overflow-y: auto;
+  
 }
 
 .supplier-container h2{
