@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./suplierdetails.css";
 import Menu from "../componants/Menu";
-
+import Namewithdate from "../componants/Namewithdateacc";
 
 export default function SupplierDetails() {
   const [customers, setCustomers] = useState([]);
@@ -13,24 +13,44 @@ export default function SupplierDetails() {
     contactPerson: "",
     advance: "",
     date: "",
-    route: "",
     credit: "",
     status: "Good",
     balance: "",
     totalReturn: ""
   });
   const [selectedId, setSelectedId] = useState(null);
-
-  // view , new , edit
   const [mode, setMode] = useState("view"); 
 
-  //changes
+  // --- User info ---
+  
+
+
+
+
+  // --- Search & Pagination ---
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 5;
+
+  const filteredCustomers = customers.filter(
+    (c) =>
+      c.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.address.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const indexOfLast = currentPage * rowsPerPage;
+  const indexOfFirst = indexOfLast - rowsPerPage;
+  const currentCustomers = filteredCustomers.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredCustomers.length / rowsPerPage);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // --- Form Handlers ---
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // New button
   const handleNew = () => {
     setForm({
       code: "",
@@ -40,7 +60,6 @@ export default function SupplierDetails() {
       contactPerson: "",
       advance: "",
       date: "",
-      route: "",
       credit: "",
       status: "Good",
       balance: "",
@@ -50,7 +69,6 @@ export default function SupplierDetails() {
     setMode("new");
   };
 
-  // Save button
   const handleSave = () => {
     if (selectedId) {
       setCustomers((prev) =>
@@ -66,7 +84,6 @@ export default function SupplierDetails() {
     setMode("view");
   };
 
-  // Clear button
   const handleClear = () => {
     setForm({
       code: "",
@@ -76,7 +93,6 @@ export default function SupplierDetails() {
       contactPerson: "",
       advance: "",
       date: "",
-      route: "",
       credit: "",
       status: "Good",
       balance: "",
@@ -85,13 +101,11 @@ export default function SupplierDetails() {
     setSelectedId(null);
   };
 
-  // Exit button
   const handleExit = () => {
     setMode("view");
     setSelectedId(null);
   };
 
-  // Delete button
   const handleDelete = () => {
     if (selectedId) {
       setCustomers((prev) => prev.filter((c) => c.id !== selectedId));
@@ -101,7 +115,6 @@ export default function SupplierDetails() {
     }
   };
 
-  // Select row
   const handleRowClick = (customer) => {
     setForm(customer);
     setSelectedId(customer.id);
@@ -110,12 +123,16 @@ export default function SupplierDetails() {
 
   return (
     <div className="page-layout">
-      {/* Sidebar Menu */}
       <Menu />
-    
+      
 
-      {/* right side contant */}
       <div className="supplier-container">
+
+<Namewithdate />
+
+
+
+        {/* Page Title */}
         <h2>
           Supplier Details{" "}
           <img
@@ -141,54 +158,32 @@ export default function SupplierDetails() {
             <input name="phone" value={form.phone} onChange={handleChange} />
 
             <label>Contact Person:</label>
-            <input
-              name="contactPerson"
-              value={form.contactPerson}
-              onChange={handleChange}
-            />
+            <input name="contactPerson" value={form.contactPerson} onChange={handleChange} />
 
             <label>Advance Payment:</label>
-            <input
-              name="advance"
-              value={form.advance}
-              onChange={handleChange}
-            />
+            <input name="advance" value={form.advance} onChange={handleChange} />
           </div>
 
           <div className="form-rightsu">
             <label>Date:</label>
-            <input
-              type="date"
-              name="date"
-              value={form.date}
-              onChange={handleChange}
-            />
+            <input type="date" name="date" value={form.date} onChange={handleChange} />
 
-            <label>Route:</label>
-            <input name="route" value={form.route} onChange={handleChange} />
+
 
             <label>Credit Amount:</label>
             <input name="credit" value={form.credit} onChange={handleChange} />
 
-            <label >Status:</label>
+            <label>Status:</label>
             <select name="status" value={form.status} onChange={handleChange}>
               <option value="Good">Good</option>
               <option value="Bad">Bad</option>
             </select>
 
             <label>Balance Payment:</label>
-            <input
-              name="balance"
-              value={form.balance}
-              onChange={handleChange}
-            />
+            <input name="balance" value={form.balance} onChange={handleChange} />
 
             <label>Total Return:</label>
-            <input
-              name="totalReturn"
-              value={form.totalReturn}
-              onChange={handleChange}
-            />
+            <input name="totalReturn" value={form.totalReturn} onChange={handleChange} />
           </div>
         </div>
 
@@ -216,6 +211,19 @@ export default function SupplierDetails() {
           )}
         </div>
 
+        {/* Search */}
+        <div className="search-section-supdet">
+          <input
+            type="text"
+            placeholder="Search "
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+          />
+        </div>
+
         {/* Gridview */}
         <table className="supplier-grid">
           <thead>
@@ -232,7 +240,7 @@ export default function SupplierDetails() {
             </tr>
           </thead>
           <tbody>
-            {customers.map((c) => (
+            {currentCustomers.map((c) => (
               <tr key={c.id} onClick={() => handleRowClick(c)}>
                 <td>{c.id}</td>
                 <td>{c.code}</td>
@@ -247,6 +255,19 @@ export default function SupplierDetails() {
             ))}
           </tbody>
         </table>
+
+        {/* Pagination */}
+        <div className="pagination-supdet">
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              className={currentPage === i + 1 ? "active-page-supdet" : ""}
+              onClick={() => paginate(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

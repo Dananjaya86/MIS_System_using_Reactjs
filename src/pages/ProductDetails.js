@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Menu from "../componants/Menu";
 import "./productdetails.css";
+import Namewithdateacc from "../componants/Namewithdateacc";
 
 export default function ProductDetails() {
   const [products, setProducts] = useState([]);
@@ -99,6 +100,8 @@ export default function ProductDetails() {
       <Menu />
 
       <div className="right-contentpr">
+        <Namewithdateacc/>
+        
         <h2>Product Details</h2>
 
         <div className="form-sectionpr">

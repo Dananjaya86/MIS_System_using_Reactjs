@@ -1,0 +1,149 @@
+/* === Alert Overlay === */
+.alert-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 9999;
+}
+
+/* === Main Container === */
+.alert-container {
+  position: relative;
+  max-width: 28rem;
+  width: 100%;
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: scale-in 0.3s ease-out;
+  overflow: hidden;
+}
+
+/* === Gradient Layer === */
+.alert-gradient {
+  position: absolute;
+  inset: 0;
+  opacity: 0.75;
+  border-radius: 1rem;
+}
+
+/* === Inner Content === */
+.alert-content {
+  position: relative;
+  background-color: white;
+  margin: 0.25rem;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* === Icons === */
+.alert-icon-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.alert-icon-container {
+  position: relative;
+}
+.alert-icon-ping {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  opacity: 0.3;
+}
+.alert-icon-bg {
+  position: relative;
+  border-radius: 50%;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.alert-icon {
+  color: white;
+}
+
+/* === Text === */
+.alert-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+}
+.alert-message {
+  font-size: 1.125rem;
+  color: #4b5563;
+  margin: 0 0 1rem 0;
+}
+.alert-detail {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* === Animations === */
+@keyframes scale-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+@keyframes progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* === Gradient Themes === */
+.alert-success .alert-gradient {
+  background: linear-gradient(to right, #4ade80, #10b981, #14b8a6);
+}
+.alert-warning .alert-gradient {
+  background: linear-gradient(to right, #facc15, #fb923c, #ef4444);
+}
+.alert-error .alert-gradient {
+  background: linear-gradient(to right, #ef4444, #dc2626, #b91c1c);
+}
+.alert-success .alert-icon-bg {
+  background: linear-gradient(to bottom right, #4ade80, #10b981);
+}
+.alert-warning .alert-icon-bg {
+  background: linear-gradient(to bottom right, #facc15, #f97316);
+}
+.alert-error .alert-icon-bg {
+  background: linear-gradient(to bottom right, #ef4444, #dc2626);
+}
+
+/* === Progress bar === */
+.progress-container {
+  margin-top: 1.5rem;
+  width: 100%;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  height: 0.5rem;
+  overflow: hidden;
+}
+.progress-bar {
+  background: linear-gradient(to right, #4ade80, #10b981);
+  height: 0.5rem;
+  border-radius: 9999px;
+  animation: progress 3s ease-out;
+}

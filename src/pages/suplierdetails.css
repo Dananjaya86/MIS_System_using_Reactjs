@@ -153,3 +153,57 @@ border: 1px solid #ccc;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     color: rgb(28, 28, 177);
 }
+
+.search-section-supdet {
+  margin-bottom: 15px;
+}
+
+.search-section-supdet input {
+  width: 15%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.pagination-supdet {
+  margin-top: 15px;
+}
+
+.pagination-supdet button {
+  margin-right: 5px;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background: #eee;
+  cursor: pointer;
+}
+
+.pagination-supdet button.active-page-supdet {
+  background: #4287f5;
+  color: white;
+  border-color: #4287f5;
+}
+
+
+.supplier-containersup {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.user-infosup {
+ 
+  padding: 5px 15px;
+  border-radius: 10px;
+  display: flex;
+  gap: 15px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 16px;
+}
+
+.usernamesup, .datesup {
+  font-weight: bold;
+  color: #3333cc;
+}
+

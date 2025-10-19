@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 // Routes
 app.use("/api/login", loginRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/customers", customerRoutes);  
+app.use("/api/customers", customerRoutes); 
 
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
 
