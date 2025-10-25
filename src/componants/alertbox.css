@@ -1,0 +1,162 @@
+/* Overlay */
+.alert-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Alert box */
+.alert-box {
+  position: relative;
+  width: 500px;
+height: 200px;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: popUp 0.3s ease-out;
+}
+
+/* Title and message */
+.alert-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.alert-header h3 {
+  font-size: 25px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.alert-message {
+  font-size: 20px;
+  color: #374151;
+  margin-bottom: 16px;
+}
+
+/* Buttons */
+.alert-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.alert-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 18px;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.alert-btn.ok {
+  background-color: #2563eb;
+  color: white;
+}
+
+.alert-btn.ok:hover {
+  background-color: #1d4ed8;
+}
+
+.alert-btn.yes {
+  background-color: #16a34a;
+  color: white;
+}
+
+.alert-btn.yes:hover {
+  background-color: #15803d;
+}
+
+.alert-btn.no {
+  background-color: #9ca3af;
+  color: white;
+}
+
+.alert-btn.no:hover {
+  background-color: #6b7280;
+}
+
+/* Close button */
+.alert-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.alert-close:hover {
+  color: #111827;
+}
+
+/* Icons */
+.alert-icon {
+  width: 50px;
+  height: 50px;
+}
+
+.warning-icon {
+  color: #d97706;
+}
+
+.info-icon {
+  color: #2563eb;
+}
+
+.question-icon {
+  color: #7e22ce;
+}
+
+.success-icon {
+  color: #16a34a;
+}
+
+.error-icon {
+  color: #dc2626;
+}
+
+/* Type-specific backgrounds */
+.alert-box.warning {
+  background-color: #fef3c7;
+}
+
+.alert-box.info {
+  background-color: #dbeafe;
+}
+
+.alert-box.question {
+  background-color: #e9d5ff;
+}
+
+.alert-box.success {
+  background-color: #d1fae5;
+}
+
+.alert-box.error {
+  background-color: #fee2e2;
+}
+
+/* Animation */
+@keyframes popUp {
+  from {
+    transform: scale(0.8) translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}

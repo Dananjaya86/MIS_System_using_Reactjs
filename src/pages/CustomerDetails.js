@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Menu from "../componants/Menu";
 import "./customerdetails.css";
+import  Namewithdateacc from "../componants/Namewithdateacc";
+
 
 const apiBase = "http://localhost:5000/api/customers";
 
@@ -58,7 +60,7 @@ export default function CustomerDetails() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          code: "CD", // Code for Customer Details page
+          code: "CUSD", // Code for Customer Details page
           active: "yes",
           action: "visit",
           login_user: loginUser || "Unknown",
@@ -304,9 +306,9 @@ export default function CustomerDetails() {
     <div className="page-layoutcus">
       <Menu />
       <div className="customer-containercus">
+        
         <div className="user-infocus">
-          <span className="usernamecus">👤 {username}</span>
-          <span className="datecus">📅 {currentDate}</span>
+           <Namewithdateacc/>
         </div>
 
         <h2 className="customerhecus">
