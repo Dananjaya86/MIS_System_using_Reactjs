@@ -33,7 +33,7 @@ export default function SupplierDetails() {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  // AlertBox state
+  
   const [alert, setAlert] = useState({
     show: false,
     type: "info",
@@ -42,11 +42,11 @@ export default function SupplierDetails() {
     onConfirm: null,
   });
 
-  // === ALERT HELPERS ===
+ 
   const showAlert = (config) => setAlert({ show: true, ...config });
   const closeAlert = () => setAlert((prev) => ({ ...prev, show: false }));
 
-  // Helper that returns a promise for Yes/No alerts
+ 
   const askQuestion = (title, message) => {
     return new Promise((resolve) => {
       showAlert({
@@ -58,7 +58,7 @@ export default function SupplierDetails() {
           closeAlert();
         },
       });
-      // When "No" pressed or closed, resolve false
+      
       const handleClose = () => {
         resolve(false);
         closeAlert();
@@ -67,7 +67,7 @@ export default function SupplierDetails() {
     });
   };
 
-  // === INITIAL LOAD ===
+  
   useEffect(() => {
     const storedUser = localStorage.getItem("username") || "Guest";
     setUsername(storedUser);
@@ -103,7 +103,7 @@ export default function SupplierDetails() {
     }
   };
 
-  // === FETCH SUPPLIERS ===
+
   const fetchSuppliers = async () => {
     try {
       const res = await fetch(`${apiBase}`);
@@ -162,7 +162,7 @@ export default function SupplierDetails() {
     }
   };
 
-  // === HANDLERS ===
+ 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -378,7 +378,7 @@ export default function SupplierDetails() {
           />
         </h2>
 
-        {/* Form Section */}
+       
         <div className="form-section">
           <div className="form-left">
             <label>Code:</label>
@@ -410,7 +410,7 @@ export default function SupplierDetails() {
           </div>
         </div>
 
-        {/* Buttons */}
+        
         <div className="button-section">
           {mode === "view" && (
             <>
@@ -434,7 +434,7 @@ export default function SupplierDetails() {
           )}
         </div>
 
-        {/* Search + Table */}
+       
         <div className="search-bar">
           <input type="text" placeholder="Search..." value={searchText} onChange={(e) => setSearchText(e.target.value)} />
         </div>

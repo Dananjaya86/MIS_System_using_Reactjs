@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./production.css";
 import Menu from "../componants/Menu";
+import Namewithdateacc from "../componants/Namewithdateacc";
 
 export default function Production() {
 
@@ -191,6 +192,7 @@ export default function Production() {
       </div>
 
       <div className="content-section">
+        <Namewithdateacc/>
         <div className="production-container">
           <h2>Production</h2>
 

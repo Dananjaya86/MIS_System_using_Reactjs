@@ -1,7 +1,7 @@
 .sidebar {
   width: 220px;
   height: 100%;
-  background: #124186;
+  background: #1356b9;
   color: #fff;
   padding: 20px 10px;
   display: flex;
@@ -64,3 +64,4 @@ transform: scale(1.05);
   padding: 6px;
   margin-right: 5px;
 }
+
