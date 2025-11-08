@@ -1,320 +1,372 @@
-import React, { useState } from "react";
+
+import React, { useEffect, useState, useRef } from "react";
 import "./production.css";
 import Menu from "../componants/Menu";
 import Namewithdateacc from "../componants/Namewithdateacc";
+import AlertBoxRe from "../componants/Alertboxre";
+
+const API = "http://localhost:5000/api/production"; // change port if needed
 
 export default function Production() {
-
-  /* need to add other product detais */
-  const products = {
-    watalappan: ["Eggs", "Jaggery", "Vanilla", "Cups", "Cardomum", "Sticker"],
-    jelly: ["Jelly", "Sugar", "Gelatine", "Cups", "Sticker", "Milk"],
-    caramel: ["Milk", "Sugar", "Caramel Essence", "Cups", "Sticker", "Eggs"],
-    biscuits: [
-      "Biscuits",
-      "Butter",
-      "Cream",
-      "Cups",
-      "Sticker",
-      "Milk",
-      "Cocoa Powder",
-      "Icing Suger",
-    ],
-  };
-
-
-  /* need to add other product detais with prices */
-  const initialRawMaterialPrices = {
-    Eggs: { price: 29, stock: 260 },
-    Cardomum: { price: 9, stock: 1500 },
-    "Cocoa Powder": { price: 9, stock: 1500 },
-    "Icing Suger": { price: 9, stock: 1500 },
-    Cups: { price: 8.4, stock: 2500 },
-    Sticker: { price: 1.8, stock: 350 },
-    Jaggery: { price: 350, stock: 10 },
-    Vanilla: { price: 2.1, stock: 30 },
-    Jelly: { price: 40, stock: 60 },
-    Sugar: { price: 25, stock: 200 },
-    Gelatine: { price: 70, stock: 50 },
-    Milk: { price: 2.75, stock: 800 },
-    "Caramel Essence": { price: 120, stock: 20 },
-    Biscuits: { price: 15, stock: 300 },
-    Butter: { price: 80, stock: 40 },
-    Cream: { price: 90, stock: 60 },
-  };
-
-  const [rawMaterialPrices, setRawMaterialPrices] = useState(initialRawMaterialPrices);
-  const [selectedProduct, setSelectedProduct] = useState("");
-  const [selectedRaw, setSelectedRaw] = useState("");
-  const [buyQty, setBuyQty] = useState("");
-  const [rawMaterials, setRawMaterials] = useState([]);
-  const [productionQty, setProductionQty] = useState("");
-  const [totalCost, setTotalCost] = useState(0);
-  const [unitCost, setUnitCost] = useState(0);
-  const [editIndex, setEditIndex] = useState(null);
-
-  // Batch + Dates
+  // UI state
+  const [finishGoods, setFinishGoods] = useState([]); // array of {product_code, product_name, unit_price}
+  const [selectedProduct, setSelectedProduct] = useState(null); // object or null
   const [batchNo, setBatchNo] = useState("");
   const [productionDate, setProductionDate] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
 
-  const handleAddOrUpdate = () => {
+  // raw material suggestion state
+  const [rawSearch, setRawSearch] = useState("");
+  const [rawSuggestions, setRawSuggestions] = useState([]);
+  const [allRawCache, setAllRawCache] = useState([]); // cached list of RW
+  const [suggestIndex, setSuggestIndex] = useState(-1);
+  const suggestionsRef = useRef(null);
+
+  // details grid
+  const [rawMaterials, setRawMaterials] = useState([]);
+  const [buyQty, setBuyQty] = useState("");
+  const [totalCost, setTotalCost] = useState(0);
+  const [productionQty, setProductionQty] = useState("");
+  const [unitCost, setUnitCost] = useState(0);
+
+  // alerts
+  const [alert, setAlert] = useState({ show: false, type: "info", title: "", message: "" });
+
+  useEffect(() => {
+    // load finish goods and raw material cache on mount
+    loadFinishGoods();
+    loadRawMaterialsCache();
+  }, []);
+
+  useEffect(() => {
+    // when selected product changes, clear details and generate batch
+    if (selectedProduct) {
+      const nameOrCode = selectedProduct.product_name || selectedProduct.product_code || selectedProduct;
+      generateBatch(nameOrCode);
+      setRawMaterials([]);
+      setTotalCost(0);
+      setProductionQty("");
+      setUnitCost(0);
+    } else {
+      setBatchNo("");
+    }
+  }, [selectedProduct]);
+
+  // fetch finish goods (FG)
+  async function loadFinishGoods() {
+    try {
+      const res = await fetch(`${API}/finish-goods`);
+      const data = await res.json();
+      // ensure array
+      setFinishGoods(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error(err);
+      openAlert("error", "Load failed", "Unable to load finish goods.");
+      setFinishGoods([]);
+    }
+  }
+
+  // fetch raw list cache (RW + price)
+  async function loadRawMaterialsCache() {
+    try {
+      const res = await fetch(`${API}/raw-materials`);
+      const data = await res.json();
+      setAllRawCache(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error(err);
+      openAlert("error", "Load failed", "Unable to load raw materials.");
+      setAllRawCache([]);
+    }
+  }
+
+  // generate batch (triggered when product selects)
+  async function generateBatch(productName) {
+    try {
+      if (!productName) {
+        setBatchNo("");
+        return;
+      }
+      const res = await fetch(`${API}/generate-batch?productName=${encodeURIComponent(productName)}`);
+      const data = await res.json();
+      if (data && data.batchNo) setBatchNo(data.batchNo);
+    } catch (err) {
+      console.error(err);
+      openAlert("error", "Batch error", "Failed to generate batch number.");
+    }
+  }
+
+  // typeahead suggestions (live)
+  useEffect(() => {
+    if (!rawSearch) {
+      setRawSuggestions([]);
+      setSuggestIndex(-1);
+      return;
+    }
+    const q = rawSearch.toLowerCase();
+    const filtered = (allRawCache || []).filter((r) =>
+      (r.product_name || "").toLowerCase().includes(q) ||
+      (r.product_code || "").toLowerCase().includes(q)
+    );
+    setRawSuggestions(filtered.slice(0, 10));
+    setSuggestIndex(-1);
+  }, [rawSearch, allRawCache]);
+
+  function openAlert(type, title, message) {
+    setAlert({ show: true, type, title, message });
+    // close automatically after 3s
+    setTimeout(() => setAlert((a) => ({ ...a, show: false })), 3000);
+  }
+  function closeAlert() {
+    setAlert({ ...alert, show: false });
+  }
+
+  // keyboard nav for suggestions
+  const onRawKeyDown = (e) => {
+    if (rawSuggestions.length === 0) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSuggestIndex((i) => Math.min(i + 1, rawSuggestions.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSuggestIndex((i) => Math.max(i - 1, 0));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (suggestIndex >= 0 && rawSuggestions[suggestIndex]) {
+        selectSuggestion(rawSuggestions[suggestIndex]);
+      } else if (rawSuggestions[0]) {
+        selectSuggestion(rawSuggestions[0]);
+      }
+    } else if (e.key === "Escape") {
+      setRawSuggestions([]);
+      setSuggestIndex(-1);
+    }
+  };
+
+  function selectSuggestion(item) {
+    setRawSearch(item.product_name);
+    setRawSuggestions([]);
+    setSuggestIndex(-1);
+  }
+
+  function addRawToGrid() {
+    if (!selectedProduct) return openAlert("warning", "Select product", "Please choose a finished product.");
+    if (!rawSearch) return openAlert("warning", "Select raw", "Please type and select a raw material.");
+    const item = allRawCache.find((r) => r.product_name === rawSearch || r.product_code === rawSearch);
+    if (!item) return openAlert("warning", "Invalid raw", "Select a raw material from suggestions.");
     const qty = Number(buyQty);
+    if (!qty || qty <= 0) return openAlert("warning", "Invalid qty", "Enter a positive quantity.");
 
-    if (!selectedRaw || qty <= 0) {
-      alert("Please select a raw material and enter a valid quantity!");
+    const price = Number(item.unit_price) || 0;
+    const cost = Number((price * qty).toFixed(2));
+
+    const newRow = {
+      product: selectedProduct.product_name || selectedProduct.product_code || selectedProduct,
+      raw: item.product_name,
+      price,
+      qty,
+      balance: 0,
+      cost,
+      productionDate,
+      expiryDate,
+    };
+
+    setRawMaterials((prev) => {
+      const next = [...prev, newRow];
+      setTotalCost(next.reduce((s, r) => s + Number(r.cost || 0), 0));
+      return next;
+    });
+
+    setRawSearch("");
+    setBuyQty("");
+  }
+
+  function removeRow(index) {
+    const next = rawMaterials.filter((_, i) => i !== index);
+    setRawMaterials(next);
+    setTotalCost(next.reduce((s, r) => s + Number(r.cost || 0), 0));
+  }
+
+  async function handleSave() {
+  if (!selectedProduct) return openAlert("warning", "Missing", "Select finished good.");
+  if (!batchNo) return openAlert("warning", "Missing", "Batch auto-generate failed.");
+  if (!productionDate) return openAlert("warning", "Missing", "Select production date.");
+  if (rawMaterials.length === 0) return openAlert("warning", "Missing", "Add at least one raw material.");
+
+  const username = localStorage.getItem("username") || "system";
+
+  const payload = {
+    batch_no: batchNo,
+    production_date: productionDate,
+    expiry_date: expiryDate || null,
+    product: selectedProduct.product_name || selectedProduct.product_code || selectedProduct,
+    total_cost: totalCost,
+    production_qty: productionQty ? Number(productionQty) : 0,
+    unit_cost: unitCost ? Number(unitCost) : 0,
+    details: rawMaterials.map((r) => ({
+      product: r.product,
+      raw: r.raw,
+      price: r.price,
+      qty: r.qty,
+      balance: r.balance,
+      cost: r.cost,
+    })),
+    user_login: username,
+  };
+
+  try {
+    const res = await fetch(`${API}/save`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      openAlert("error", "Save failed", data.error || "Failed to save");
       return;
     }
-    if (!productionDate || !expiryDate) {
-      alert("Please select Production Date and Expiry Date!");
-      return;
-    }
-
-    const material = rawMaterialPrices[selectedRaw];
-    if (!material) return alert("Invalid raw material selected!");
-    if (qty > material.stock) return alert("Not enough stock!");
-
-    const cost = material.price * qty;
-    const updatedStock = material.stock - qty;
-
-    setRawMaterialPrices((prev) => ({
-      ...prev,
-      [selectedRaw]: { ...material, stock: updatedStock },
-    }));
-
-    if (editIndex !== null) {
-      const updatedMaterials = [...rawMaterials];
-      const oldRow = updatedMaterials[editIndex];
-
-
-      // Return previous qty back to stock
-      setRawMaterialPrices((prev) => ({
-        ...prev,
-        [oldRow.raw]: {
-          ...prev[oldRow.raw],
-          stock: prev[oldRow.raw].stock + Number(oldRow.qty),
-        },
-      }));
-
-      updatedMaterials[editIndex] = {
-        product: selectedProduct,
-        raw: selectedRaw,
-        price: material.price,
-        qty,
-        balance: updatedStock,
-        cost,
-        productionDate,
-        expiryDate,
-      };
-
-      const newTotal = updatedMaterials.reduce((sum, row) => sum + row.cost, 0);
-      setRawMaterials(updatedMaterials);
-      setTotalCost(newTotal);
-      setEditIndex(null);
-    } else {
-      const newRow = {
-        product: selectedProduct,
-        raw: selectedRaw,
-        price: material.price,
-        qty,
-        balance: updatedStock,
-        cost,
-        productionDate,
-        expiryDate,
-      };
-
-      setRawMaterials((prev) => [...prev, newRow]);
-      setTotalCost((prev) => prev + cost);
-    }
-
-    setSelectedRaw("");
-    setBuyQty("");
-  };
-
-  const handleEditRow = (index) => {
-    const row = rawMaterials[index];
-    setSelectedRaw(row.raw);
-    setBuyQty(row.qty);
-    setProductionDate(row.productionDate);
-    setExpiryDate(row.expiryDate);
-    setEditIndex(index);
-  };
-
-  const handleDeleteRow = (index) => {
-    const row = rawMaterials[index];
-    setRawMaterialPrices((prev) => ({
-      ...prev,
-      [row.raw]: { ...prev[row.raw], stock: prev[row.raw].stock + Number(row.qty) },
-    }));
-
-    const updatedMaterials = rawMaterials.filter((_, i) => i !== index);
-    setRawMaterials(updatedMaterials);
-
-    const newTotal = updatedMaterials.reduce((sum, row) => sum + row.cost, 0);
-    setTotalCost(newTotal);
-  };
-
-  const calculateUnitCost = () => {
-    const qty = Number(productionQty);
-    if (qty > 0) {
-      setUnitCost(Number((totalCost / qty).toFixed(2)));
-    } else {
-      alert("Please enter a valid production quantity!");
-    }
-  };
-
-  const handleClear = () => {
-    setSelectedProduct("");
-    setSelectedRaw("");
-    setBuyQty("");
+    openAlert("success", "Saved", data.message || "Production saved.");
     setRawMaterials([]);
-    setProductionQty("");
     setTotalCost(0);
+    setProductionQty("");
     setUnitCost(0);
-    setBatchNo("");
-    setProductionDate("");
-    setExpiryDate("");
-    setRawMaterialPrices(initialRawMaterialPrices);
-    setEditIndex(null);
-    alert("Form cleared!");
-  };
+    setRawSearch("");
+    setBuyQty("");
+    await loadRawMaterialsCache();
+    const nameOrCode = selectedProduct.product_name || selectedProduct.product_code || selectedProduct;
+    await generateBatch(nameOrCode);
+  } catch (err) {
+    console.error(err);
+    openAlert("error", "Server", "Could not save to server.");
+  }
+}
 
-  const handleExit = () => {
-    if (window.confirm("Are you sure you want to exit?")) {
-      window.location.href = "/";
-    }
+
+  // helper for select value
+  const getSelectedValue = () => {
+    if (!selectedProduct) return "";
+    return selectedProduct.product_code || selectedProduct;
   };
 
   return (
     <div className="main-layout">
+      <AlertBoxRe
+        show={alert.show}
+        type={alert.type}
+        title={alert.title}
+        message={alert.message}
+        onClose={() => setAlert({ ...alert, show: false })}
+      />
+
       <div className="menu-section">
         <Menu />
       </div>
 
       <div className="content-section">
-        <Namewithdateacc/>
+        <Namewithdateacc />
         <div className="production-container">
           <h2>Production</h2>
 
-
-          {/* Batch details and need to implement batch number auto generate*/}
-          <div className="batch-details">
-            <div className="form-row">
-              <label>Batch No:</label>
-              <input
-                type="text"
-                value={batchNo}
-                onChange={(e) => setBatchNo(e.target.value)}
-                placeholder="Enter batch number"
-              />
-            </div>
-
-            <div className="form-row">
-              <label>Production Date:</label>
-              <input
-                type="date"
-                value={productionDate}
-                onChange={(e) => setProductionDate(e.target.value)}
-              />
-            </div>
-
-            <div className="form-row">
-              <label>Expiry Date:</label>
-              <input
-                type="date"
-                value={expiryDate}
-                onChange={(e) => setExpiryDate(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* Product selection */}
-          <div className="form-row">
-            <label>Select Product:</label>
-            <select
-              value={selectedProduct}
-              onChange={(e) => {
-                setSelectedProduct(e.target.value);
-                setRawMaterials([]);
-                setTotalCost(0);
-                setUnitCost(0);
-              }}
-            >
-              <option value="">Select Item</option>
-              {Object.keys(products).map((key) => (
-                <option key={key} value={key}>
-                  {key.charAt(0).toUpperCase() + key.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {selectedProduct && (
-            <div className="form-row">
-              <label>Raw Material:</label>
+          {/* header */}
+          <div className="batch-details" style={{ gap: "12px", marginBottom: "12px" }}>
+            <div className="form-row" style={{ flex: 1 }}>
+              <label>Finished Product:</label>
               <select
-                value={selectedRaw}
-                onChange={(e) => setSelectedRaw(e.target.value)}
+                value={getSelectedValue()}
+                onChange={(e) => {
+                  const code = e.target.value;
+                  const item = (Array.isArray(finishGoods) ? finishGoods : []).find((f) => f.product_code === code);
+                  if (item) setSelectedProduct(item);
+                  else setSelectedProduct(code || null);
+                }}
               >
-                <option value="">Select item</option>
-                {products[selectedProduct].map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
+                <option value="">Select Finished Good</option>
+                {Array.isArray(finishGoods) &&
+                  finishGoods.map((fg) => (
+                    <option key={fg.product_code} value={fg.product_code}>
+                      {fg.product_name}
+                    </option>
+                  ))}
               </select>
             </div>
-          )}
 
-          {selectedRaw && (
-            <div className="form-row">
-              <p>
-                Price: <b>{rawMaterialPrices[selectedRaw].price}</b> | Stock:{" "}
-                <b>{rawMaterialPrices[selectedRaw].stock}</b>
-              </p>
-              <label>Buy Qty:</label>
-              <input
-                type="number"
-                min="1"
-                value={buyQty}
-                onChange={(e) => setBuyQty(e.target.value)}
-              />
-              <button onClick={handleAddOrUpdate}>
-                {editIndex !== null ? "Update" : "Add"}
-              </button>
+            <div className="form-row" style={{ flex: 1 }}>
+              <label>Batch No:</label>
+              <input type="text" value={batchNo} readOnly placeholder="Auto generated" />
             </div>
-          )}
 
+            <div className="form-row" style={{ flex: 1 }}>
+              <label>Production Date:</label>
+              <input type="date" value={productionDate} onChange={(e) => setProductionDate(e.target.value)} />
+            </div>
+
+            <div className="form-row" style={{ flex: 1 }}>
+              <label>Expiry Date:</label>
+              <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
+            </div>
+          </div>
+
+          {/* raw material input */}
+          <div className="form-row">
+            <label>Raw Material:</label>
+            <div style={{ position: "relative", flex: 1 }}>
+              <input
+                type="text"
+                value={rawSearch}
+                onChange={(e) => setRawSearch(e.target.value)}
+                onKeyDown={onRawKeyDown}
+                placeholder="Type raw material name"
+                autoComplete="off"
+              />
+              {rawSuggestions.length > 0 && (
+                <ul className="suggestion-box" ref={suggestionsRef}>
+                  {rawSuggestions.map((s, idx) => (
+                    <li
+                      key={s.product_code}
+                      className={idx === suggestIndex ? "active" : ""}
+                      onMouseDown={() => selectSuggestion(s)}
+                    >
+                      <span>{s.product_name}</span>
+                      <span>Rs. {s.unit_price}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <label>Qty:</label>
+            <input type="number" min="1" value={buyQty} onChange={(e) => setBuyQty(e.target.value)} />
+            <button onClick={addRawToGrid}>Add</button>
+          </div>
+
+          {/* grid */}
           {rawMaterials.length > 0 && (
             <>
-              <table>
+              <table className="item-table">
                 <thead>
                   <tr>
                     <th>Product</th>
                     <th>Raw Material</th>
-                    <th>Price</th>
-                    <th>Used Qty</th>
-                    <th>Balance</th>
+                    <th>Unit Price</th>
+                    <th>Qty</th>
                     <th>Cost</th>
-                    <th>Production Date</th>
-                    <th>Expiry Date</th>
-                    <th>Actions</th>
+                    <th>Prod Date</th>
+                    <th>Expiry</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {rawMaterials.map((row, index) => (
-                    <tr key={index}>
-                      <td>{row.product}</td>
-                      <td>{row.raw}</td>
-                      <td>{row.price}</td>
-                      <td>{row.qty}</td>
-                      <td>{row.balance}</td>
-                      <td>{row.cost}</td>
-                      <td>{row.productionDate}</td>
-                      <td>{row.expiryDate}</td>
+                  {rawMaterials.map((r, i) => (
+                    <tr key={i}>
+                      <td>{r.product}</td>
+                      <td>{r.raw}</td>
+                      <td>{r.price}</td>
+                      <td>{r.qty}</td>
+                      <td>{r.cost}</td>
+                      <td>{r.productionDate}</td>
+                      <td>{r.expiryDate}</td>
                       <td>
-                        <button className="btproedit" onClick={() => handleEditRow(index)}>Edit</button>
-                        <button className="btnprodelete" onClick={() => handleDeleteRow(index)}>Delete</button>
+                        <button className="btproedit" onClick={() => { /* can implement edit modal later */ }}>Edit</button>
+                        <button className="btnprodelete" onClick={() => removeRow(i)}>Delete</button>
                       </td>
                     </tr>
                   ))}
@@ -322,43 +374,32 @@ export default function Production() {
               </table>
 
               <div className="summary">
-                <h3>Total Cost: {totalCost}</h3>
-
+                <h3>Total Cost: {totalCost.toFixed(2)}</h3>
                 <div className="form-row">
                   <label>Production Qty:</label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={productionQty}
-                    onChange={(e) => setProductionQty(e.target.value)}
-                  />
-                  <button onClick={calculateUnitCost}>Calculate Unit Cost</button>
+                  <input type="number" value={productionQty} onChange={(e) => setProductionQty(e.target.value)} />
+                  <button onClick={() => {
+                    const qty = Number(productionQty);
+                    if (qty > 0) setUnitCost(Number((totalCost / qty).toFixed(2)));
+                    else openAlert("warning", "Invalid qty", "Enter production qty to calculate unit cost");
+                  }}>Calculate Unit Cost</button>
                 </div>
-
-                {unitCost > 0 && (
-                  <h3>
-                    Unit Cost for {selectedProduct}: <span>{unitCost}</span>
-                  </h3>
-                )}
+                {unitCost > 0 && <h3>Unit Cost for {selectedProduct ? (selectedProduct.product_name || selectedProduct) : ""}: <span>{unitCost}</span></h3>}
               </div>
             </>
           )}
 
           <div className="button-group">
-            <button className="btnprosave"
-              onClick={() =>
-                alert(
-                  `Production saved successfully!\nBatch: ${batchNo || "-"}\nProduction Date: ${
-                    productionDate || "-"
-                  }\nExpiry Date: ${expiryDate || "-"}`
-                )
-              }
-            >
-              Save
-            </button>
-
-            <button className="btnproexit" onClick={handleExit}>Exit</button>
-            <button className="btnproclear" onClick={handleClear}>Clear</button>
+            <button className="btnprosave" onClick={handleSave}>Save</button>
+            <button className="btnproclear" onClick={() => {
+              // clear inputs
+              setRawMaterials([]);
+              setTotalCost(0);
+              setProductionQty("");
+              setUnitCost(0);
+              setRawSearch("");
+              setBuyQty("");
+            }}>Clear</button>
           </div>
         </div>
       </div>

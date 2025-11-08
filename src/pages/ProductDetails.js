@@ -332,7 +332,7 @@ export default function ProductDetails() {
               <input type="radio" name="goods_type" value="Raw Material" checked={form.goods_type === "Raw Material"} onChange={handleChange} />
               Raw Material
             </label>
-            <label style={{ marginLeft: 8 }}>
+            <label style={{ marginLeft: -5 }}>
               <input type="radio" name="goods_type" value="Finish Goods" checked={form.goods_type === "Finish Goods"} onChange={handleChange} />
               Finish Goods
             </label>

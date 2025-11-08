@@ -147,7 +147,7 @@ exports.createProduct = async (req, res) => {
     try {
       await pool.request()
         .input("product_code", product_code)
-        .input("unit_price", retail_price)
+        .input("unit_price", unit_cost)
         .input("date", real_date ? new Date(real_date) : new Date())
         .input("login_user", login_user || "admin")
         .query(`
@@ -222,7 +222,7 @@ exports.updateProduct = async (req, res) => {
     try {
       await pool.request()
         .input("product_code", product_code)
-        .input("unit_price", retail_price)
+        .input("unit_price", unit_cost)
         .input("date", real_date ? new Date(real_date) : new Date())
         .input("login_user", login_user || "admin")
         .query(`
