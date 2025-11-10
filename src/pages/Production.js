@@ -1,16 +1,15 @@
-
 import React, { useEffect, useState, useRef } from "react";
 import "./production.css";
 import Menu from "../componants/Menu";
 import Namewithdateacc from "../componants/Namewithdateacc";
 import AlertBoxRe from "../componants/Alertboxre";
 
-const API = "http://localhost:5000/api/production"; // change port if needed
+const API = "http://localhost:5000/api/production";
 
 export default function Production() {
   // UI state
-  const [finishGoods, setFinishGoods] = useState([]); // array of {product_code, product_name, unit_price}
-  const [selectedProduct, setSelectedProduct] = useState(null); // object or null
+  const [finishGoods, setFinishGoods] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [batchNo, setBatchNo] = useState("");
   const [productionDate, setProductionDate] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
@@ -18,7 +17,7 @@ export default function Production() {
   // raw material suggestion state
   const [rawSearch, setRawSearch] = useState("");
   const [rawSuggestions, setRawSuggestions] = useState([]);
-  const [allRawCache, setAllRawCache] = useState([]); // cached list of RW
+  const [allRawCache, setAllRawCache] = useState([]);
   const [suggestIndex, setSuggestIndex] = useState(-1);
   const suggestionsRef = useRef(null);
 
@@ -29,19 +28,28 @@ export default function Production() {
   const [productionQty, setProductionQty] = useState("");
   const [unitCost, setUnitCost] = useState(0);
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
+
   // alerts
-  const [alert, setAlert] = useState({ show: false, type: "info", title: "", message: "" });
+  const [alert, setAlert] = useState({
+    show: false,
+    type: "info",
+    title: "",
+    message: "",
+  });
 
   useEffect(() => {
-    // load finish goods and raw material cache on mount
     loadFinishGoods();
     loadRawMaterialsCache();
   }, []);
 
   useEffect(() => {
-    // when selected product changes, clear details and generate batch
     if (selectedProduct) {
-      const nameOrCode = selectedProduct.product_name || selectedProduct.product_code || selectedProduct;
+      const nameOrCode =
+        selectedProduct.product_name ||
+        selectedProduct.product_code ||
+        selectedProduct;
       generateBatch(nameOrCode);
       setRawMaterials([]);
       setTotalCost(0);
@@ -52,12 +60,10 @@ export default function Production() {
     }
   }, [selectedProduct]);
 
-  // fetch finish goods (FG)
   async function loadFinishGoods() {
     try {
       const res = await fetch(`${API}/finish-goods`);
       const data = await res.json();
-      // ensure array
       setFinishGoods(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
@@ -66,7 +72,6 @@ export default function Production() {
     }
   }
 
-  // fetch raw list cache (RW + price)
   async function loadRawMaterialsCache() {
     try {
       const res = await fetch(`${API}/raw-materials`);
@@ -79,14 +84,15 @@ export default function Production() {
     }
   }
 
-  // generate batch (triggered when product selects)
   async function generateBatch(productName) {
     try {
       if (!productName) {
         setBatchNo("");
         return;
       }
-      const res = await fetch(`${API}/generate-batch?productName=${encodeURIComponent(productName)}`);
+      const res = await fetch(
+        `${API}/generate-batch?productName=${encodeURIComponent(productName)}`
+      );
       const data = await res.json();
       if (data && data.batchNo) setBatchNo(data.batchNo);
     } catch (err) {
@@ -95,7 +101,6 @@ export default function Production() {
     }
   }
 
-  // typeahead suggestions (live)
   useEffect(() => {
     if (!rawSearch) {
       setRawSuggestions([]);
@@ -103,9 +108,10 @@ export default function Production() {
       return;
     }
     const q = rawSearch.toLowerCase();
-    const filtered = (allRawCache || []).filter((r) =>
-      (r.product_name || "").toLowerCase().includes(q) ||
-      (r.product_code || "").toLowerCase().includes(q)
+    const filtered = (allRawCache || []).filter(
+      (r) =>
+        (r.product_name || "").toLowerCase().includes(q) ||
+        (r.product_code || "").toLowerCase().includes(q)
     );
     setRawSuggestions(filtered.slice(0, 10));
     setSuggestIndex(-1);
@@ -113,14 +119,9 @@ export default function Production() {
 
   function openAlert(type, title, message) {
     setAlert({ show: true, type, title, message });
-    // close automatically after 3s
     setTimeout(() => setAlert((a) => ({ ...a, show: false })), 3000);
   }
-  function closeAlert() {
-    setAlert({ ...alert, show: false });
-  }
 
-  // keyboard nav for suggestions
   const onRawKeyDown = (e) => {
     if (rawSuggestions.length === 0) return;
     if (e.key === "ArrowDown") {
@@ -148,13 +149,26 @@ export default function Production() {
     setSuggestIndex(-1);
   }
 
+  function recalcTotal(rows) {
+    const sum = rows.reduce((s, r) => s + Number(r.cost || 0), 0);
+    setTotalCost(Number(sum.toFixed(2)));
+  }
+
   function addRawToGrid() {
-    if (!selectedProduct) return openAlert("warning", "Select product", "Please choose a finished product.");
-    if (!rawSearch) return openAlert("warning", "Select raw", "Please type and select a raw material.");
-    const item = allRawCache.find((r) => r.product_name === rawSearch || r.product_code === rawSearch);
-    if (!item) return openAlert("warning", "Invalid raw", "Select a raw material from suggestions.");
+    if (!selectedProduct)
+      return openAlert("warning", "Select product", "Please choose a finished product.");
+    if (!rawSearch)
+      return openAlert("warning", "Select raw", "Please type and select a raw material.");
+
+    const item = allRawCache.find(
+      (r) => r.product_name === rawSearch || r.product_code === rawSearch
+    );
+    if (!item)
+      return openAlert("warning", "Invalid raw", "Select a raw material from suggestions.");
+
     const qty = Number(buyQty);
-    if (!qty || qty <= 0) return openAlert("warning", "Invalid qty", "Enter a positive quantity.");
+    if (!qty || qty <= 0)
+      return openAlert("warning", "Invalid qty", "Enter a positive quantity.");
 
     const price = Number(item.unit_price) || 0;
     const cost = Number((price * qty).toFixed(2));
@@ -170,78 +184,114 @@ export default function Production() {
       expiryDate,
     };
 
-    setRawMaterials((prev) => {
-      const next = [...prev, newRow];
-      setTotalCost(next.reduce((s, r) => s + Number(r.cost || 0), 0));
-      return next;
-    });
+    let updatedRows = [...rawMaterials];
+
+    if (isEditing && editIndex !== null) {
+      updatedRows[editIndex] = newRow;
+      setIsEditing(false);
+      setEditIndex(null);
+    } else {
+      updatedRows.push(newRow);
+    }
+
+    setRawMaterials(updatedRows);
+    recalcTotal(updatedRows);
 
     setRawSearch("");
     setBuyQty("");
+  }
+
+  function handleEdit(record, index) {
+    if (!record) {
+      openAlert("warning", "Error", "No record selected for edit.");
+      return;
+    }
+
+    setRawSearch(record.raw || "");
+    setBuyQty(record.qty || "");
+    setIsEditing(true);
+    setEditIndex(index);
+  }
+
+  function handleRowChange(index, field, value) {
+    const updated = [...rawMaterials];
+    updated[index][field] = Number(value);
+    updated[index].cost = Number(
+      (updated[index].qty * updated[index].price).toFixed(2)
+    );
+    setRawMaterials(updated);
+    recalcTotal(updated);
   }
 
   function removeRow(index) {
     const next = rawMaterials.filter((_, i) => i !== index);
     setRawMaterials(next);
-    setTotalCost(next.reduce((s, r) => s + Number(r.cost || 0), 0));
+    recalcTotal(next);
   }
 
   async function handleSave() {
-  if (!selectedProduct) return openAlert("warning", "Missing", "Select finished good.");
-  if (!batchNo) return openAlert("warning", "Missing", "Batch auto-generate failed.");
-  if (!productionDate) return openAlert("warning", "Missing", "Select production date.");
-  if (rawMaterials.length === 0) return openAlert("warning", "Missing", "Add at least one raw material.");
+    if (!selectedProduct) return openAlert("warning", "Missing", "Select finished good.");
+    if (!batchNo) return openAlert("warning", "Missing", "Batch auto-generate failed.");
+    if (!productionDate || !expiryDate)
+      return openAlert("warning", "Missing", "Select production date and expiry date.");
 
-  const username = localStorage.getItem("username") || "system";
+    if (rawMaterials.length === 0)
+      return openAlert("warning", "Missing", "Add at least one raw material.");
 
-  const payload = {
-    batch_no: batchNo,
-    production_date: productionDate,
-    expiry_date: expiryDate || null,
-    product: selectedProduct.product_name || selectedProduct.product_code || selectedProduct,
-    total_cost: totalCost,
-    production_qty: productionQty ? Number(productionQty) : 0,
-    unit_cost: unitCost ? Number(unitCost) : 0,
-    details: rawMaterials.map((r) => ({
-      product: r.product,
-      raw: r.raw,
-      price: r.price,
-      qty: r.qty,
-      balance: r.balance,
-      cost: r.cost,
-    })),
-    user_login: username,
-  };
+    const productName =
+      selectedProduct.product_name || selectedProduct.product_code || selectedProduct;
 
-  try {
-    const res = await fetch(`${API}/save`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      openAlert("error", "Save failed", data.error || "Failed to save");
-      return;
+    const username = localStorage.getItem("username") || "system";
+
+    const payload = {
+      batch_no: batchNo,
+      production_date: productionDate,
+      expiry_date: expiryDate,
+      product: productName,
+      total_cost: totalCost,
+      production_qty: productionQty ? Number(productionQty) : 0,
+      unit_cost: unitCost ? Number(unitCost) : 0,
+      details: rawMaterials.map((r) => ({
+        product: r.product,
+        raw: r.raw,
+        price: r.price,
+        qty: r.qty,
+        balance: r.balance,
+        cost: r.cost,
+      })),
+      user_login: username,
+    };
+
+    try {
+      const res = await fetch(`${API}/save`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        openAlert("error", "Save failed", data.error || "Failed to save");
+        return;
+      }
+      openAlert("success", "Saved", data.message || "Production saved.");
+      setSelectedProduct(null);
+      setBatchNo("");
+      setProductionDate("");
+      setExpiryDate("");
+      setRawMaterials([]);
+      setTotalCost(0);
+      setProductionQty("");
+      setUnitCost(0);
+      setRawSearch("");
+      setBuyQty("");
+      await loadRawMaterialsCache();
+      await generateBatch(productName);
+    } catch (err) {
+      console.error(err);
+      openAlert("error", "Server", "Could not save to server.");
     }
-    openAlert("success", "Saved", data.message || "Production saved.");
-    setRawMaterials([]);
-    setTotalCost(0);
-    setProductionQty("");
-    setUnitCost(0);
-    setRawSearch("");
-    setBuyQty("");
-    await loadRawMaterialsCache();
-    const nameOrCode = selectedProduct.product_name || selectedProduct.product_code || selectedProduct;
-    await generateBatch(nameOrCode);
-  } catch (err) {
-    console.error(err);
-    openAlert("error", "Server", "Could not save to server.");
   }
-}
 
-
-  // helper for select value
   const getSelectedValue = () => {
     if (!selectedProduct) return "";
     return selectedProduct.product_code || selectedProduct;
@@ -267,14 +317,16 @@ export default function Production() {
           <h2>Production</h2>
 
           {/* header */}
-          <div className="batch-details" style={{ gap: "12px", marginBottom: "12px" }}>
-            <div className="form-row" style={{ flex: 1 }}>
+          <div className="batch-details">
+            <div className="form-row">
               <label>Finished Product:</label>
               <select
                 value={getSelectedValue()}
                 onChange={(e) => {
                   const code = e.target.value;
-                  const item = (Array.isArray(finishGoods) ? finishGoods : []).find((f) => f.product_code === code);
+                  const item = (Array.isArray(finishGoods) ? finishGoods : []).find(
+                    (f) => f.product_code === code
+                  );
                   if (item) setSelectedProduct(item);
                   else setSelectedProduct(code || null);
                 }}
@@ -289,19 +341,27 @@ export default function Production() {
               </select>
             </div>
 
-            <div className="form-row" style={{ flex: 1 }}>
+            <div className="form-row">
               <label>Batch No:</label>
               <input type="text" value={batchNo} readOnly placeholder="Auto generated" />
             </div>
 
-            <div className="form-row" style={{ flex: 1 }}>
+            <div className="form-row">
               <label>Production Date:</label>
-              <input type="date" value={productionDate} onChange={(e) => setProductionDate(e.target.value)} />
+              <input
+                type="date"
+                value={productionDate}
+                onChange={(e) => setProductionDate(e.target.value)}
+              />
             </div>
 
-            <div className="form-row" style={{ flex: 1 }}>
+            <div className="form-row">
               <label>Expiry Date:</label>
-              <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
+              <input
+                type="date"
+                value={expiryDate}
+                onChange={(e) => setExpiryDate(e.target.value)}
+              />
             </div>
           </div>
 
@@ -334,8 +394,13 @@ export default function Production() {
             </div>
 
             <label>Qty:</label>
-            <input type="number" min="1" value={buyQty} onChange={(e) => setBuyQty(e.target.value)} />
-            <button onClick={addRawToGrid}>Add</button>
+            <input
+              type="number"
+              min="1"
+              value={buyQty}
+              onChange={(e) => setBuyQty(e.target.value)}
+            />
+            <button onClick={addRawToGrid}>{isEditing ? "Update" : "Add"}</button>
           </div>
 
           {/* grid */}
@@ -359,14 +424,18 @@ export default function Production() {
                     <tr key={i}>
                       <td>{r.product}</td>
                       <td>{r.raw}</td>
-                      <td>{r.price}</td>
+                      <td>{r.price.toFixed(2)}</td>
                       <td>{r.qty}</td>
                       <td>{r.cost}</td>
                       <td>{r.productionDate}</td>
                       <td>{r.expiryDate}</td>
                       <td>
-                        <button className="btproedit" onClick={() => { /* can implement edit modal later */ }}>Edit</button>
-                        <button className="btnprodelete" onClick={() => removeRow(i)}>Delete</button>
+                        <button className="btproedit" onClick={() => handleEdit(r, i)}>
+                          Edit
+                        </button>
+                        <button className="btnprodelete" onClick={() => removeRow(i)}>
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -377,31 +446,61 @@ export default function Production() {
                 <h3>Total Cost: {totalCost.toFixed(2)}</h3>
                 <div className="form-row">
                   <label>Production Qty:</label>
-                  <input type="number" value={productionQty} onChange={(e) => setProductionQty(e.target.value)} />
-                  <button onClick={() => {
-                    const qty = Number(productionQty);
-                    if (qty > 0) setUnitCost(Number((totalCost / qty).toFixed(2)));
-                    else openAlert("warning", "Invalid qty", "Enter production qty to calculate unit cost");
-                  }}>Calculate Unit Cost</button>
+                  <input
+                    type="number"
+                    value={productionQty}
+                    onChange={(e) => setProductionQty(e.target.value)}
+                  />
+                  <button
+                    onClick={() => {
+                      const qty = Number(productionQty);
+                      if (qty > 0)
+                        setUnitCost(Number((totalCost / qty).toFixed(2)));
+                      else
+                        openAlert(
+                          "warning",
+                          "Invalid qty",
+                          "Enter production qty to calculate unit cost"
+                        );
+                    }}
+                  >
+                    Calculate Unit Cost
+                  </button>
                 </div>
-                {unitCost > 0 && <h3>Unit Cost for {selectedProduct ? (selectedProduct.product_name || selectedProduct) : ""}: <span>{unitCost}</span></h3>}
+                {unitCost > 0 && (
+                  <h3>
+                    Unit Cost for{" "}
+                    {selectedProduct
+                      ? selectedProduct.product_name || selectedProduct
+                      : ""}{" "}
+                    : <span>{unitCost}</span>
+                  </h3>
+                )}
               </div>
             </>
           )}
 
           <div className="button-group">
-            <button className="btnprosave" onClick={handleSave}>Save</button>
-            <button className="btnproclear" onClick={() => {
-              // clear inputs
-              setRawMaterials([]);
-              setTotalCost(0);
-              setProductionQty("");
-              setUnitCost(0);
-              setRawSearch("");
-              setBuyQty("");
-            }}>Clear</button>
+            <button className="btnprosave" onClick={handleSave}>
+              Save
+            </button>
+            <button
+              className="btnproclear"
+              onClick={() => {
+                setRawMaterials([]);
+                setTotalCost(0);
+                setProductionQty("");
+                setUnitCost(0);
+                setRawSearch("");
+                setBuyQty("");
+                setIsEditing(false);
+                setEditIndex(null);
+              }}
+            >
+              Clear
+            </button>
           </div>
-        </div>
+        </div> 
       </div>
     </div>
   );
