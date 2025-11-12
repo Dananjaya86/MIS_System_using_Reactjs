@@ -22,7 +22,7 @@
 .header {
   text-align: center;
   margin-bottom: 20px;
-  font-size: 22px;
+  font-size: 25px;
   font-weight: bold;
   color: rgb(28, 28, 177);
 }
@@ -41,6 +41,7 @@ input[type="date"]:focus {
   display: flex;
   gap: 30px;
   margin-bottom: 20px;
+  
 }
 
 .form-left,
@@ -49,12 +50,16 @@ input[type="date"]:focus {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  color: #3a45dd;
 }
+
+
 
 label {
   font-size: 14px;
   font-weight: bold;
   margin-top: 5px;
+  color: #3a45dd;
 }
 
 input {
@@ -154,4 +159,59 @@ button {
 .data-grid tr:hover {
   background: #f1f1f1;
   cursor: pointer;
+}
+
+
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  width: 400px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  border-radius: 8px;
+}
+
+
+.dialog h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #333;
+}
+
+
+.dialog ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+
+.dialog ul li {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+
+.dialog ul li:hover {
+  background-color: #f0f0f0;
+}
+
+
+body.dialog-open::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.3);
+  z-index: 900;
 }

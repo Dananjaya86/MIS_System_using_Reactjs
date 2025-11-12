@@ -1,194 +1,224 @@
-import React, { useState } from "react";
-import Menu from "../componants/Menu"
+import React, { useEffect, useState } from "react";
+import Menu from "../componants/Menu";
+import Namewithdateacc from "../componants/Namewithdateacc";
+import AlertBox from "../componants/Alertboxre";
 import "./grn.css";
 
 export default function GRN() {
-  const [form, setForm] = useState({
+  const defaultForm = {
     grnNo: "",
     supplierCode: "",
     supplierName: "",
     invoiceNo: "",
+    date: "",
     productCode: "",
     productName: "",
-    date: "",
-    creditAmount: "",
-    balanceAmount: "",
-    advancePayment: "",
-    availableQty: "",
     invoiceQty: "",
+    unitPrice: "",
     totalAmount: "",
-    totalStock: "",
-  });
+  };
 
+  const [form, setForm] = useState(defaultForm);
   const [rows, setRows] = useState([]);
-  const [editIndex, setEditIndex] = useState(null);
+  const [mode, setMode] = useState("view");
+  const [alert, setAlert] = useState({ show: false, type: "info", title: "", message: "" });
 
-  // view , add , edit need to check again
+  
+  const [supplierDialog, setSupplierDialog] = useState({ show: false, list: [], search: "" });
+  const [productDialog, setProductDialog] = useState({ show: false, list: [], search: "" });
 
-  const [mode, setMode] = useState("view"); 
+ 
+  const fetchNextGrnNumber = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/grn/new-number");
+      if (!res.ok) throw new Error("Failed to get GRN number");
+      const data = await res.json();
+      setForm(prev => ({ ...prev, grnNo: data.grn_no }));
+    } catch (err) {
+      console.error(err);
+      setAlert({ show: true, type: "error", title: "Error", message: "Unable to generate GRN number" });
+    }
+  };
+
+  
+  const searchSuppliers = async (query) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/grn/suppliers?query=${query}`);
+      if (!res.ok) throw new Error("Supplier search failed");
+      const data = await res.json();
+      setSupplierDialog(prev => ({ ...prev, list: data, show: true }));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  
+  const searchProducts = async (query) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/grn/products?query=${query}`);
+      if (!res.ok) throw new Error("Product search failed");
+      const data = await res.json();
+      setProductDialog(prev => ({ ...prev, list: data, show: true }));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+
+    
+    if (name === "supplierCode" || name === "supplierName") searchSuppliers(value);
+    if (name === "productCode" || name === "productName") searchProducts(value);
   };
 
+  
+  const selectSupplier = (sup) => {
+    setForm(prev => ({ ...prev, supplierCode: sup.sup_code, supplierName: sup.sup_name }));
+    setSupplierDialog({ show: false, list: [], search: "" });
+  };
+
+  
+  const selectProduct = (prod) => {
+    setForm(prev => ({ ...prev, productCode: prod.product_code, productName: prod.product_name }));
+    setProductDialog({ show: false, list: [], search: "" });
+  };
+
+  
   const handleAdd = () => {
     setMode("add");
-    setForm({
-      grnNo: "",
-      supplierCode: "",
-      supplierName: "",
-      invoiceNo: "",
-      productCode: "",
-      productName: "",
-      date: "",
-      creditAmount: "",
-      balanceAmount: "",
-      advancePayment: "",
-      availableQty: "",
-      invoiceQty: "",
-      totalAmount: "",
-      totalStock: "",
-    });
+    setForm(defaultForm);
+    fetchNextGrnNumber();
   };
 
-  const handleSave = () => {
-    if (editIndex !== null) {
-      const updated = [...rows];
-      updated[editIndex] = form;
-      setRows(updated);
-      setEditIndex(null);
-      alert("Record updated successfully!");
-    } else {
-      setRows([...rows, { ...form, id: rows.length + 1 }]);
-      alert("Record saved successfully!");
+  
+  const handleSave = async () => {
+    const newRow = { ...form, id: rows.length + 1 };
+    setRows([...rows, newRow]);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/grn/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          grn_no: form.grnNo,
+          supplier_code: form.supplierCode,
+          supplier_name: form.supplierName,
+          supplier_invoice_number: form.invoiceNo,
+          supplier_invoice_date: form.date,
+          product_code: form.productCode,
+          product_name: form.productName,
+          invoice_qty: form.invoiceQty,
+          total_amount: form.totalAmount,
+          login_user: "Admin",
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setAlert({ show: true, type: "success", title: "Saved", message: "GRN saved successfully!" });
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (err) {
+      console.error("Save failed:", err);
+      setAlert({ show: true, type: "error", title: "Error", message: "Failed to save GRN" });
     }
+
     setMode("view");
-    setForm({});
+    setForm(defaultForm);
   };
 
-  const handleClear = () => {
-    setForm({});
-    alert("Form cleared!");
-  };
-
-  const handleEdit = (index) => {
-    setForm(rows[index]);
-    setEditIndex(index);
-    setMode("edit");
-  };
-
-  const handleDelete = (index) => {
-    const updated = rows.filter((_, i) => i !== index);
-    setRows(updated);
-    alert("Record deleted!");
-    setMode("view");
-  };
-
-  const handleExit = () => {
-    alert("Exiting GRN Page...");
-  };
-
-  const handlePrint = () => {
-    window.print();
-  };
-
-  const handleView = () => {
-    alert(
-      `Company: ABC Foods Ltd.\nAddress: 123 Main Street\nPhone: +94 77 1234567\n\nSupplier: ${form.supplierName || "N/A"}`
-    );
-  };
+  
+  useEffect(() => {
+    const qty = parseFloat(form.invoiceQty) || 0;
+    const price = parseFloat(form.unitPrice) || 0;
+    setForm(prev => ({ ...prev, totalAmount: (qty * price).toFixed(2) }));
+  }, [form.invoiceQty, form.unitPrice]);
 
   return (
     <div className="layout">
-      <div className="menu-wrap">
-        <Menu />
-      </div>
-
+      <div className="menu-wrap"><Menu /></div>
       <div className="page">
+        <Namewithdateacc />
         <h2 className="header">Goods Receive Note</h2>
 
-
-        {/* Form */}
         <div className="form-container">
           <div className="form-left">
             <label>GRN Number</label>
-            <input name="grnNo" value={form.grnNo || ""} onChange={handleChange} />
+            <input name="grnNo" value={form.grnNo} readOnly />
 
             <label>Supplier Code</label>
-            <input name="supplierCode" value={form.supplierCode || ""} onChange={handleChange} />
-
+            <input name="supplierCode" value={form.supplierCode} onChange={handleChange} />
             <label>Supplier Name</label>
-            <input name="supplierName" value={form.supplierName || ""} onChange={handleChange} />
+            <input name="supplierName" value={form.supplierName} readOnly />
 
-            <label>Supplier Invoice No</label>
-            <input name="invoiceNo" value={form.invoiceNo || ""} onChange={handleChange} />
-
-            <label>Product Code</label>
-            <input name="productCode" value={form.productCode || ""} onChange={handleChange} />
-
-            <label>Product Name</label>
-            <input name="productName" value={form.productName || ""} onChange={handleChange} />
-
-            <label>Advance Payment</label>
-            <input name="advancePayment" value={form.advancePayment || ""} onChange={handleChange} />
-
+            <label>Invoice No</label>
+            <input name="invoiceNo" value={form.invoiceNo} onChange={handleChange} />
+            <label>Invoice Date</label>
+            <input type="date" name="date" value={form.date} onChange={handleChange} />
           </div>
 
           <div className="form-right">
-            <label>Date</label>
-            <input type="date" name="date" value={form.date || ""} onChange={handleChange} />
-
-            <label>Credit Amount</label>
-            <input name="creditAmount" value={form.creditAmount || ""} onChange={handleChange} />
-
-            <label>Balance Amount</label>
-            <input name="balanceAmount" value={form.balanceAmount || ""} onChange={handleChange} />
-
-            
-
-            <label>Available Qty</label>
-            <input name="availableQty" value={form.availableQty || ""} onChange={handleChange} />
+            <label>Product Code</label>
+            <input name="productCode" value={form.productCode} onChange={handleChange} />
+            <label>Product Name</label>
+            <input name="productName" value={form.productName} readOnly />
 
             <label>Invoice Qty</label>
-            <input name="invoiceQty" value={form.invoiceQty || ""} onChange={handleChange} />
-
+            <input name="invoiceQty" value={form.invoiceQty} onChange={handleChange} />
+            <label>Unit Price</label>
+            <input name="unitPrice" value={form.unitPrice} onChange={handleChange} />
             <label>Total Amount</label>
-            <input name="totalAmount" value={form.totalAmount || ""} onChange={handleChange} />
-
-            <label>Total Stock</label>
-            <input name="totalStock" value={form.totalStock || ""} onChange={handleChange} />
+            <input name="totalAmount" value={form.totalAmount} readOnly />
           </div>
         </div>
 
-
-
-        {/* Buttons need to style with  */}
         <div className="button-bar">
           {mode === "view" && (
             <>
               <button className="btngrnnew" onClick={handleAdd}>New</button>
-              <button className="btngrnexit" onClick={handleExit}>Exit</button>
+              <button className="btngrnexit" onClick={() => setAlert({ show: true, type: "info", title: "Exit", message: "Exiting GRN page..." })}>Exit</button>
             </>
           )}
-
           {mode === "add" && (
             <>
               <button className="btngrnsave" onClick={handleSave}>Save</button>
-              <button className="btngrnclear" onClick={handleClear}>Clear</button>
-              <button className="btngrnexit" onClick={handleExit}>Exit</button>
-            </>
-          )}
-
-          {mode === "edit" && (
-            <>
-              <button className="btngrnedit" onClick={handleSave}>Modify</button>
-              <button className="btngrndelete" onClick={() => handleDelete(editIndex)}>Delete</button>
-              <button className="btngrnexit" onClick={handleExit}>Exit</button>
+              <button className="btngrnclear" onClick={() => setForm(defaultForm)}>Clear</button>
+              <button className="btngrnexit" onClick={() => setAlert({ show: true, type: "info", title: "Exit", message: "Exiting GRN page..." })}>Exit</button>
             </>
           )}
         </div>
 
-        {/* Grid */}
+        
+        {supplierDialog.show && (
+          <div className="dialog">
+            <h4>Select Supplier</h4>
+            <ul>
+              {supplierDialog.list.map((sup, i) => (
+                <li key={i} onClick={() => selectSupplier(sup)}>{sup.sup_code} - {sup.sup_name}</li>
+              ))}
+            </ul>
+            <button onClick={() => setSupplierDialog({ show: false, list: [], search: "" })}>Close</button>
+          </div>
+        )}
+
+        
+        {productDialog.show && (
+          <div className="dialog">
+            <h3>Select Product</h3>
+            <ul>
+              {productDialog.list.map((prod, i) => (
+                <li key={i} onClick={() => selectProduct(prod)}>
+                  {prod.product_code} - {prod.product_name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <table className="data-grid">
           <thead>
             <tr>
@@ -199,12 +229,11 @@ export default function GRN() {
               <th>Product</th>
               <th>Qty</th>
               <th>Total</th>
-              <th>Status</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row, i) => (
-              <tr key={i} onClick={() => handleEdit(i)}>
+              <tr key={i}>
                 <td>{row.id}</td>
                 <td>{row.grnNo}</td>
                 <td>{row.supplierName}</td>
@@ -212,17 +241,12 @@ export default function GRN() {
                 <td>{row.productName}</td>
                 <td>{row.invoiceQty}</td>
                 <td>{row.totalAmount}</td>
-                <td>{parseFloat(row.balanceAmount || 0) === 0 ? "Paid" : "Pending"}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        {/* print and view buttons */}
-        <div className="button-bar">
-          <button className="btngrnprint" onClick={handlePrint}>Print</button>
-          <button className="btngrnview" onClick={handleView}>View</button>
-        </div>
+        <AlertBox show={alert.show} type={alert.type} title={alert.title} message={alert.message} onClose={() => setAlert({ ...alert, show: false })} />
       </div>
     </div>
   );
