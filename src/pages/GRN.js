@@ -95,7 +95,7 @@ export default function GRN() {
     const qty = parseFloat(form.invoiceQty) || 0;
     const price = parseFloat(form.unitPrice) || 0;
     setForm((prev) => ({ ...prev, totalAmount: (qty * price).toFixed(2) }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [form.invoiceQty, form.unitPrice]);
 
   // Add new row
@@ -146,7 +146,7 @@ export default function GRN() {
     const net = Number(netTotal) || 0;
     const username = localStorage.getItem("username");
 
-    // 1️⃣ Save GRN Header
+    //  Save GRN Header
     const saveHeaderRes = await fetch("http://localhost:5000/api/grn/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -165,7 +165,7 @@ export default function GRN() {
     const headerData = await saveHeaderRes.json();
     if (!headerData.success) throw new Error(headerData.message || "Failed to save GRN header");
 
-    // 2️⃣ Save GRN Grid Rows
+    //  Save GRN Grid Rows
     for (let row of rows) {
       await fetch("http://localhost:5000/api/grn/save-grid", {
         method: "POST",
@@ -181,19 +181,19 @@ export default function GRN() {
       });
     }
 
-    // 3️⃣ Fetch latest pending payment balance
+    //  Fetch latest pending payment balance
     const pendingRes = await fetch(`http://localhost:5000/api/grn/pending/${form.supplierCode}`);
     const pendingData = await pendingRes.json();
     const latestBalance = pendingData?.balance_payment || net;
 
-    // 4️⃣ Show success alert with balance
+    //  Show success alert with balance
     showAlert(
       "success",
       "GRN Saved",
       `GRN and details saved successfully!\nCurrent Pending Balance for ${form.supplierName}: ${latestBalance.toFixed(2)}`
     );
 
-    // 5️⃣ Reset form & reload last records
+    // Reset form & reload last records
     setRows([]);
     setMode("view");
     setForm(defaultForm);

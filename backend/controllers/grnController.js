@@ -3,7 +3,7 @@ const PDFDocument = require("pdfkit");
 const moment = require("moment");
 
 /* ================================
-   🔹 STOCK UPDATE FUNCTION
+   STOCK UPDATE FUNCTION
 ================================= */
 async function updateStock(product_code, product_name, qty, login_user = "Unknown") {
   const pool = await poolPromise;
@@ -38,7 +38,7 @@ async function updateStock(product_code, product_name, qty, login_user = "Unknow
 }
 
 /* ================================
-   🔹 1️⃣ Generate Next GRN Number
+    Generate Next GRN Number
 ================================= */
 exports.getNextGrnNumber = async (req, res) => {
   try {
@@ -62,7 +62,7 @@ exports.getNextGrnNumber = async (req, res) => {
 };
 
 /* ================================
-   🔹 2️⃣ Supplier Search
+   Supplier Search
 ================================= */
 exports.searchSuppliers = async (req, res) => {
   const q = req.query.query || "";
@@ -84,7 +84,7 @@ exports.searchSuppliers = async (req, res) => {
 };
 
 /* ================================
-   🔹 3️⃣ Get Supplier by Code
+    Get Supplier by Code
 ================================= */
 exports.getSupplierByCode = async (req, res) => {
   const { code } = req.params;
@@ -106,7 +106,7 @@ exports.getSupplierByCode = async (req, res) => {
 };
 
 /* ================================
-   🔹 4️⃣ Product Search
+    Product Search
 ================================= */
 exports.searchProducts = async (req, res) => {
   const query = req.query.query || "";
@@ -128,7 +128,7 @@ exports.searchProducts = async (req, res) => {
 };
 
 /* ================================
-   🔹 5️⃣ Get Product by Code
+    Get Product by Code
 ================================= */
 exports.getProductByCode = async (req, res) => {
   const { code } = req.params;
@@ -150,7 +150,7 @@ exports.getProductByCode = async (req, res) => {
 };
 
 /* ================================
-   🔹 6️⃣ Save GRN Header + Pending Payment
+   Save GRN Header + Pending Payment
 ================================= */
 exports.saveGrn = async (req, res) => {
   const {
@@ -227,7 +227,7 @@ exports.saveGrn = async (req, res) => {
 };
 
 /* ================================
-   🔹 7️⃣ Save GRN Grid Rows + Update Stock
+    Save GRN Grid Rows + Update Stock
 ================================= */
 exports.saveGrnGrid = async (req, res) => {
   const { grn_no, product_code, product_name, invoice_qty, unit_price, amount } = req.body;
@@ -264,7 +264,7 @@ exports.saveGrnGrid = async (req, res) => {
 };
 
 /* ================================
-   🔹 8️⃣ GET PENDING PAYMENT
+   GET PENDING PAYMENT
 ================================= */
 exports.getPendingPayment = async (req, res) => {
   const { supplier_code } = req.params;
@@ -285,12 +285,11 @@ exports.getPendingPayment = async (req, res) => {
   }
 };
 
-// (Other functions like generateGrnPdf, searchGrns, getLastGrns, getGrnByNumber remain the same)
+
 
 
 /* ================================
-   🔹 8️⃣ Generate GRN PDF
-   (kept same logic — with wrapped fields and dynamic sizes)
+    Generate GRN PDF
 ================================= */
 exports.generateGrnPdf = async (req, res) => {
   const { grn_no } = req.params;
@@ -298,9 +297,7 @@ exports.generateGrnPdf = async (req, res) => {
   try {
     const pool = await poolPromise;
 
-    // -----------------------------
-    // FETCH DATA
-    // -----------------------------
+   
     const headerRes = await pool.request()
       .input("grn_no", sql.VarChar, grn_no)
       .query(`SELECT TOP 1 * FROM GRN_Details WHERE grn_no = @grn_no`);
@@ -317,9 +314,9 @@ exports.generateGrnPdf = async (req, res) => {
       .query(`SELECT TOP 1 * FROM Supplier_Details WHERE sup_code = @supplier_code`);
     const supplier = supplierRes.recordset[0] || {};
 
-    // -----------------------------
+    
     // INIT PDF
-    // -----------------------------
+    
     const doc = new PDFDocument({ margin: 40, size: 'A4' });
     const filename = encodeURIComponent(`${grn_no}.pdf`);
     res.setHeader("Content-Disposition", `inline; filename="${filename}"`);
@@ -472,7 +469,7 @@ exports.generateGrnPdf = async (req, res) => {
 };
 
 /* ================================
-   🔹 9️⃣ Search GRNs
+Search GRNs
 ================================= */
 exports.searchGrns = async (req, res) => {
   const q = req.query.query || "";
@@ -494,7 +491,7 @@ exports.searchGrns = async (req, res) => {
 };
 
 /* ================================
-   🔹 🔟 Fetch Last GRNs
+   Fetch Last GRNs
 ================================= */
 exports.getLastGrns = async (req, res) => {
   try {
@@ -510,7 +507,7 @@ exports.getLastGrns = async (req, res) => {
 };
 
 /* ================================
-   🔹 Fetch Single GRN with Items
+    Fetch Single GRN with Items
 ================================= */
 exports.getGrnByNumber = async (req, res) => {
   const { grn_no } = req.params;
