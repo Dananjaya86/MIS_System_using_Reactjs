@@ -13,6 +13,6 @@ router.get("/pdf/:grn_no", grnController.generateGrnPdf);
 router.get("/search", grnController.searchGrns);
 router.get("/last", grnController.getLastGrns);
 router.get("/:grn_no", grnController.getGrnByNumber);
-
+router.get("/pending/:supplier_code", grnController.getPendingPayment);
 
 module.exports = router;

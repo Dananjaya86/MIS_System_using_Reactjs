@@ -85,7 +85,8 @@ export default function PaymentSetoff() {
         {/* Form */}
         <div className="form-grid">
           <div className="form-column">
-            <label>Invoice Number</label>
+            
+            <label>{type === "customer" ? "Invoice Number" : "GRN Number"}</label>
             <input
               name="invoiceNumber"
               value={form.invoiceNumber}
@@ -170,7 +171,8 @@ export default function PaymentSetoff() {
         <table className="data-grid">
           <thead>
             <tr>
-              <th>Invoice No</th>
+              
+              <th>{type === "customer" ? "Invoice No" : "GRN No"}</th>
               <th>{type === "customer" ? "Customer" : "Supplier"}</th>
               <th>Paid</th>
               <th>Balance</th>

@@ -27,7 +27,7 @@ export default function GRN() {
   const [lastRecords, setLastRecords] = useState([]);
   const [mode, setMode] = useState("view");
   const [alert, setAlert] = useState({ show: false, type: "info", title: "", message: "" });
-  const [showSaveConfirm, setShowSaveConfirm] = useState(false); // NEW: for Save confirmation
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [rowLimit, setRowLimit] = useState(10);
   const [discount, setDiscount] = useState(0);
@@ -52,7 +52,7 @@ export default function GRN() {
   const searchSuppliers = async (query) => {
     if (!query) return setSupplierList([]);
     try {
-      const res = await fetch(`http://localhost:5000/api/grn/suppliers?query=${query}`);
+      const res = await fetch(`http://localhost:5000/api/grn/suppliers?query=${encodeURIComponent(query)}`);
       const data = await res.json();
       setSupplierList(data);
     } catch (err) {
@@ -64,7 +64,7 @@ export default function GRN() {
   const searchProducts = async (query) => {
     if (!query) return setProductList([]);
     try {
-      const res = await fetch(`http://localhost:5000/api/grn/products?query=${query}`);
+      const res = await fetch(`http://localhost:5000/api/grn/products?query=${encodeURIComponent(query)}`);
       const data = await res.json();
       setProductList(data);
     } catch (err) {
@@ -95,6 +95,7 @@ export default function GRN() {
     const qty = parseFloat(form.invoiceQty) || 0;
     const price = parseFloat(form.unitPrice) || 0;
     setForm((prev) => ({ ...prev, totalAmount: (qty * price).toFixed(2) }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.invoiceQty, form.unitPrice]);
 
   // Add new row
@@ -134,51 +135,77 @@ export default function GRN() {
   };
 
   const handleSave = async () => {
-    if (rows.length === 0) {
-      showAlert("error", "Error", "No rows to save");
-      return;
-    }
-    try {
-      await fetch("http://localhost:5000/api/grn/save", {
+  if (rows.length === 0) {
+    showAlert("error", "Error", "No rows to save");
+    return;
+  }
+
+  try {
+    const gross = Number(grossTotal) || 0;
+    const disc = Number(discount) || 0;
+    const net = Number(netTotal) || 0;
+    const username = localStorage.getItem("username");
+
+    // 1️⃣ Save GRN Header
+    const saveHeaderRes = await fetch("http://localhost:5000/api/grn/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        grn_no: form.grnNo,
+        supplier_code: form.supplierCode,
+        supplier_name: form.supplierName,
+        supplier_invoice_number: form.invoiceNo,
+        supplier_invoice_date: form.date,
+        gross_amount: gross.toFixed(2),
+        discount_amount: disc.toFixed(2),
+        net_amount: net.toFixed(2),
+        login_user: username || "Unknown",
+      }),
+    });
+    const headerData = await saveHeaderRes.json();
+    if (!headerData.success) throw new Error(headerData.message || "Failed to save GRN header");
+
+    // 2️⃣ Save GRN Grid Rows
+    for (let row of rows) {
+      await fetch("http://localhost:5000/api/grn/save-grid", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           grn_no: form.grnNo,
-          supplier_code: form.supplierCode,
-          supplier_name: form.supplierName,
-          supplier_invoice_number: form.invoiceNo,
-          supplier_invoice_date: form.date,
-          discount: discount,
-          login_user: "Admin",
+          product_code: row.productCode,
+          product_name: row.productName,
+          invoice_qty: Number(row.invoiceQty) || 0,
+          unit_price: Number(row.unitPrice) || 0,
+          amount: Number(row.totalAmount) || 0,
         }),
       });
-
-      for (let row of rows) {
-        await fetch("http://localhost:5000/api/grn/save-grid", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            grn_no: form.grnNo,
-            product_code: row.productCode,
-            product_name: row.productName,
-            invoice_qty: parseFloat(row.invoiceQty),
-            unit_price: parseFloat(row.unitPrice),
-            amount: parseFloat(row.totalAmount),
-          }),
-        });
-      }
-
-      showAlert("success", "Saved", "GRN and details saved successfully!");
-      setRows([]);
-      setMode("view");
-      setForm(defaultForm);
-      setReadOnlyForm(false);
-      fetchLastRecords();
-    } catch (err) {
-      console.error(err);
-      showAlert("error", "Error", "Failed to save GRN");
     }
-  };
+
+    // 3️⃣ Fetch latest pending payment balance
+    const pendingRes = await fetch(`http://localhost:5000/api/grn/pending/${form.supplierCode}`);
+    const pendingData = await pendingRes.json();
+    const latestBalance = pendingData?.balance_payment || net;
+
+    // 4️⃣ Show success alert with balance
+    showAlert(
+      "success",
+      "GRN Saved",
+      `GRN and details saved successfully!\nCurrent Pending Balance for ${form.supplierName}: ${latestBalance.toFixed(2)}`
+    );
+
+    // 5️⃣ Reset form & reload last records
+    setRows([]);
+    setMode("view");
+    setForm(defaultForm);
+    setDiscount(0);
+    setReadOnlyForm(false);
+    fetchLastRecords();
+  } catch (err) {
+    console.error("GRN Save Error:", err);
+    showAlert("error", "Error", err.message || "Failed to save GRN");
+  }
+};
+
 
   const clearProductFields = () => {
     setForm({ ...form, productCode: "", productName: "", invoiceQty: "", unitPrice: "", totalAmount: "" });
@@ -211,6 +238,7 @@ export default function GRN() {
 
   useEffect(() => {
     fetchLastRecords();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rowLimit]);
 
   const grossTotal = rows.reduce((sum, r) => sum + parseFloat(r.totalAmount || 0), 0);
@@ -218,7 +246,7 @@ export default function GRN() {
 
   const handleSearch = async (query) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/grn/search?query=${query}`);
+      const res = await fetch(`http://localhost:5000/api/grn/search?query=${encodeURIComponent(query)}`);
       const data = await res.json();
       setSearchResults(data.sort((a, b) => b.grn_no.localeCompare(a.grn_no)));
     } catch (err) {
@@ -254,7 +282,7 @@ export default function GRN() {
         unitPrice: "",
         totalAmount: "",
       });
-
+      setDiscount(Number(header.discount_amount) || 0);
       setRows(items);
       setMode("view");
       setReadOnlyForm(true);
