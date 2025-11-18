@@ -33,7 +33,7 @@ async function hashPasswords() {
     console.error("💥 Error hashing passwords:", err);
   } finally {
     process.exit();
-  }
+  } 
 }
 
 hashPasswords();

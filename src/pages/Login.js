@@ -13,51 +13,47 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [alertData, setAlertData] = useState(null);
 
-  
   const showAlert = (type, message, detail) => {
     setAlertData({ type, message, detail });
     setTimeout(() => setAlertData(null), 3000);
   };
 
-  
   const handleLogin = async () => {
-    if (!username || !password) {
-      showAlert("error", "Please fill in all fields", "Both username and password are required.");
-      return;
+  if (!username || !password) {
+    showAlert("error", "Please fill in all fields", "Both username and password are required.");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("username", data.username);
+
+      // permissions returned by backend
+      const permissions = data.permissions || {};
+      allowFullAccess(permissions);
+
+      showAlert("success", "Login Successful!", `Welcome back, ${data.username}`);
+      setTimeout(() => navigate("/Dashboard"), 1000);
+    } else {
+      showAlert("warning", "Login Failed!", data.message);
     }
-
-    try {
-      const response = await fetch("http://localhost:5000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("username", data.username);
-        allowFullAccess();
-
-        showAlert("success", "Login Successful!", `Welcome back, ${data.username}`);
-
-     
-        setTimeout(() => navigate("/Dashboard"), 3000);
-      } else {
-        showAlert("warning", "Login Failed!", data.message || "Invalid username or password.");
-      }
-    } catch (error) {
-      console.error("Login Error:", error);
-      showAlert("error", "Server Error", "Unable to connect. Please try again later.");
-    }
-  };
+  } catch (err) {
+    showAlert("error", "Server Error", "Unable to connect. Try again later.");
+  }
+};
 
   const handleCancel = () => {
     setUsername("");
     setPassword("");
   };
-
 
   const renderAlert = () => {
     if (!alertData) return null;

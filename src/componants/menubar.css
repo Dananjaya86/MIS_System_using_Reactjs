@@ -64,4 +64,9 @@ transform: scale(1.05);
   padding: 6px;
   margin-right: 5px;
 }
+.menu-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 

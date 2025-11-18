@@ -24,5 +24,7 @@ router.put("/update/:employeeNo", verifyToken, adminController.updateAdmin);
 //  delete admin with employee number 
 router.put("/delete/:employeeNo", verifyToken, adminController.deleteAdmin);
 
+router.get("/check-username", verifyToken, adminController.checkUsername);
+
 module.exports = router;
 

@@ -44,6 +44,29 @@ function mapRowToFrontend(row) {
   };
 }
 
+// Check if username exists
+exports.checkUsername = async (req, res) => {
+  try {
+    const { username } = req.query;
+    if (!username) return res.status(400).json({ exists: false, message: "Username required" });
+
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input("username", sql.VarChar(100), username.trim())
+      .query(`SELECT 1 FROM dbo.login_details WHERE username=@username AND active='Yes'`);
+
+    if (result.recordset.length > 0) {
+      return res.json({ exists: true, message: "Username exists. Choose another username." });
+    }
+    return res.json({ exists: false });
+  } catch (err) {
+    console.error("Error checking username:", err);
+    return res.status(500).json({ exists: false, message: "Server error" });
+  }
+};
+
+
+
 // GET 
 exports.getAllAdmins = async (req, res) => {
   try {

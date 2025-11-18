@@ -63,9 +63,31 @@ export default function Admin() {
     }
   };
 
-  const handleChange = (e) => {
+  const checkUsernameExists = async (username) => {
+    try {
+      const res = await fetch("http://localhost:5000/api/admin/", { headers: getAuthHeaders() });
+      const data = await res.json();
+      const exists = data.some(u => u.username.toLowerCase() === username.toLowerCase());
+      return exists;
+    } catch (err) {
+      console.error("Error checking username:", err);
+      return false;
+    }
+  };
+
+  const handleChange = async (e) => {
     if (isReadOnly) return;
     const { name, value } = e.target;
+
+    if (name === "username" && value.trim()) {
+      const exists = await checkUsernameExists(value.trim());
+      if (exists) {
+        alert("Username exists. Choose another username");
+        setForm(prev => ({ ...prev, username: "" }));
+        return;
+      }
+    }
+
     setForm(prev => ({ ...prev, [name]: value }));
 
     if (name === "lastName" && value.trim() && isNewMode) {

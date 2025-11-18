@@ -16,14 +16,16 @@ h2 {
 }
 
 .sale-type {
-  text-align: center;
+  display: flex;             
+  justify-content: center;   
+  align-items: center;       
+  gap: 60px;                
   margin-bottom: 20px;
   
 }
 .sale-type input {
   transform: scale(1.5);
-  margin: 10px;
-  margin-bottom: 5px;
+  margin: 0;
  
 }
 
@@ -37,9 +39,9 @@ input[type="date"]:focus {
 }
 
 .sale-type label {
-  margin: 0 15px;
   font-weight: bold;
   font-size: 20px;
+  cursor: pointer;
   
 }
 
@@ -63,7 +65,7 @@ input[type="date"]:focus {
 }
 
 .form-lefts,.form-rights label {
-  font-size: 30x;
+  font-size: 25x;
   margin-bottom: 3px;
   color: #03069b;
 }

@@ -1,43 +1,22 @@
-
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 export const AppContext = createContext();
 
 export function AppProvider({ children }) {
-  const [allowedPages, setAllowedPages] = useState({});
+  const [allowedPages, setAllowedPages] = useState(null);
 
-  const allowFullAccess = () => {
-    const pages = [
-      "Dashboard",
-      "CustomerDetails",
-      "SupplierDetails",
-      "ProductDetails",
-      "Production",
-      "GRN",
-      "Sales",
-      "AdvancePayment",
-      "MeterialOrder",
-      "GoodsDispatchNote",
-      "StockControl",
-      "PaymentSetoff",
-      "Expenses",
-      "Bank",
-      "Return",
-      "Reports",
-      "IssueBillBook",
-      "Admin"
-    ];
-    const access = {};
-    pages.forEach((p) => (access[p] = true));
-    setAllowedPages(access);
-  };
+  useEffect(() => {
+    const stored = localStorage.getItem("permissions");
+    if (stored) setAllowedPages(JSON.parse(stored));
+  }, []);
 
-  const resetPage = (page) => {
-    setAllowedPages((prev) => ({ ...prev, [page]: false }));
+  const allowFullAccess = (permissions) => {
+    setAllowedPages(permissions);
+    localStorage.setItem("permissions", JSON.stringify(permissions));
   };
 
   return (
-    <AppContext.Provider value={{ allowedPages, allowFullAccess, resetPage }}>
+    <AppContext.Provider value={{ allowedPages, allowFullAccess }}>
       {children}
     </AppContext.Provider>
   );

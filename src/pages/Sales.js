@@ -1,21 +1,41 @@
 import React, { useState } from "react";
 import Menu from "../componants/Menu";
+import AlertBox from "../componants/Alertboxre";
+import Namewithdateacc from "../componants/Namewithdateacc";
 import "./sales.css";
 
 const SalesPage = () => {
   const [saleType, setSaleType] = useState("cash");
   const [formData, setFormData] = useState({});
-  const [tempData, setTempData] = useState([]); 
+  const [tempData, setTempData] = useState([]);
   const [gridData, setGridData] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [isNew, setIsNew] = useState(false);
   const [isModifyMode, setIsModifyMode] = useState(false);
   const [modifyIndex, setModifyIndex] = useState(null);
 
+  // Alert state
+  const [alertState, setAlertState] = useState({
+    show: false,
+    type: "info",
+    title: "",
+    message: "",
+    onConfirm: null,
+  });
+
+  const showAlert = (type, title, message, onConfirm = null) => {
+    setAlertState({ show: true, type, title, message, onConfirm });
+  };
+
+  const handleCloseAlert = () => {
+    setAlertState((prev) => ({ ...prev, show: false }));
+  };
+
   const handleSaleTypeChange = (e) => {
     setSaleType(e.target.value);
     setFormData({});
     setTempData([]);
+    setGridData([]);
     setSelectedRows([]);
     setIsNew(false);
     setIsModifyMode(false);
@@ -25,9 +45,25 @@ const SalesPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleDiscountChange = (e) => {
+    const value = e.target.value.trim();
+    let newForm = { ...formData, discountInput: value };
+
+    // Calculate discountValue for this row
+    if (value.endsWith("%")) {
+      const perc = parseFloat(value.slice(0, -1));
+      newForm.discountValue = !isNaN(perc) ? (parseFloat(formData.price || 0) * parseFloat(formData.qty || 0) * perc) / 100 : 0;
+    } else {
+      const amt = parseFloat(value);
+      newForm.discountValue = !isNaN(amt) ? amt : 0;
+    }
+    setFormData(newForm);
+  };
+
   const handleNew = () => {
     setFormData({});
     setTempData([]);
+    setGridData([]);
     setIsNew(true);
     setIsModifyMode(false);
     setSelectedRows([]);
@@ -35,11 +71,13 @@ const SalesPage = () => {
 
   const handleAdd = () => {
     if (!formData.invoiceNo) {
-      alert("Invoice No is required!");
+      showAlert("error", "Validation Error", "Invoice No is required!");
       return;
     }
-    setTempData([...tempData, formData]);
+    const newRow = { ...formData, discountValue: formData.discountValue || 0, discountInput: formData.discountInput || "" };
+    setTempData([...tempData, newRow]);
     setFormData({});
+    showAlert("success", "Added", "Record added successfully!");
   };
 
   const handleRowSelect = (index) => {
@@ -47,9 +85,6 @@ const SalesPage = () => {
       setSelectedRows(selectedRows.filter((i) => i !== index));
     } else {
       setSelectedRows([...selectedRows, index]);
-
-
-      // Fill form for modify data
       const allRows = [...tempData, ...gridData];
       setFormData(allRows[index]);
       setIsModifyMode(true);
@@ -59,15 +94,11 @@ const SalesPage = () => {
 
   const handleModify = () => {
     if (modifyIndex === null) {
-      alert("Select a row to modify!");
+      showAlert("error", "Selection Error", "Select a row to modify!");
       return;
     }
     let allRows = [...tempData, ...gridData];
-    allRows[modifyIndex] = formData;
-
-
-
-    // Separate back to Data and gridview Data
+    allRows[modifyIndex] = { ...formData, discountValue: formData.discountValue || 0 };
     const newTemp = allRows.slice(0, tempData.length);
     const newGrid = allRows.slice(tempData.length);
 
@@ -77,61 +108,76 @@ const SalesPage = () => {
     setFormData({});
     setIsModifyMode(false);
     setModifyIndex(null);
-    alert("Record modified!");
+    showAlert("success", "Modified", "Record modified successfully!");
   };
 
   const handleDelete = () => {
     if (selectedRows.length === 0) {
-      alert("Select at least one row to delete!");
+      showAlert("error", "Selection Error", "Select at least one row to delete!");
       return;
     }
-    let allRows = [...tempData, ...gridData];
-    const newRows = allRows.filter((_, i) => !selectedRows.includes(i));
-    setTempData(newRows.slice(0, tempData.length));
-    setGridData(newRows.slice(tempData.length));
-    setSelectedRows([]);
-    setFormData({});
-    setIsModifyMode(false);
-    alert("Selected row(s) deleted!");
+
+    showAlert(
+      "question",
+      "Confirm Delete",
+      "Are you sure you want to delete selected row(s)?",
+      () => {
+        let allRows = [...tempData, ...gridData];
+        const newRows = allRows.filter((_, i) => !selectedRows.includes(i));
+        setTempData(newRows.slice(0, tempData.length));
+        setGridData(newRows.slice(tempData.length));
+        setSelectedRows([]);
+        setFormData({});
+        setIsModifyMode(false);
+        handleCloseAlert();
+        showAlert("success", "Deleted", "Selected row(s) deleted successfully!");
+      }
+    );
   };
 
   const handleSaveAll = () => {
-  if ([...tempData, ...gridData].length === 0) {
-    alert("No data to save!");
-    return;
-  }
-  
+    if ([...tempData, ...gridData].length === 0) {
+      showAlert("error", "No Data", "No data to save!");
+      return;
+    }
 
-  // Clear all grids and form after save
-  setTempData([]);
-  setGridData([]);
-  setFormData({});
-  setSelectedRows([]);
-  setIsNew(false);
-  setIsModifyMode(false);
-  setModifyIndex(null);
-  alert("All records saved and grid cleared!");
-};
+    setTempData([]);
+    setGridData([]);
+    setFormData({});
+    setSelectedRows([]);
+    setIsNew(false);
+    setIsModifyMode(false);
+    setModifyIndex(null);
+    showAlert("success", "Saved", "All records saved and grid cleared!");
+  };
 
   const handleClear = () => {
     setFormData({});
     setTempData([]);
+    setGridData([]);
     setSelectedRows([]);
     setIsModifyMode(false);
-    alert("Form cleared!");
+    showAlert("info", "Cleared", "Form cleared!");
   };
 
+  // Totals calculations with per-row discount
   const totalAmount = [...tempData, ...gridData].reduce(
     (sum, row) => sum + (parseFloat(row.price || 0) * parseFloat(row.qty || 0)),
     0
   );
-  const discount = totalAmount * 0.05;
-  const invoiceAmount = totalAmount - discount;
+
+  const totalDiscount = [...tempData, ...gridData].reduce(
+    (sum, row) => sum + (parseFloat(row.discountValue || 0)),
+    0
+  );
+
+  const invoiceAmount = totalAmount - totalDiscount;
 
   return (
     <div className="sales-container">
       <Menu />
       <div className="sales-content">
+        <Namewithdateacc />
         <h2>Sales Page</h2>
 
         {/* Sale Type */}
@@ -171,64 +217,72 @@ const SalesPage = () => {
             <input name="productName" value={formData.productName || ""} onChange={handleChange} />
             <label>Advance Pay</label>
             <input type="number" name="advancePay" value={formData.advancePay || ""} onChange={handleChange} />
-            <label>Price</label>
+            <label>Unit Price</label>
             <input type="number" name="price" value={formData.price || ""} onChange={handleChange} />
             <label>Quantity</label>
             <input type="number" name="qty" value={formData.qty || ""} onChange={handleChange} />
+            <label>Discount (% or amount)</label>
+            <input
+              type="text"
+              name="discountInput"
+              value={formData.discountInput || ""}
+              onChange={handleDiscountChange}
+              placeholder="5% or 100"
+            />
           </div>
 
-          {saleType === "cash" ? (
+         {saleType === "cash" ? (
             <div className="form-rights">
-              <label>Date</label>
+              <label>Manual Bill Date</label>
               <input type="date" name="date" value={formData.date || ""} onChange={handleChange} />
               <label>Manual Bill No</label>
               <input name="manualBillNo" value={formData.manualBillNo || ""} onChange={handleChange} />
-              
               <label>Status</label>
               <input name="status" value={formData.status || ""} onChange={handleChange} />
               <label>Credit Limit</label>
               <input type="number" name="creditAmount" value={formData.creditAmount || ""} onChange={handleChange} />
               <label>Return Amount</label>
               <input type="number" name="returnAmount" value={formData.returnAmount || ""} onChange={handleChange} />
-              <label>Previous Amount</label>
+              <label>Previous Balance</label>
               <input type="number" name="previousAmount" value={formData.previousAmount || ""} onChange={handleChange} />
+              <label>Total Recoverable Amount</label>
+              <input type="number" name="recoverableAmount" value={formData.recoverableAmount || ""} onChange={handleChange} />
               {!isModifyMode && <button onClick={handleAdd}>Add</button>}
+
             </div>
           ) : (
             <div className="form-rights">
-              <label>Date</label>
+              <label>Manual Bill Date</label>
               <input type="date" name="date" value={formData.date || ""} onChange={handleChange} />
               <label>Manual Bill No</label>
               <input name="manualBillNo" value={formData.manualBillNo || ""} onChange={handleChange} />
-              <label>Last Payment Date</label>
-              <input type="date" name="lastPaymentDate" value={formData.lastPaymentDate || ""} onChange={handleChange} />
-              <label>Last Payment Amount</label>
-              <input type="number" name="lastPaymentAmount" value={formData.lastPaymentAmount || ""} onChange={handleChange} />
-              <label>Return Amount</label>
-              <input type="number" name="returnAmount" value={formData.returnAmount || ""} onChange={handleChange} />
               <label>Status</label>
               <input name="status" value={formData.status || ""} onChange={handleChange} />
-              <label>Credit Amount</label>
+              <label>Credit Limit</label>
               <input type="number" name="creditAmount" value={formData.creditAmount || ""} onChange={handleChange} />
+              <label>Return Amount</label>
+              <input type="number" name="returnAmount" value={formData.returnAmount || ""} onChange={handleChange} />
               <label>Previous Balance</label>
               <input type="number" name="previousBalance" value={formData.previousBalance || ""} onChange={handleChange} />
               <label>Total Recoverable Amount</label>
               <input type="number" name="recoverableAmount" value={formData.recoverableAmount || ""} onChange={handleChange} />
+              <label>Last Payment Date</label>
+              <input type="date" name="lastPaymentDate" value={formData.lastPaymentDate || ""} onChange={handleChange} />
+              <label>Last Payment Amount</label>
+              <input type="number" name="lastPaymentAmount" value={formData.lastPaymentAmount || ""} onChange={handleChange} />
               {!isModifyMode && <button onClick={handleAdd}>Add</button>}
             </div>
           )}
         </div>
 
-
         {/* Buttons */}
         <div className="button-group1">
-          {!isNew ? <button className="newbtn" onClick={handleNew}>New</button> : <button className="btnsave" onClick={handleSaveAll} >Save All</button>}
+          {!isNew ? <button className="newbtn" onClick={handleNew}>New</button> : <button className="btnsave" onClick={handleSaveAll}>Save All</button>}
           <button className="btnclear" onClick={handleClear}>Clear</button>
-          <button className="btnexit" onClick={() => { setFormData({}); setTempData([]); setSelectedRows([]); setIsNew(false); setIsModifyMode(false); }}>Exit</button>
+          <button className="btnexit" onClick={() => { setFormData({}); setTempData([]); setGridData([]); setSelectedRows([]); setIsNew(false); setIsModifyMode(false); }}>Exit</button>
         </div>
 
-
-        {/* Gridview tuples*/}
+        {/* Gridview */}
         <table className="grid-table">
           <thead>
             <tr>
@@ -238,6 +292,7 @@ const SalesPage = () => {
               <th>Product</th>
               <th>Price</th>
               <th>Qty</th>
+              <th>Discount</th>
               <th>Amount</th>
             </tr>
           </thead>
@@ -256,13 +311,13 @@ const SalesPage = () => {
                 <td>{row.productName}</td>
                 <td>{row.price}</td>
                 <td>{row.qty}</td>
-                <td>{(row.price * row.qty).toFixed(2)}</td>
+                <td>{row.discountValue.toFixed(2)}</td>
+                <td>{((row.price * row.qty) - (row.discountValue || 0)).toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        {/* Modify and Delete */}
         {selectedRows.length > 0 && (
           <div className="button-group1">
             <button className="btnmodify" onClick={handleModify}>Modify</button>
@@ -273,16 +328,26 @@ const SalesPage = () => {
         {/* Totals */}
         <div className="totals">
           <p>Total Amount: Rs {totalAmount.toFixed(2)}</p>
-          <p>Discount (5%): Rs {discount.toFixed(2)}</p>
+          <p>Total Discount: Rs {totalDiscount.toFixed(2)}</p>
           <p><b>Total Invoice Amount: Rs {invoiceAmount.toFixed(2)}</b></p>
         </div>
 
-        {/* Print and View */}
+        {/* Print/View */}
         <div className="button-group1">
-          <button className="btnprint" onClick={() => alert("Print triggered")}>Print</button>
-          <button className="btnview" onClick={() => alert("View details")}>View</button>
+          <button className="btnprint" onClick={() => showAlert("info", "Print", "Print triggered")}>Print</button>
+          <button className="btnview" onClick={() => showAlert("info", "View", "View details")}>View</button>
         </div>
       </div>
+
+      {/* AlertBox */}
+      <AlertBox
+        show={alertState.show}
+        type={alertState.type}
+        title={alertState.title}
+        message={alertState.message}
+        onClose={handleCloseAlert}
+        onConfirm={alertState.onConfirm}
+      />
     </div>
   );
 };
