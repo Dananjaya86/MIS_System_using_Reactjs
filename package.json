@@ -69,5 +69,8 @@
   "bugs": {
     "url": "https://github.com/Dananjaya86/MIS_System_using_Reactjs/issues"
   },
-  "homepage": ""
+  "homepage": "",
+  "devDependencies": {
+    "cypress": "^12.17.4"
+  }
 }

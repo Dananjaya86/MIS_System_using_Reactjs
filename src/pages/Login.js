@@ -100,12 +100,14 @@ export default function Login() {
         <h2>Welcome to Login Page!</h2>
         <input
           type="text"
+          name="username"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
         <input
           type="password"
+          name="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
