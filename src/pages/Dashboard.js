@@ -116,6 +116,7 @@ export default function Dashboard() {
       <div className="dashboard-content">
        
         <div className="dashboard-header">
+          <h1 className="dashhead">Welcome to Milkee Managment Information Syatem</h1>  
           <span className="dashboard-username">👤 {username}</span>
           <span className="dashboard-date">📅 {currentDate}</span>
         </div>

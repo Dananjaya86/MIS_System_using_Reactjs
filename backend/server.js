@@ -9,6 +9,8 @@ const supplierRoutes = require("./routes/supplierRoutes");
 const productRoutes = require("./routes/productRoutes");
 const productionRoutes = require("./routes/productionRoutes");
 const grnRoutes = require("./routes/grnRoutes");
+const invoiceRoutes = require("./routes/invoiceRoutes");
+
 
 const app = express();
 const PORT = 5000;
@@ -24,6 +26,7 @@ app.use("/api/suppliers", supplierRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/production", productionRoutes);
 app.use("/api/grn", grnRoutes);
+app.use("/api/sale", invoiceRoutes);
 
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
 
