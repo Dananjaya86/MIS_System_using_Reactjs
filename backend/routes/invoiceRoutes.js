@@ -1,20 +1,48 @@
-// backend/routes/invoiceRoutes.js
-const express = require("express");
-const router = express.Router();
-const invoiceController = require("../controllers/invoiceController");
+   
+    const express = require("express");
+    const router = express.Router();
+    const invoiceController = require("../controllers/invoiceController");
 
-console.log("✅ invoiceRoutes loaded");
+   
+    router.get("/customers", invoiceController.getAllCustomers);
 
-// invoice next
-router.get("/invoice/next/:type", invoiceController.getNextInvoiceNo);
 
-// products
-router.get("/products/search", invoiceController.searchProducts);
-router.get("/products/:code", invoiceController.getProductByCode);
+    router.get("/customers/payment-info/:code", invoiceController.getCustomerPaymentInfo);
 
-// customers
-router.get("/customers/search", invoiceController.searchCustomers);
-router.get("/customers/details/:code", invoiceController.getCustomerByCode); // explicit details route
-router.get("/customers/:code", invoiceController.getCustomerByCode); // keep simple route too
+    router.get("/customers/:code", invoiceController.getCustomerByCode);
 
-module.exports = router;
+    router.get("/products", invoiceController.getAllProducts);
+
+   
+    router.get("/products/:code", invoiceController.getProductByCode);
+
+   
+ 
+    router.get("/invoice/generate", invoiceController.generateInvoiceNumber);
+
+   
+    router.get("/search", invoiceController.searchInvoices);
+
+    router.get("/details/:invoiceNo", invoiceController.getInvoiceDetails);
+
+    
+    router.post("/invoice/save", invoiceController.saveInvoice);
+
+    // invoiceRoutes.js
+    router.get("/invoice/pdf/:invoiceNo", invoiceController.generateInvoicePdf);
+    router.get("/invoice/print/:invoiceNo", invoiceController.generateInvoicePdf);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    module.exports = router;
