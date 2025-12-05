@@ -3,12 +3,14 @@
   display: flex;
   font-family: Arial, sans-serif;
   min-height: 1000px;
+  color: #007bff;
 }
 
 /* Content Area */
 .content {
   flex: 1;
   padding: 20px 40px;
+  
   overflow-y: auto;
   background-color: #f7f7f7;
   display: flex;
@@ -73,19 +75,34 @@
 }
 
 .buttons button {
-  padding: 8px 14px;
+  padding: 12px 18px;
   border: none;
-  background-color: #3498db;
   color: white;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 17px;
   transition: background 0.2s;
 }
 
-.buttons button:hover {
-  background-color: #2980b9;
-}
+
+
+.btnadvadd { background: rgb(66, 126, 216); }
+.btnadvadd:hover { background: rgb(48, 68, 158); }
+
+.btnadvexit { background: rgb(224, 55, 55); }
+.btnadvexit:hover { background: rgb(158, 41, 41); }
+
+.btnadvsave { background: rgb(33, 156, 33); }
+.btnadvsave:hover { background: rgb(52, 121, 49); }
+
+.btnadvclear { background: rgb(150, 149, 148); }
+.btnadvclear:hover { background: rgb(109, 109, 108); }
+
+.btnadvmodify { background: rgb(25, 25, 206); }
+.btnadvmodify:hover { background: rgb(11, 11, 156); }
+
+.btnadvdelete { background: rgb(238, 76, 76); }
+.btnadvdelete:hover { background: rgb(153, 35, 35); }
 
 /* grid css */
 .grid {
@@ -112,7 +129,7 @@
 }
 
 .grid tr.selected-row {
-  background-color: #d1e7fd;
+  background-color: #222dc4;
 }
 
 /* Input focus on effect */
@@ -125,3 +142,123 @@ select:focus {
   box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
   outline: none;
 }
+
+.searchadv{
+  margin-bottom: 10px;
+}
+.modal-overlay { position: fixed; inset:0; background: rgba(0,0,0,0.45); display:flex; align-items:center; justify-content:center; z-index:9999; }
+.modal { width:720px; max-width:95%; background:#fff; padding:12px; border-radius:6px; max-height:80vh; overflow:hidden; display:flex; flex-direction:column; }
+.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.modal-search input { width:100%; padding:8px; box-sizing:border-box; }
+.modal-results { border:1px solid #ddd; flex:1; overflow:auto; padding:6px; }
+.modal-results ul { list-style:none; margin:0; padding:0; }
+.modal-results li { display:flex; gap:8px; padding:8px; border-bottom:1px solid #f1f1f1; cursor:pointer; }
+.modal-results li.active { background:#eef6ff; }
+.modal-footer { margin-top:8px; display:flex; justify-content:flex-end; gap:8px; }
+.input-error { color:#a00; font-size:12px; margin-top:4px; }
+
+/* Red border for invalid input */
+.input-error {
+  border: 1px solid red;
+  background-color: #ffe6e6;
+}
+
+.input-error-text {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 2px;
+  margin-bottom: 4px;
+}
+/* add to your advancepayment.css or a relevant css file */
+.status-filter {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* space between items */
+  margin-bottom: 10px;
+}
+
+.status-filter label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+}
+/* ----------------- 2nd Grid Table Styles ----------------- */
+/* ----------------- Second Grid Table Styles ----------------- */
+.second-grid-container {
+  margin-top: 30px;
+  overflow-x: auto;
+}
+
+.second-grid-container table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.second-grid-container th,
+.second-grid-container td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.second-grid-container th {
+  background-color: #3a45dd;
+  color: #fff;
+  font-weight: 600;
+}
+
+.second-grid-container tr:nth-child(even) {
+  background-color: #f1f1f1;
+}
+
+.second-grid-container tr:hover {
+  background-color: #e0f0ff;
+}
+
+.second-grid-container td {
+  color: #333;
+  font-size: 14px;
+}
+
+/* ----------------- Pagination Styles ----------------- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+.pagination button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 14px;
+  font-weight: 500;
+}
+.maingrid{
+  background-color: #007bff;
+}
+

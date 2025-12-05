@@ -10,6 +10,7 @@ const productRoutes = require("./routes/productRoutes");
 const productionRoutes = require("./routes/productionRoutes");
 const grnRoutes = require("./routes/grnRoutes");
 const invoiceRoutes = require("./routes/invoiceRoutes");
+const advancepayRoutes = require('./routes/advancepayRoutes');
 
 
 
@@ -31,6 +32,8 @@ app.use("/api/products", productRoutes);
 app.use("/api/production", productionRoutes);
 app.use("/api/grn", grnRoutes);
 app.use("/api/invoice", invoiceRoutes);
+app.use("/api/advancepay", advancepayRoutes);
+
 
 
 

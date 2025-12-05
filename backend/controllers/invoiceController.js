@@ -527,6 +527,7 @@ exports.generateInvoicePdf = async (req, res) => {
       { label: "Customer Name", value: invoice.customer_name || "" },
       { label: "Address", value: customer.address || "" },
       { label: "Phone", value: customer.phone || "" },
+      { label: "Route", value:customer.route || ""},
     ];
 
     let currentY = startY + 20;

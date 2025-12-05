@@ -178,12 +178,12 @@ export default function GoodsDispatchNote() {
           <div className="gdn-col">
 
             <label>Dispatch No</label>
-            <input name="dispatchNo" value={form.dispatchNo} onChange={handleChange} className={errors.productCode ? "input-error" : "" }/>
-            {errors.productCode && <span className="error">{errors.productCode}</span>}
+            <input name="dispatchNo" value={form.dispatchNo} onChange={handleChange} />
+            {errors.productCode && <span className="error">{errors.productCode ? "input-error" : ""}</span>}
 
             <label>Product Code</label>
             <input name="productCode" value={form.productCode} onChange={handleChange} className={errors.productCode ? "input-error" : ""}/>
-            {errors.productCode && <span className="error">{errors.productCode}</span>}
+           
 
             <label>Product Name</label> 
             <input name="productName" value={form.productName} onChange={handleChange} className={errors.productName ? "input-error" : ""}/>
