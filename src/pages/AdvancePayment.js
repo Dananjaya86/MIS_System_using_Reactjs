@@ -1,4 +1,4 @@
-// AdvancePayment.js
+
 import React, { useState, useEffect, useRef } from "react";
 import Menu from "../componants/Menu";
 import Namewithdateacc from "../componants/Namewithdateacc";
@@ -38,15 +38,14 @@ const AdvancePayment = () => {
   const resultsRef = useRef([]);
   const searchTimerRef = useRef(null);
 
-  // Alert state uses the same shape your AlertBoxre expects
+  
   const [alert, setAlert] = useState({ show: false, type: "info", title: "", message: "", onConfirm: null });
 
-  // ---------- Existing first-grid state (unchanged) ----------
-  // (gridData, selectedRows are used by your first grid)
+ 
 
   // ---------- Second grid state ----------
-  const [allPayments, setAllPayments] = useState([]); // full list from backend (filtered by status)
-  const [statusFilter, setStatusFilter] = useState("Pending"); // default Pending
+  const [allPayments, setAllPayments] = useState([]); 
+  const [statusFilter, setStatusFilter] = useState("Pending"); 
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
 
@@ -58,8 +57,8 @@ const AdvancePayment = () => {
 
   const loginUser = localStorage.getItem("username") || "Guest";
 
-  // keep track if a second-grid row has been loaded into form
-  const [loadedFromSecondGrid, setLoadedFromSecondGrid] = useState(null); // will hold advance_pay_id when loaded
+  // keep track if a second-grid row has been loaded into the form
+  const [loadedFromSecondGrid, setLoadedFromSecondGrid] = useState(null); 
 
   useEffect(() => {
     if (showModal && searchInputRef.current) searchInputRef.current.focus();
@@ -83,7 +82,7 @@ const AdvancePayment = () => {
     }
   };
 
-  // ----------------- Helpers -----------------
+ 
   const setField = (name, value) => {
     setForm(prev => ({ ...prev, [name]: value }));
     setErrors(prev => ({ ...prev, [name]: "" }));
@@ -100,7 +99,7 @@ const AdvancePayment = () => {
     }
   };
 
-  // ----------------- Modal Search -----------------
+ 
   const openModal = (initialQuery = "") => {
     setSearchQuery(initialQuery);
     setSearchResults([]);
@@ -251,7 +250,7 @@ const AdvancePayment = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...row,
-            loginUser: loginUser // ← USE YOUR USERNAME
+            loginUser: loginUser 
           })
         });
 
@@ -297,7 +296,7 @@ const AdvancePayment = () => {
       const sel = gridData.find(r => r.code === newSel[0]);
       if (sel) {
         setForm({ ...sel });
-        // clear second-grid loaded flag, since this is from first grid
+        
         setLoadedFromSecondGrid(null);
       }
     }
@@ -368,7 +367,7 @@ const AdvancePayment = () => {
   const multipleSelected = selectedRows.length > 1;
 
   // ----------------- Second-grid row click behavior -----------------
-  // when clicking a row in the second grid we load data into form and show Delete/Clear/Exit only
+  
   const handleSecondGridRowClick = (row) => {
     // load the row fields into the same form structure
     setForm({
@@ -388,9 +387,9 @@ const AdvancePayment = () => {
       remarks: row.remarks || ""
     });
 
-    // mark we loaded from second grid (store id)
+    
     setLoadedFromSecondGrid(row.advance_pay_id || null);
-    // Clear first-grid selection to avoid confusion
+    
     setSelectedRows([]);
   };
 
@@ -573,9 +572,9 @@ const AdvancePayment = () => {
           </div>
         </div>
 
-        {/* Buttons */}
+        
         <div className="buttons">
-          {/* When loadedFromSecondGrid is set, show only Delete / Clear / Exit */}
+          
           {loadedFromSecondGrid ? (
             <>
               <button className="btnadvdelete" onClick={onDeleteFromSecondGridClick}>Delete</button>
@@ -619,7 +618,7 @@ const AdvancePayment = () => {
           )}
         </div>
 
-        {/* First Grid (unchanged) */}
+        
         {gridData.length > 0 && (
           <table className="grid">
             <thead>
@@ -665,7 +664,8 @@ const AdvancePayment = () => {
           </table>
         )}
 
-        {/* ---------- Second Grid area (below first grid) ---------- */}
+
+       
         <div className="second-grid-area">
           <div className="status-filter">
             <label style={{ fontWeight: 600, marginRight: 12 }}>Advance Payment Details:</label>
@@ -740,7 +740,7 @@ const AdvancePayment = () => {
 
       </div>
 
-      {/* Modal */}
+      
       {showModal && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal" onClick={e => e.stopPropagation()}>
@@ -796,16 +796,16 @@ const AdvancePayment = () => {
         </div>
       )}
 
-      {/* AlertBoxre - re-used component */}
+     
       <AlertBoxre
         show={alert.show}
         type={alert.type}
         title={alert.title}
         message={alert.message}
         onConfirm={() => {
-          // call stored confirm (if any)
+          
           if (typeof alert.onConfirm === "function") alert.onConfirm();
-          // close question alert afterwards only if not overwritten by handler
+          
           setAlert(prev => ({ ...prev, show: false }));
         }}
         onClose={() => setAlert(prev => ({ ...prev, show: false }))}

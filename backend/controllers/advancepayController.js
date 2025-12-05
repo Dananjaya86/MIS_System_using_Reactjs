@@ -50,9 +50,9 @@ exports.getNextAdvancePayId = async (req, res) => {
     const result = await pool.request()
       .query(`SELECT TOP 1 advance_pay_id FROM Advance_Payment_Details ORDER BY advance_pay_id DESC`);
 
-    let nextId = "ADP00001"; // default if no record exists
+    let nextId = "ADP00001"; 
     if (result.recordset.length > 0) {
-      const lastId = result.recordset[0].advance_pay_id; // e.g., ADP00005
+      const lastId = result.recordset[0].advance_pay_id; 
       const num = parseInt(lastId.replace("ADP", "")) + 1;
       nextId = "ADP" + num.toString().padStart(5, "0");
     }
@@ -64,7 +64,7 @@ exports.getNextAdvancePayId = async (req, res) => {
   }
 };
 
-// Save Advance Payment to DB
+
 exports.saveAdvancePayment = async (req, res) => {
   const {
     adpaynumber,
@@ -79,7 +79,7 @@ exports.saveAdvancePayment = async (req, res) => {
     paymentType,
     bank,
     branch,
-    chequeNo,       // from frontend (string)
+    chequeNo,       
     otherDetails,
     loginUser
   } = req.body;
@@ -110,7 +110,7 @@ exports.saveAdvancePayment = async (req, res) => {
   try {
     const pool = await poolPromise;
 
-    // Safely convert chequeNo to INT or null
+    
     const chequeNumberInt = chequeNo && chequeNo.toString().trim() !== "" 
                             ? parseInt(chequeNo, 10) 
                             : null;
@@ -148,12 +148,13 @@ exports.saveAdvancePayment = async (req, res) => {
   }
 };
 
-// backend/controllers/advancePaymentController.js
+
 exports.getAdvancePayments = async (req, res) => {
   const status = req.query.status || "All";
 
   let query = "SELECT * FROM Advance_Payment_Details";
   if (status !== "All") query += " WHERE status = @status";
+   query += " ORDER BY advance_pay_id DESC";
 
   try {
     const pool = await poolPromise;
@@ -174,7 +175,7 @@ exports.cancelAdvancePayment = async (req, res) => {
   try {
     const pool = await poolPromise;
 
-    // 1. Get current status
+   
     const existing = await pool.request()
       .input("id", sql.VarChar, id)
       .query(`
