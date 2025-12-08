@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+// src/pages/GoodsDispatchNote.js
+import React, { useEffect, useState } from "react";
 import Menu from "../componants/Menu";
+import Namewithdateacc from "../componants/Namewithdateacc";
+import AlertBox from "../componants/Alertboxre"; // Custom alert
 import "./goodsdispatchnote.css";
-
-
-
 
 export default function GoodsDispatchNote() {
   const [form, setForm] = useState({
@@ -17,15 +17,33 @@ export default function GoodsDispatchNote() {
     salesRep: "",
     availableStock: "",
     route: "",
+    vehicleno: "",
   });
 
   const [errors, setErrors] = useState({});
   const [rows, setRows] = useState([]);
-  const [mode, setMode] = useState("initial");
+  const [mode, setMode] = useState("initial"); // initial | new | afterAdd | rowSelected
   const [selected, setSelected] = useState(new Set());
   const [editingIndex, setEditingIndex] = useState(null);
-  const [previewOpen, setPreviewOpen] = useState(false);
 
+  const allowEditFields = mode === "new" || mode === "afterAdd";
+
+  const [productModalOpen, setProductModalOpen] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [prodSearch, setProdSearch] = useState("");
+
+  const [totalDispatchAmount, setTotalDispatchAmount] = useState(0);
+
+  // Alert state
+  const [alert, setAlert] = useState({
+    show: false,
+    type: "info",
+    title: "",
+    message: "",
+    onConfirm: null,
+  });
+
+  // --- Effects ---
   useEffect(() => {
     const q = parseFloat(form.qty);
     const p = parseFloat(form.unitPrice);
@@ -34,37 +52,58 @@ export default function GoodsDispatchNote() {
     } else {
       setForm((f) => ({ ...f, totalAmount: "" }));
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.qty, form.unitPrice]);
 
+  useEffect(() => {
+    const total = rows.reduce((sum, item) => sum + Number(item.totalAmount || 0), 0);
+    setTotalDispatchAmount(total);
+  }, [rows]);
+
+  // --- Handlers ---
   function handleChange(e) {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
-    
-    // clear error on change from google
-    setErrors((err) => ({ ...err, [name]: "" })); 
+    setErrors((err) => ({ ...err, [name]: "" }));
   }
 
   function validateForm() {
     const newErrors = {};
-    if (!form.productCode.trim()) newErrors.productCode = "Product Code is required";
-    if (!form.productName.trim()) newErrors.productName = "Product Name is required";
-    if (!form.qty || form.qty <= 0) newErrors.qty = "Qty must be greater than 0";
-    if (!form.unitPrice || form.unitPrice <= 0) newErrors.unitPrice = "Unit Price must be greater than 0";
-    if (!form.salesRep.trim()) newErrors.salesRep = "Sales Representative is required";
+    if (!form.dispatchNo || !form.dispatchNo.trim()) newErrors.dispatchNo = "Dispatch No required";
+    if (!form.productCode || !form.productCode.trim()) newErrors.productCode = "Product Code is required";
+    if (!form.productName || !form.productName.trim()) newErrors.productName = "Product Name is required";
+    if (!form.qty || Number(form.qty) <= 0) newErrors.qty = "Qty must be greater than 0";
+    if (!form.unitPrice || Number(form.unitPrice) <= 0) newErrors.unitPrice = "Unit Price must be greater than 0";
+    if (!form.salesRep || !form.salesRep.trim()) newErrors.salesRep = "Sales Representative is required";
+    if (!form.route || !form.route.trim()) newErrors.route = "Route is required";
+    if (!form.vehicleno || !form.vehicleno.trim()) newErrors.vehicleno = "Vehicle no is required";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
 
-  function handleNew() {
+  async function fetchNewDispatchNo() {
+    try {
+      const res = await fetch("http://localhost:5000/api/dispatch/newno");
+      if (!res.ok) throw new Error("Failed to get dispatch number");
+      const data = await res.json();
+      return data.dispatchNo;
+    } catch (err) {
+      console.error(err);
+      setAlert({ show: true, type: "error", title: "Error", message: "Failed to generate dispatch number." });
+      return "";
+    }
+  }
+
+  async function handleNew() {
+    const newNo = await fetchNewDispatchNo();
+    if (!newNo) return;
+    setForm((f) => ({ ...f, dispatchNo: newNo }));
     setMode("new");
     setSelected(new Set());
     setEditingIndex(null);
-    
   }
 
-  function handleClearForm() {
+  function handleClearAll() {
     setForm({
       dispatchNo: "",
       productCode: "",
@@ -76,29 +115,45 @@ export default function GoodsDispatchNote() {
       salesRep: "",
       availableStock: "",
       route: "",
+      vehicleno: "",
     });
     setErrors({});
-    setEditingIndex(null);
+    setRows([]);
     setSelected(new Set());
-    if (rows.length === 0) setMode("new");
+    setMode("initial");
+    setEditingIndex(null);
   }
 
   function handleAddToGrid() {
     if (!validateForm()) return;
 
+    const avail = parseFloat(form.availableStock || 0);
+    const qtyNum = Number(form.qty);
+    if (!isNaN(avail) && qtyNum > avail) {
+      setAlert({ show: true, type: "warning", title: "Stock Error", message: `You entered quantity greater than available stock. Available: ${avail}` });
+      return;
+    }
+
     const entry = {
       id: Date.now().toString(),
-      ...form,
-      qty: Number(form.qty),
+      dispatchNo: form.dispatchNo,
+      productCode: form.productCode,
+      productName: form.productName,
+      qty: qtyNum,
       unitPrice: Number(form.unitPrice),
-      totalAmount: Number(form.totalAmount),
+      totalAmount: Number(form.totalAmount || 0),
+      date: form.date,
+      salesRep: form.salesRep,
+      availableStock: avail,
+      route: form.route,
+      vehicleno: form.vehicleno,
     };
 
     if (editingIndex !== null) {
       setRows((prev) => {
-        const copy = [...prev];
-        copy[editingIndex] = entry;
-        return copy;
+        const updated = [...prev];
+        updated[editingIndex] = entry;
+        return updated;
       });
       setEditingIndex(null);
     } else {
@@ -106,21 +161,112 @@ export default function GoodsDispatchNote() {
     }
 
     setMode("afterAdd");
-    handleClearForm();
+
+    setForm((prev) => ({
+      ...prev,
+      productCode: "",
+      productName: "",
+      qty: "",
+      unitPrice: "",
+      totalAmount: "",
+      availableStock: "",
+    }));
+
+    setErrors({});
+    setSelected(new Set());
   }
 
-  function handleSaveAll() {
-    if (rows.length === 0) {
-      alert("No items to save.");
-      return;
+  // --- Update handleSaveAll ---
+function handleSaveAll() {
+  if (rows.length === 0) {
+    setAlert({
+      show: true,
+      type: "info",
+      title: "Info",
+      message: "No items to save.",
+    });
+    return;
+  }
+
+  // Show confirmation alert
+  setAlert({
+    show: true,
+    type: "question",
+    title: "Confirm Save",
+    message: "Are you sure you want to save all dispatch details?",
+    onConfirm: async () => {
+      setAlert({ show: false }); // close alert
+      await saveData(); // call actual save function
+    },
+    onClose: () => setAlert({ show: false }),
+  });
+}
+
+
+async function saveData() {
+  const payload = {
+    dispatchNo: rows[0].dispatchNo,
+    user_login: window.currentUserName || "unknown",
+    items: rows.map((r) => ({
+      dispatchNo: r.dispatchNo,
+      productCode: r.productCode,
+      productName: r.productName,
+      qty: r.qty,
+      availableStock: r.availableStock,
+      unitPrice: r.unitPrice,
+      totalAmount: r.totalAmount,
+      salesRep: r.salesRep,
+      route: r.route,
+      vehicleno: r.vehicleno,
+      date: r.date,
+      realDate: new Date().toISOString(),
+    })),
+  };
+
+  try {
+    const res = await fetch("http://localhost:5000/api/dispatch/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const dataText = await res.text();
+
+    if (!res.ok) {
+      console.error("Save failed:", dataText);
+      throw new Error("Failed to save");
     }
-    alert(`Saved dispatch ${rows[0].dispatchNo} with ${rows.length} item(s).`);
-    setRows([]);
-    setMode("initial");
-    handleClearForm();
-  }
 
-  function toggleSelectRow(id, index) {
+    const data = JSON.parse(dataText);
+
+    setAlert({
+      show: true,
+      type: "success",
+      title: "Success",
+      message: data.message || "Saved successfully",
+      onConfirm: () => {
+        handleClearAll();
+        setAlert({ show: false });
+      },
+    });
+
+    setMode("initial");
+    setRows([]);
+    setTotalDispatchAmount(0);
+  } catch (err) {
+    console.error(err);
+    setAlert({
+      show: true,
+      type: "error",
+      title: "Error",
+      message: "Failed to save dispatch notes.",
+    });
+  }
+}
+
+
+
+  function toggleSelectRow(id) {
     const copy = new Set(selected);
     if (copy.has(id)) copy.delete(id);
     else copy.add(id);
@@ -130,15 +276,13 @@ export default function GoodsDispatchNote() {
       const selectedId = Array.from(copy)[0];
       const idx = rows.findIndex((r) => r.id === selectedId);
       if (idx >= 0) {
-        const r = rows[idx];
-        setForm({ ...r });
+        setForm({ ...rows[idx] });
         setEditingIndex(idx);
         setMode("rowSelected");
       }
     } else {
       setEditingIndex(null);
-      if (copy.size > 0) setMode("rowSelected");
-      else setMode(rows.length ? "afterAdd" : "new");
+      setMode(copy.size > 1 ? "rowSelected" : rows.length ? "afterAdd" : "new");
     }
   }
 
@@ -149,73 +293,138 @@ export default function GoodsDispatchNote() {
 
   function handleDelete() {
     if (selected.size === 0) return;
-    if (!window.confirm(`Delete ${selected.size} selected row(s)?`)) return;
-    setRows((prev) => prev.filter((r) => !selected.has(r.id)));
-    setSelected(new Set());
-    setMode(rows.length > 1 ? "afterAdd" : "new");
-    handleClearForm();
+    setAlert({
+      show: true,
+      type: "question",
+      title: "Confirm Delete",
+      message: `Delete ${selected.size} selected row(s)?`,
+      onConfirm: () => {
+        setRows((prev) => prev.filter((r) => !selected.has(r.id)));
+        setSelected(new Set());
+        setEditingIndex(null);
+        setMode(rows.length > 1 ? "afterAdd" : "new");
+        setForm((f) => ({
+          ...f,
+          productCode: "",
+          productName: "",
+          qty: "",
+          unitPrice: "",
+          totalAmount: "",
+          availableStock: "",
+        }));
+        setAlert({ show: false });
+      },
+      onClose: () => setAlert({ show: false }),
+    });
   }
 
-  
+  async function loadProducts(q) {
+    try {
+      const url = `http://localhost:5000/api/dispatch/products${q ? `?q=${encodeURIComponent(q)}` : ""}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Failed to load products");
+      const data = await res.json();
+      setProducts(data || []);
+    } catch (err) {
+      console.error(err);
+      setAlert({ show: true, type: "error", title: "Error", message: "Failed to load products" });
+    }
+  }
 
+  function handleProdSearch(e) {
+    const q = e.target.value;
+    setProdSearch(q);
+    loadProducts(q);
+  }
 
+  function selectProduct(p) {
+    setForm((f) => ({
+      ...f,
+      productCode: p.product_code,
+      productName: p.product_name,
+      unitPrice: p.unit_price,
+      availableStock: p.available_stock,
+      qty: "",
+      totalAmount: "",
+    }));
+    setErrors((e) => ({ ...e, qty: "" }));
+    setProductModalOpen(false);
+  }
+
+  function openProductModal() {
+    setProdSearch("");
+    loadProducts("");
+    setProductModalOpen(true);
+  }
+
+  function handleExit() {
+    window.location.href = "/dashboard";
+  }
 
   return (
-
-
     <div className="gdn-containergdn">
-      <aside className="gdn-sidebargdn">
-        <Menu />
-      </aside>
-
+      <aside className="gdn-sidebargdn"><Menu /></aside>
       <main className="gdn-main">
+        <Namewithdateacc />
         <h1 className="gdn-title">Goods Dispatch Note</h1>
 
+        {/* ALERT BOX */}
+        <AlertBox
+          show={alert.show}
+          type={alert.type}
+          title={alert.title}
+          message={alert.message}
+          onClose={() => setAlert({ show: false })}
+          onConfirm={alert.onConfirm}
+        />
 
-
-        {/* Form Section */}
+        {/* Form */}
         <section className="gdn-form-grid">
           <div className="gdn-col">
-
             <label>Dispatch No</label>
-            <input name="dispatchNo" value={form.dispatchNo} onChange={handleChange} />
-            {errors.productCode && <span className="error">{errors.productCode ? "input-error" : ""}</span>}
+            <input name="dispatchNo" value={form.dispatchNo} readOnly />
 
             <label>Product Code</label>
-            <input name="productCode" value={form.productCode} onChange={handleChange} className={errors.productCode ? "input-error" : ""}/>
-           
+            <div style={{ display: "flex", gap: "8px" }}>
+              <input
+                name="productCode"
+                value={form.productCode}
+                readOnly
+                placeholder="Select product"
+                className={errors.productCode ? "input-error" : ""}
+              />
+              <button type="button" onClick={openProductModal}>Select</button>
+            </div>
+            {errors.productCode && <span className="error">{errors.productCode}</span>}
 
-            <label>Product Name</label> 
-            <input name="productName" value={form.productName} onChange={handleChange} className={errors.productName ? "input-error" : ""}/>
+            <label>Product Name</label>
+            <input name="productName" value={form.productName} readOnly className={errors.productName ? "input-error" : ""} />
             {errors.productName && <span className="error">{errors.productName}</span>}
 
             <label>Qty</label>
             <input
               name="qty"
+              type="number"
               value={form.qty}
               onChange={handleChange}
-              type="number"
+              readOnly={!allowEditFields}
               className={errors.qty ? "input-error" : ""}
             />
             {errors.qty && <span className="error">{errors.qty}</span>}
 
-<div className="gdn-col">
             <label>Available Stock</label>
-            <input name="availableStock" value={form.availableStock} onChange={handleChange} />
-            
-          </div>
-
-
+            <input name="availableStock" value={form.availableStock} readOnly />
           </div>
 
           <div className="gdn-col">
             <label>Unit Price</label>
             <input
               name="unitPrice"
-              value={form.unitPrice}
-              onChange={handleChange}
               type="number"
               step="0.01"
+              value={form.unitPrice}
+              onChange={handleChange}
+              readOnly={!allowEditFields}
               className={errors.unitPrice ? "input-error" : ""}
             />
             {errors.unitPrice && <span className="error">{errors.unitPrice}</span>}
@@ -224,86 +433,65 @@ export default function GoodsDispatchNote() {
             <input name="totalAmount" value={form.totalAmount} readOnly />
 
             <label>Date</label>
-            <input name="date" value={form.date} onChange={handleChange} type="date" />
+            <input name="date" value={form.date} type="date" readOnly />
 
             <label>Sales Representative</label>
             <input
               name="salesRep"
               value={form.salesRep}
               onChange={handleChange}
+              readOnly={!allowEditFields}
               className={errors.salesRep ? "input-error" : ""}
             />
             {errors.salesRep && <span className="error">{errors.salesRep}</span>}
-            <label>Route</label>
-            <input name="route" value={form.route} onChange={handleChange} />
-          </div>
 
-          
+            <label>Route</label>
+            <input name="route" value={form.route} onChange={handleChange} readOnly={!allowEditFields} className={errors.route ? "input-error" : ""} />
+            {errors.route && <span className="error">{errors.route}</span>}
+
+            <label>Vehicle No</label>
+            <input name="vehicleno" value={form.vehicleno} onChange={handleChange} readOnly={!allowEditFields} className={errors.vehicleno ? "input-error" : ""} />
+            {errors.vehicleno && <span className="error">{errors.vehicleno}</span>}
+          </div>
         </section>
 
-
-        {/* Buttons Section */}
+        {/* Buttons */}
         <section className="gdn-top-buttons">
           {mode === "initial" && (
             <>
-              <button className="btn primary" onClick={handleNew}>
-                New
-              </button>
-              <button className="btn" onClick={() => window.close?.() || alert("Exit clicked")}>
-                Exit
-              </button>
+              <button className="btnnewgdn" onClick={handleNew}>New</button>
+              <button className="btnexitgdn" onClick={handleExit}>Exit</button>
             </>
           )}
+
           {mode === "new" && (
             <>
-              <button className="btn primary" onClick={handleAddToGrid}>
-                Add
-              </button>
-              <button className="btn" onClick={handleClearForm}>
-                Clear
-              </button>
-              <button className="btn" onClick={() => setMode("initial")}>
-                Exit
-              </button>
+              <button className="btnaddgdn" onClick={handleAddToGrid}>Add</button>
+              <button className="btnclear" onClick={handleClearAll}>Clear</button>
+              <button className="btnexit" onClick={handleExit}>Exit</button>
             </>
           )}
+
           {mode === "afterAdd" && (
             <>
-              <button className="btn success" onClick={handleSaveAll}>
-                Save
-              </button>
-              <button className="btn primary" onClick={() => setMode("new")}>
-                Add
-              </button>
-              <button className="btn" onClick={handleClearForm}>
-                Clear
-              </button>
-              <button className="btn" onClick={() => setMode("initial")}>
-                Exit
-              </button>
+              <button className="btnaddgdn" onClick={handleAddToGrid}>Add</button>
+              <button className="btnsave" onClick={handleSaveAll} disabled={rows.length === 0}> Save</button>
+              <button className="btnclear" onClick={handleClearAll}>Clear</button>
+              <button className="btnexit" onClick={handleExit}>Exit</button>
             </>
           )}
+
           {mode === "rowSelected" && (
             <>
-              <button className="btn" onClick={handleEdit} disabled={selected.size !== 1}>
-                Edit
-              </button>
-              <button className="btn danger" onClick={handleDelete}>
-                Delete
-              </button>
-              <button className="btn" onClick={handleClearForm}>
-                Clear
-              </button>
-              <button className="btn" onClick={() => setMode("initial")}>
-                Exit
-              </button>
+              <button className="btnexitgdn" onClick={handleEdit} disabled={selected.size !== 1}>Edit</button>
+              <button className="btndeletegdn" onClick={handleDelete}>Delete</button>
+              <button className="btncleargdn" onClick={handleClearAll}>Clear</button>
+              <button className="btnexitgdn" onClick={handleExit}>Exit</button>
             </>
           )}
         </section>
 
-
-
-        {/* Data Grid */}
+        {/* Grid */}
         <section className="gdn-grid-section">
           <table className="gdn-table">
             <thead>
@@ -323,30 +511,17 @@ export default function GoodsDispatchNote() {
             </thead>
             <tbody>
               {rows.length === 0 && (
-                <tr>
-                  <td colSpan="11" style={{ textAlign: "center" }}>
-                    No items added
-                  </td>
-                </tr>
+                <tr><td colSpan="11" style={{ textAlign: "center" }}>No items added</td></tr>
               )}
               {rows.map((r) => (
-                <tr
-                  key={r.id}
-                  className={selected.has(r.id) ? "selected-row" : ""}
-                >
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selected.has(r.id)}
-                      onChange={() => toggleSelectRow(r.id)}
-                    />
-                  </td>
+                <tr key={r.id} className={selected.has(r.id) ? "selected-row" : ""}>
+                  <td><input type="checkbox" checked={selected.has(r.id)} onChange={() => toggleSelectRow(r.id)} /></td>
                   <td>{r.dispatchNo}</td>
                   <td>{r.productCode}</td>
                   <td>{r.productName}</td>
                   <td>{r.qty}</td>
-                  <td>{r.unitPrice.toFixed(2)}</td>
-                  <td>{r.totalAmount.toFixed(2)}</td>
+                  <td>{Number(r.unitPrice).toFixed(2)}</td>
+                  <td>{Number(r.totalAmount).toFixed(2)}</td>
                   <td>{r.date}</td>
                   <td>{r.salesRep}</td>
                   <td>{r.availableStock}</td>
@@ -356,18 +531,75 @@ export default function GoodsDispatchNote() {
             </tbody>
           </table>
 
-          <div className="gdn-grid-actions">
-            <button className="btn" >
-              Print
-            </button>
-            <button className="btn" onClick={() => setPreviewOpen(true)}>
-              View
-            </button>
+          <div className="gdn-total-container">
+            <span className="gdn-total-label">Total Dispatch Amount:</span>
+            <span className="gdn-total-value">{totalDispatchAmount.toFixed(2)}</span>
           </div>
+
+          <div className="gdn-grid-spacer"></div>
         </section>
 
-        
-        
+        {/* Product modal */}
+        {productModalOpen && (
+          <div className="product-modal-overlay">
+            <div className="product-modal">
+              <h3>Select Product</h3>
+              <div style={{ marginBottom: 8 }}>
+                <input placeholder="Search..." value={prodSearch} onChange={handleProdSearch} />
+                <button onClick={() => loadProducts(prodSearch)}>Search</button>
+                <button
+                  onClick={() => {
+                    setProdSearch("");
+                    loadProducts("");
+                  }}
+                >
+                  Clear
+                </button>
+                <button onClick={() => setProductModalOpen(false)}>Close</button>
+              </div>
+
+              <div style={{ maxHeight: 300, overflow: "auto" }}>
+                <table className="gdn-table">
+                  <thead>
+                    <tr>
+                      <th>Code</th>
+                      <th>Name</th>
+                      <th>Unit Price</th>
+                      <th>Available</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.length === 0 && (
+                      <tr>
+                        <td colSpan="5">No products</td>
+                      </tr>
+                    )}
+                    {products.map((p) => (
+                      <tr key={p.product_code}>
+                        <td>{p.product_code}</td>
+                        <td>{p.product_name}</td>
+                        <td>{p.unit_price != null ? Number(p.unit_price).toFixed(2) : "0.00"}</td>
+                        <td>{p.available_stock}</td>
+                        <td>
+                          <button
+                            onClick={() => {
+                              selectProduct(p);
+                            }}
+                          >
+                            Select
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+
       </main>
     </div>
   );
