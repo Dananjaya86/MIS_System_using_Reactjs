@@ -15,4 +15,10 @@ router.get("/products/:code", controller.getProductByCode);
 // save many dispatch rows
 router.post("/save", controller.saveDispatchNotes);
 
+// search dispatches (for small popup)
+router.get("/search", controller.searchDispatches);
+
+// pdf view of dispatch (inline)
+router.get("/pdf/:dispatchNo", controller.generateDispatchPdf);
+
 module.exports = router;

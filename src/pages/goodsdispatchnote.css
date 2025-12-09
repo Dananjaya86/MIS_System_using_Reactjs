@@ -80,7 +80,7 @@ button {
 .btnprintgdn{ background: rgb(38, 136, 128); }
 .btnprintgdn:hover{ background: rgb(14, 109, 101); }
 
-.btnviewgdn{ background: rgb(146, 8, 146); }
+.btnviewgdn{ background: rgb(146, 8, 146); margin-top: 20px; }
 .btnviewgdn:hover{ background: rgb(92, 5, 92); }
 
 /* Form grid */
@@ -227,4 +227,50 @@ button {
   font-size: 16px;
   font-weight: 600;
   color: #2335d8;
+}
+/* Overlay */
+.dispatch-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Modal container */
+.dispatch-modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 600px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+.dispatch-searchbox {
+  width: 100%;
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.dispatch-search-input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  outline: none;
+}
+
+.dispatch-search-input:focus {
+  border-color: #3f51b5;
+  box-shadow: 0 0 3px rgba(63,81,181,0.4);
+}
+.searchbar{
+  width: 100px;
 }

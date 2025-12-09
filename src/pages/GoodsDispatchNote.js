@@ -1,8 +1,8 @@
-// src/pages/GoodsDispatchNote.js
+
 import React, { useEffect, useState } from "react";
 import Menu from "../componants/Menu";
 import Namewithdateacc from "../componants/Namewithdateacc";
-import AlertBox from "../componants/Alertboxre"; // Custom alert
+import AlertBox from "../componants/Alertboxre"; 
 import "./goodsdispatchnote.css";
 
 export default function GoodsDispatchNote() {
@@ -22,7 +22,7 @@ export default function GoodsDispatchNote() {
 
   const [errors, setErrors] = useState({});
   const [rows, setRows] = useState([]);
-  const [mode, setMode] = useState("initial"); // initial | new | afterAdd | rowSelected
+  const [mode, setMode] = useState("initial"); 
   const [selected, setSelected] = useState(new Set());
   const [editingIndex, setEditingIndex] = useState(null);
 
@@ -33,6 +33,33 @@ export default function GoodsDispatchNote() {
   const [prodSearch, setProdSearch] = useState("");
 
   const [totalDispatchAmount, setTotalDispatchAmount] = useState(0);
+
+  const [dispatchSearchOpen, setDispatchSearchOpen] = useState(false);
+const [dispatchSearchField, setDispatchSearchField] = useState(""); 
+const [dispatchSearchQuery, setDispatchSearchQuery] = useState("");
+const [dispatchSearchResults, setDispatchSearchResults] = useState([]);
+
+const loginUser = localStorage.getItem("username") || "Guest";
+
+
+
+
+
+const fetchPdf = async (dispatchNo) => {
+  const response = await fetch(`/api/dispatch/pdf/${dispatchNo}`);
+  if (!response.ok) throw new Error("Failed to load PDF");
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  window.open(url, "_blank");
+};
+
+
+
+const handlePrintPdf = (dispatchNo) => {
+  window.open(`/api/dispatch/pdf/${dispatchNo}`, "_blank");
+};
+
+
 
   // Alert state
   const [alert, setAlert] = useState({
@@ -93,6 +120,34 @@ export default function GoodsDispatchNote() {
       return "";
     }
   }
+
+
+async function loadDispatchSearch(q = "", field = "all") {
+  try {
+    const url = `http://localhost:5000/api/dispatch/search?q=${encodeURIComponent(q)}&field=${encodeURIComponent(field)}`;
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      console.error("Search failed");
+      setDispatchSearchResults([]);
+      return;
+    }
+
+    const data = await res.json();
+    setDispatchSearchResults(data || []);
+  } catch (err) {
+    console.error("Error loading dispatch search:", err);
+    setDispatchSearchResults([]);
+  }
+}
+
+function openDispatchPdf(dispatchNo) {
+  if (!dispatchNo) return; 
+  const backendUrl = `${window.location.origin.replace(":3000", ":5000")}/api/dispatch/pdf/${dispatchNo}`;
+  window.open(backendUrl, "_blank");
+}
+
+
 
   async function handleNew() {
     const newNo = await fetchNewDispatchNo();
@@ -195,18 +250,21 @@ function handleSaveAll() {
     title: "Confirm Save",
     message: "Are you sure you want to save all dispatch details?",
     onConfirm: async () => {
-      setAlert({ show: false }); // close alert
-      await saveData(); // call actual save function
+      setAlert({ show: false }); 
+      await saveData(); 
     },
     onClose: () => setAlert({ show: false }),
   });
 }
 
 
+
 async function saveData() {
+   const username = window.currentUserName || localStorage.getItem("username") || "unknown";
+
   const payload = {
     dispatchNo: rows[0].dispatchNo,
-    user_login: window.currentUserName || "unknown",
+    user_login: username,
     items: rows.map((r) => ({
       dispatchNo: r.dispatchNo,
       productCode: r.productCode,
@@ -228,6 +286,7 @@ async function saveData() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
+      
     });
 
     const dataText = await res.text();
@@ -330,6 +389,23 @@ async function saveData() {
       setAlert({ show: true, type: "error", title: "Error", message: "Failed to load products" });
     }
   }
+
+
+function SearchBox({ value, onChange, placeholder }) {
+  return (
+    <div className="dispatch-searchbox">
+      <input
+        type="text"
+        value={value}
+        placeholder={placeholder}
+        onChange={(e) => onChange(e.target.value)}
+        className="dispatch-search-input"
+      />
+    </div>
+  );
+}
+
+
 
   function handleProdSearch(e) {
     const q = e.target.value;
@@ -438,11 +514,11 @@ async function saveData() {
             <label>Sales Representative</label>
             <input
               name="salesRep"
-              value={form.salesRep}
-              onChange={handleChange}
-              readOnly={!allowEditFields}
-              className={errors.salesRep ? "input-error" : ""}
-            />
+               value={form.salesRep}
+               onChange={handleChange}
+               readOnly={!allowEditFields}
+               className={errors.salesRep ? "input-error" : ""}
+             />
             {errors.salesRep && <span className="error">{errors.salesRep}</span>}
 
             <label>Route</label>
@@ -450,10 +526,20 @@ async function saveData() {
             {errors.route && <span className="error">{errors.route}</span>}
 
             <label>Vehicle No</label>
-            <input name="vehicleno" value={form.vehicleno} onChange={handleChange} readOnly={!allowEditFields} className={errors.vehicleno ? "input-error" : ""} />
+            <input
+  name="vehicleno"
+  value={form.vehicleno}
+  onChange={handleChange}
+  readOnly={!allowEditFields}
+  className={errors.vehicleno ? "input-error" : ""}
+/>
             {errors.vehicleno && <span className="error">{errors.vehicleno}</span>}
           </div>
         </section>
+
+
+
+        
 
         {/* Buttons */}
         <section className="gdn-top-buttons">
@@ -539,6 +625,88 @@ async function saveData() {
           <div className="gdn-grid-spacer"></div>
         </section>
 
+        <button className="btnviewgdn" onClick={() => {
+  setDispatchSearchField("all");
+  setDispatchSearchQuery("");
+  setDispatchSearchOpen(true);
+  loadDispatchSearch("", "all");
+}}>
+  View
+</button>
+
+{/* ================================
+    Dispatch Search Popup
+================================ */}
+{dispatchSearchOpen && (
+  <div className="dispatch-modal-overlay">
+    <div className="dispatch-modal">
+      <h3>Search Dispatches</h3>
+
+      {/* Search Bar */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+        <input
+  type="text"
+  value={dispatchSearchQuery}
+  placeholder="Search sales rep / vehicle..."
+  onChange={(e) => {
+    setDispatchSearchQuery(e.target.value);
+    loadDispatchSearch(e.target.value, "all"); 
+  }}
+/>
+
+
+        <select
+          value={dispatchSearchField}
+          onChange={(e) => {
+            setDispatchSearchField(e.target.value);
+            loadDispatchSearch(dispatchSearchQuery, e.target.value);
+          }}
+        >
+          <option value="all">All</option>
+          <option value="salesrep">Sales Rep</option>
+          <option value="vehicleno">Vehicle No</option>
+        </select>
+
+        <button onClick={() => setDispatchSearchOpen(false)}>Close</button>
+      </div>
+
+      {/* Results Table */}
+      <div style={{ maxHeight: 300, overflowY: "auto" }}>
+        <table className="gdn-table">
+          <thead>
+            <tr>
+              <th>Dispatch No</th>
+              <th>Sales Rep</th>
+              <th>Vehicle No</th>
+              <th>Date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+  {dispatchSearchResults.map((d) => (
+    <tr
+      key={d.dispatch_no}
+      style={{ cursor: "pointer" }}
+      onDoubleClick={() => openDispatchPdf(d.dispatch_no)} 
+    >
+      <td>{d.dispatch_no}</td>
+      <td>{d.sales_person}</td>
+      <td>{d.vehicle_no}</td>
+      <td>{d.real_date}</td>
+    </tr>
+  ))}
+</tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+)}
+
+
+
+
+
         {/* Product modal */}
         {productModalOpen && (
           <div className="product-modal-overlay">
@@ -599,6 +767,9 @@ async function saveData() {
           </div>
         )}
 
+        
+
+       
 
       </main>
     </div>
