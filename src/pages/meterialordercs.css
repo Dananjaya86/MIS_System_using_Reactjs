@@ -1,6 +1,7 @@
 .container3 {
   display: flex;
  min-height: 1000px;
+ font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .content3 {
@@ -74,6 +75,24 @@ button {
 button:hover {
   background: #1759e9;
 }
+
+.btnaddmt { background: rgb(66, 126, 216); }
+.btnaddmt:hover { background: rgb(48, 68, 158); }
+
+.btnexitmt { background: rgb(224, 55, 55); }
+.btnexitmt:hover { background: rgb(158, 41, 41); }
+
+.btnsavemt { background: rgb(33, 156, 33); }
+.btnsavemt:hover { background: rgb(52, 121, 49); }
+
+.btnclearmt { background: rgb(150, 149, 148); }
+.btnclearmt:hover { background: rgb(109, 109, 108); }
+
+.btnmodifymt { background: rgb(25, 25, 206);  }
+.btnmodifymt:hover { background: rgb(11, 11, 156); }
+
+.btndeletemt { background: rgb(238, 76, 76); }
+.btndeletemt:hover { background: rgb(153, 35, 35); }
 
 table {
   width: 100%;

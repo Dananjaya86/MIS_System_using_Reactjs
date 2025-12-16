@@ -17,7 +17,7 @@ export default function Menu() {
     { label: "GRN", path: "/GRN", icon: "📋" },
     { label: "Sales", path: "/Sales", icon: "💰" },
     { label: "Advance Payment", path: "/AdvancePayment", icon: "💳" },
-    { label: "Material Order", path: "/MeterialOrder", icon: "🛒" },
+    { label: "Meterial Order", path: "/MeterialOrder", icon: "🛒" },
     { label: "Goods Dispatch Note", path: "/GoodsDispatchNote", icon: "🚚" },
     { label: "Stock Control", path: "/StockControl", icon: "📊" },
     { label: "Payment Setoff", path: "/PaymentSetoff", icon: "💸" },

@@ -98,3 +98,30 @@ textarea {
 
 .btn.view { background: rgb(146, 8, 146); }
 .btn.view:hover { background: rgb(92, 5, 92); }
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-box {
+  background: #fff;
+  padding: 20px;
+  width: 500px;
+  max-height: 400px;
+  overflow: auto;
+  border-radius: 6px;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 15px 0;
+  gap: 10px;
+}
+

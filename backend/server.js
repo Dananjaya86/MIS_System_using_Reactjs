@@ -12,6 +12,10 @@ const grnRoutes = require("./routes/grnRoutes");
 const invoiceRoutes = require("./routes/invoiceRoutes");
 const advancepayRoutes = require('./routes/advancepayRoutes');
 const dispatchRoutes= require("./routes/dispatchRoutes");
+const stockAdjustmentRoutes = require("./routes/stockcontrolRoutes");
+
+
+
 
 
 
@@ -35,6 +39,7 @@ app.use("/api/grn", grnRoutes);
 app.use("/api/invoice", invoiceRoutes);
 app.use("/api/advancepay", advancepayRoutes);
 app.use("/api/dispatch" , dispatchRoutes);
+app.use("/api/stock", stockAdjustmentRoutes);
 
 
 

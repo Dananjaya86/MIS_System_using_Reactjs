@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Menu from "../componants/Menu";
-import "./meterialorder.css";
+import "./meterialordercs.css";
 
 export default function MaterialOrderWindow() {
   const [formData, setFormData] = useState({
@@ -134,9 +134,10 @@ export default function MaterialOrderWindow() {
 
         {/* Buttons */}
         <div className="buttons">
-          <button onClick={handleAddOrUpdate}>{isEditing ? "Update" : "Add"}</button>
-          <button onClick={handleClear}>Clear</button>
-          <button>Exit</button>
+          <button className="btnaddmt" onClick={handleAddOrUpdate}>{isEditing ? "Update" : "Add"}</button>
+          <button className="btnsavemt" onClick={handleClear}>Save</button>
+          <button className="btnclearmt" onClick={handleClear}>Clear</button>
+          <button className="btnexitmt">Exit</button>
         </div>
 
 
@@ -165,9 +166,9 @@ export default function MaterialOrderWindow() {
                 <td>{row.orderDate}</td>
                 <td>{row.amount}</td>
                 <td>
-                  <button onClick={() => handleEdit(index)}>Modify</button>
-                  <button onClick={() => handleDelete(index)}>Delete</button>
-                  <button>Exit</button>
+                  <button className="btnmodifymt" onClick={() => handleEdit(index)}>Modify</button>
+                  <button className="btndeletemt" onClick={() => handleDelete(index)}>Delete</button>
+                 
                 </td>
               </tr>
             ))}
@@ -190,8 +191,8 @@ export default function MaterialOrderWindow() {
 
         {/* Print and View  Buttons*/}
         <div className="buttons">
-          <button>Print</button>
-          <button>View</button>
+          <button className="btnprintmt">Print</button>
+          <button className="btnviewmt">View</button>
         </div>
       </div>
     </div>
