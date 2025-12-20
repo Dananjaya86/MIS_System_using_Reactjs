@@ -76,6 +76,9 @@ button:hover {
   background: #1759e9;
 }
 
+.btnnewmt { background: rgb(33, 156, 33); }
+.btnnewmt:hover { background: rgb(52, 121, 49); }
+
 .btnaddmt { background: rgb(66, 126, 216); }
 .btnaddmt:hover { background: rgb(48, 68, 158); }
 
@@ -119,4 +122,114 @@ input[type="date"]:focus {
   border-color: #007bff;
   box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
   color: #007bff;  
+}
+/* Overlay and centered popup */
+.popup-dropdown {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-dropdown .popup-box {
+  background-color: #a4ccfa;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  max-height: 400px;
+  width: 400px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* Header with title and close button */
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #6d75eb;
+  border-bottom: 1px solid #ccc;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.popup-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.close-btn {
+  background: red;
+  color: white;
+  border: none;
+  padding: 2px 8px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+/* Search input below header */
+.popup-search {
+  width: 90%;
+  margin: 10px auto;
+  padding: 5px;
+  display: block;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Table styles */
+.popup-dropdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+
+.popup-dropdown th,
+.popup-dropdown td {
+  padding: 10px 15px;
+  text-align: left;
+}
+
+.popup-dropdown th {
+  position: sticky; 
+  top: 0;
+  background-color: #3753f1;
+  font-weight: 600;
+  border-bottom: 1px solid #ddd;
+}
+
+.popup-dropdown tr {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.popup-dropdown tr:hover {
+  background-color: #e6f7ff; 
+}
+
+/* Scrollbar styling */
+.popup-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.popup-dropdown::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.popup-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+input[readonly],
+input:disabled {
+  background: #f3f4f6;
+  color: #6b7280;
+  cursor: not-allowed;
 }

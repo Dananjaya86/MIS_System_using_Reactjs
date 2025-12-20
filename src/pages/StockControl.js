@@ -112,7 +112,7 @@ useEffect(() => {
 
 const loadStockAdjustments = async () => {
   try {
-    const res = await fetch("http://localhost:5000/api/stock/adjustment");
+    const res = await fetch("http://localhost:5000/api/stock/adjustments");
     const data = await res.json();
     setAdjustments(data);
     setCurrentPage(1); 

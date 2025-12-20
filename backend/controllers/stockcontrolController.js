@@ -186,4 +186,29 @@ exports.getStockAdjustments = async (req, res) => {
   }
 };
 
+/* ---------------------------------------------------
+   Get single adjustment (PDF / View)
+--------------------------------------------------- */
+exports.getSingleAdjustment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const pool = await poolPromise;
+
+    const result = await pool.request()
+      .input("id", sql.Int, id)
+      .query(`
+        SELECT *
+        FROM Stock_Adjustment
+        WHERE id = @id
+      `);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ message: "Adjustment not found" });
+    }
+
+    res.json(result.recordset[0]);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
