@@ -1,6 +1,8 @@
 const PDFDocument = require("pdfkit");
 const moment = require("moment");
 const { sql, poolPromise } = require("../db");
+const { toWords } = require('number-to-words');
+
 
 
 const parseDateOrNull = (val) => {
@@ -526,7 +528,7 @@ exports.generateInvoicePdf = async (req, res) => {
       { label: "Customer Code", value: invoice.customer_code || "" },
       { label: "Customer Name", value: invoice.customer_name || "" },
       { label: "Address", value: customer.address || "" },
-      { label: "Phone", value: customer.phone || "" },
+      { label: "Phone", value: customer.phone_number || "" },
       { label: "Route", value:customer.route || ""},
     ];
 
@@ -555,7 +557,7 @@ exports.generateInvoicePdf = async (req, res) => {
 
     const invoiceFields = [
       { label: "Invoice No", value: invoice.invoice_no },
-      { label: "Invoice Date", value: moment(invoice.manual_bill_date).format("YYYY-MM-DD") },
+      { label: "Invoice Date", value: moment(invoice.real_date).format("YYYY-MM-DD") },
       { label: "Manual Bill No", value: invoice.manual_bill_no || "" },
     ];
 
@@ -647,50 +649,60 @@ exports.generateInvoicePdf = async (req, res) => {
     tableY = checkPageBreak(tableY, 80);
 
     doc.fontSize(12).font("Helvetica-Bold");
-    doc.text(`Total Amount        : ${Number(invoice.total_amount || 0).toFixed(2)}`, 350, tableY, { align: "right" });
+    doc.text(`Total Amount        : ${Number(invoice.total_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 350, tableY, { align: "right" });
 
     tableY += 18;
-    doc.text(`Discount Amount  : ${Number(invoice.discount_amount || 0).toFixed(2)}`, 350, tableY, { align: "right" });
+    doc.text(`Discount Amount  : ${Number(invoice.discount_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 350, tableY, { align: "right" });
 
     tableY += 18;
-    doc.text(  `Return Amount  : ${Number(invoice.return_amount || 0).toFixed(2)}`,350, tableY, { align: "right" });
+    doc.text(  `Return Amount  : ${Number(invoice.return_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 350, tableY, { align: "right" });
 
     tableY += 18;
-    doc.text(`Invoice Total Amount : ${Number(invoice.total_invoice_amount || 0).toFixed(2)}`, 350, tableY, { align: "right" });
+    doc.text(`Invoice Total Amount : ${Number(invoice.total_invoice_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 350, tableY, { align: "right" });
 
     tableY += 30;
+     
+    const recoverableAmount = Number(invoice.total_recovarable_amount || 0);
+const recoverableAmountFormatted = recoverableAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const recoverableInWords = toWords(recoverableAmount).replace(/\b\w/g, l => l.toUpperCase()); // Capitalize words
+
+
 
     //  Recoverable Amount Message
-    doc.fontSize(12).font("Helvetica");
-    doc.text(
-      `You have pay Total recoverable amount is : ${Number(invoice.total_recovarable_amount || 0).toFixed(2)}. Please settle this amount on next visit.`,
-      40,
-      tableY,
-      { width: 500 }
-    );
+    const yPosition = tableY + 30;
+    doc.fontSize(10).font("Helvetica");
+doc.text(
+  `The total recoverable amount is : ${recoverableAmountFormatted} (${recoverableInWords} Only). Please pay this amount on our next visit.`,
+  40,
+  yPosition,
+  { width: 500 }
+);
 
     tableY += 40;
 
     //  Cheque Message
-    doc.fontSize(12).font("Helvetica-Oblique");
+    const xPosition = tableY + 30;
+    doc.fontSize(10).font("Helvetica-Oblique");
     doc.text(
       `If you made payment by cheque please draw in favour of "Milkee Foods Products"`,
       40,
-      tableY,
+      xPosition,
       { width: 500 }
     );
 
     tableY += 50;
 
     // Signatures
+const zPosition = tableY + 30;
     doc.fontSize(12).font("Helvetica");
-    doc.text(`Prepared By : ${invoice.user_login || "Unknown"}`, 40, tableY);
-    doc.text("Checked By : ...................", 220, tableY);
-    doc.text("Authorized By : ................", 400, tableY);
+    doc.text(`Prepared By : ${invoice.user_login || "Unknown"}`, 40, zPosition);
+    doc.text("Checked By : ...................", 220, zPosition);
+    doc.text("Authorized By : ................", 400, zPosition);
 
     // END PDF
     doc.end();
 
+    
   } catch (err) {
     console.error("❌ PDF generation error:", err);
     res.status(500).json({ message: err.message });

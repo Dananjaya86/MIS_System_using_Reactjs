@@ -14,6 +14,7 @@ const advancepayRoutes = require('./routes/advancepayRoutes');
 const dispatchRoutes= require("./routes/dispatchRoutes");
 const stockAdjustmentRoutes = require("./routes/stockcontrolRoutes");
 const materialOrderRoutes = require("./routes/materialOrderRoutes");
+const paysetoffRoutes = require("./routes/paysetoffRoutes");
 
 
 const app = express();
@@ -35,6 +36,7 @@ app.use("/api/advancepay", advancepayRoutes);
 app.use("/api/dispatch" , dispatchRoutes);
 app.use("/api/stock", stockAdjustmentRoutes);
 app.use("/api/material-order", materialOrderRoutes);
+app.use("/api/paysetoff", paysetoffRoutes);
 
 
 

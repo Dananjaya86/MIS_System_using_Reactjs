@@ -97,6 +97,9 @@ button:hover {
 .btndeletemt { background: rgb(238, 76, 76); }
 .btndeletemt:hover { background: rgb(153, 35, 35); }
 
+.btnviewmt { background: rgb(146, 8, 146); }
+.btnviewmt:hover { background: rgb(92, 5, 92); }
+
 table {
   width: 100%;
   border-collapse: collapse;

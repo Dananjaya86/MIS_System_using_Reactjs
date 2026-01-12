@@ -459,12 +459,16 @@ const closeInvoicePopup = () => {
       setSaveCompleted(false);
 
       const invNoToSend = invoiceNo || formData.invoiceNo;
-  if (!invNoToSend) {
+  if (!invoiceNo && !formData.invoiceNo) {
     showAlert("error", "Error", "Invoice number missing");
     setIsSaving(false);
     return;
   }
-
+  if (!formData.customerCode) {
+    showAlert("error", "Error", "Customer not selected");
+    setIsSaving(false);
+    return;
+  }
     
     if (!tempData || tempData.length === 0) {
     showAlert("error", "Error", "No rows to save");
@@ -502,7 +506,7 @@ const closeInvoicePopup = () => {
       };  
 
       const body = {
-        invoice_no: invNoToSend,
+        invoice_no: invoiceNo || formData.invoiceNo,
         customer: formData.customerCode || "",
         total: Number(formData.totalInvoice || 0) || tempData.reduce((s, r) => s + (Number(r.lineAmount) || 0), 0),
         items,
@@ -519,6 +523,20 @@ const closeInvoicePopup = () => {
     
 
   const data = await res.json().catch(() => ({}));
+
+if (!res.ok || !data.success) {
+      showAlert("error", "Save Failed", data.message || data.error || "Unknown error");
+    } else {
+      showAlert("success", "Saved", `Invoice ${body.invoice_no} saved successfully`, () => {
+        setTempData([]);
+        setFormData({});
+        setInvoiceNo("");
+        setIsNew(false);
+        setIsSaveDisabled(true);
+      });
+      setSaveCompleted(true);
+    }
+
 
 if (res.ok) {
   showAlert("success", "Success", data.message || "Invoice saved successfully");

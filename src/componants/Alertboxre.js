@@ -41,7 +41,13 @@ export default function AlertBox({ show, type = "info", title, message, onClose,
 
             {type === "question" ? (
               <div className="alert-buttons">
-                <button className="alert-btn yes" onClick={onConfirm}>
+                <button
+  className="alert-btn yes"
+  onClick={() => {
+    if (onConfirm) onConfirm(); // call the callback
+    if (onClose) onClose();     // close the alert after confirmation
+  }}
+>
                   Yes
                 </button>
                 <button className="alert-btn no" onClick={onClose}>
