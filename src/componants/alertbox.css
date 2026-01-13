@@ -6,20 +6,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 20000;   /* 🔥 must be higher than popup */
 }
 
 /* Alert box */
 .alert-box {
   position: relative;
   width: 500px;
-height: 200px;
+  height: 200px;
   padding: 20px;
   border-radius: 16px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   text-align: center;
   animation: popUp 0.3s ease-out;
+  z-index: 20001;  /* 🔥 above overlay */
 }
+
 
 /* Title and message */
 .alert-header {

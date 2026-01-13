@@ -186,13 +186,20 @@ exports.savePaymentSetoff = async (req, res) => {
 
       
 if (row.advancePayId) {
+  const remainingAdvance = Number(row.balanceAmount || 0);
+
   const advReq = new sql.Request(transaction);
   await advReq
     .input("advance_id", sql.VarChar, row.advancePayId)
+    .input("remaining", sql.Decimal(18,2), remainingAdvance)
     .input("payment_date", sql.DateTime, payment_date)
     .query(`
       UPDATE Advance_Payment_Details
-      SET status = 'Settled',
+      SET advance_payment_amount = @remaining,
+          status = CASE 
+                     WHEN @remaining = 0 THEN 'Settled'
+                     ELSE 'Pending'
+                   END,
           payment_date = @payment_date
       WHERE advance_pay_id = @advance_id
     `);

@@ -338,15 +338,26 @@
 
     // ---------------- HANDLERS ----------------
     const handleChange = (e) => { const { name, value } = e.target; setForm((prev) => { 
-      let newForm = { ...prev, [name]: value }; if (name === "paidAmount") 
-        { const paidAmount = parseFloat(value || 0); 
-          const totalCredit = prev.totalCredit ? parseFloat(prev.totalCredit) : null; 
-          const advancePayment = prev.advancePayment ? parseFloat(prev.advancePayment) : 0; 
-          let balance = ""; 
-          if (totalCredit !== null && totalCredit > 0) { balance = totalCredit - paidAmount - advancePayment; 
+      let newForm = { ...prev, [name]: value }; 
+      if (name === "paidAmount") {
+  const paid = parseFloat(value || 0);
+  const adv = parseFloat(prev.advancePayment || 0);
+  const credit = parseFloat(prev.totalCredit || 0);
 
-          } newForm.balanceAmount = balance !== "" ? balance.toFixed(2) : ""; 
-        }
+  let balance = 0;
+
+  // 🔵 Advance Pay Mode
+  if (currentType === "advancepay") {
+    balance = adv - paid;     // remaining advance
+  }
+  // 🔵 Customer / Supplier
+  else {
+    balance = credit - paid - adv;
+  }
+
+  newForm.balanceAmount = balance > 0 ? balance.toFixed(2) : "0.00";
+}
+
         return newForm; }); 
       };
 
@@ -464,17 +475,22 @@
         return;
       }
 
-      const newRow = {
-        ...form,
-        id: Date.now(),
-        paidAmount: form.advancePayment,   
-        balanceAmount: "0.00",
-        totalCredit: form.advancePayment,
-        status: "Settled",
-        advancePayId: form.advancePayId,
-      };
+      const paid = Number(form.paidAmount || 0);
+const adv = Number(form.advancePayment || 0);
+const balance = adv - paid;
 
-      setGridData([newRow]);
+const newRow = {
+  ...form,
+  id: Date.now(),
+  paidAmount: paid.toFixed(2),
+  balanceAmount: balance > 0 ? balance.toFixed(2) : "0.00",
+  totalCredit: adv.toFixed(2),
+  status: balance > 0 ? "Pending" : "Settled",
+  advancePayId: form.advancePayId,
+};
+
+// 🔥 Force React refresh
+setGridData(prev => [...prev, newRow]);
       setShowAdvancePopup(false);
       setShowPopup(false);
       setMode("view");

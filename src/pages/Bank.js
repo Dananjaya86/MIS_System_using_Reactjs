@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Menu from "../componants/Menu";
 import ReconcileModal from "./ReconcileModal";
 import "./bank.css";
+import Namewithdateacc from "../componants/Namewithdateacc"
 
 export default function Bank() {
   const [form, setForm] = useState({
@@ -65,6 +66,7 @@ export default function Bank() {
     <div className="bank-containerbn">
       <Menu />
       <div className="bank-contentbn">
+        <Namewithdateacc/>
         <h1 className="titlebn">Bank Transactions & Reconciliation</h1>
 
         {/* Form Box */}
