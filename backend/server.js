@@ -16,6 +16,8 @@ const stockAdjustmentRoutes = require("./routes/stockcontrolRoutes");
 const materialOrderRoutes = require("./routes/materialOrderRoutes");
 const paysetoffRoutes = require("./routes/paysetoffRoutes");
 const expencessRoutes = require("./routes/expencessRoutes");
+const bankRoutes = require("./routes/bankRoutes");
+const recRoutes = require("./routes/recRoutes");
 
 
 const app = express();
@@ -39,6 +41,8 @@ app.use("/api/stock", stockAdjustmentRoutes);
 app.use("/api/material-order", materialOrderRoutes);
 app.use("/api/paysetoff", paysetoffRoutes);
 app.use("/api/expencess", expencessRoutes);
+app.use("/api/bank", bankRoutes);
+app.use("/api/reconcile", recRoutes);
 
 
 

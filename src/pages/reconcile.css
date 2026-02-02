@@ -126,3 +126,56 @@
 .btn-saverec { background: #219c21; color: #fff; }
 .btn-exitrec { background: #d9534f; color: #fff; }
 .btn-exitrec:hover { background: #a73b38; }
+
+.pagination-rec {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.page-btnrec {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #6366f1;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.page-btnrec:hover:not(:disabled) {
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.4);
+}
+
+.page-btnrec:disabled {
+  background: #c7d2fe;
+  cursor: not-allowed;
+}
+
+.page-inforec {
+  font-weight: 600;
+  font-size: 13px;
+  color: #334155;
+}
+.row-clearedrec input {
+  background: #e5e7eb;
+  color: #374151;
+  cursor: not-allowed;
+}
+
+.btn-delrec {
+  background: transparent;
+  border: none;
+  color: #ff4d4f;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 6px;
+}
+.btn-delrec:hover {
+  transform: scale(1.2);
+}
