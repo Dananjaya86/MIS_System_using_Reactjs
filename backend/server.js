@@ -19,6 +19,7 @@ const expencessRoutes = require("./routes/expencessRoutes");
 const bankRoutes = require("./routes/bankRoutes");
 const recRoutes = require("./routes/recRoutes");
 const returnRoutes = require("./routes/returnRoutes");
+const reportRoutes = require("./routes/reportRoutes");
 
 const app = express();
 const PORT = 5000;
@@ -44,6 +45,7 @@ app.use("/api/expencess", expencessRoutes);
 app.use("/api/bank", bankRoutes);
 app.use("/api/reconcile", recRoutes);
 app.use("/api/returns", returnRoutes);
+app.use("/api/reports", reportRoutes);
 
 
 

@@ -123,6 +123,15 @@
 .btn-billbookad { background: #ff9800; }
 .btn-billbookad:hover { background: #d17d00; }
 
+.btnbudget{
+  background: #3a45dd;
+  margin: 10px;
+  
+}
+.btnbudget:hover{
+  background: #1d27bb;
+}
+
 .data-gridad {
   width: 100%;
   border-collapse: collapse;

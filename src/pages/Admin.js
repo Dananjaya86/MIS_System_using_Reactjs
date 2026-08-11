@@ -421,6 +421,7 @@ export default function Admin() {
             onChange={e => { setSearchQuery(e.target.value); setCurrentPage(1); }}
             className="search-boxad"
           />
+          <button className="btnbudget" >Budget</button>
           <select
             value={rowsPerPage}
             onChange={e => { setRowsPerPage(Number(e.target.value)); setCurrentPage(1); }}

@@ -24,8 +24,44 @@
 .reports-table-ad .table-wrap-ad { overflow:auto; background:#fff; padding:10px; border-radius:8px; box-shadow:0 4px 12px rgba(18,38,63,0.03); }
 .reports-table-ad table { width:100%; border-collapse:collapse; }
 .reports-table-ad th, .reports-table-ad td { text-align:left; padding:10px 8px; border-bottom:1px solid #f0f2f6; font-size:13px; }
-.reports-table-ad th { background:#fafbfd; font-weight:600; }
+.reports-table-ad th { background:#1054db; font-weight:600; }
 .no-data-ad { color:#3a45dd; padding:18px; }
+
+/* Active toggle */
+.btn-ghost-ad {
+  background: #f3f4f6;
+  border: 1px solid #ccc;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-ghost-ad:hover {
+  background: #e5e7eb;
+}
+
+.btn-ghost-ad.active {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+}
+
+/* Search box */
+.search-ad {
+  min-width: 200px;
+  padding: 8px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.search-ad:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+  outline: none;
+}
 
 /* responsive */
 @media (max-width:900px) {

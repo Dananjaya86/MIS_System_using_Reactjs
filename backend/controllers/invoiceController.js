@@ -50,10 +50,10 @@ exports.getCustomerPaymentInfo = async (req, res) => {
     const paymentResult = await pool.request()
       .input("code", sql.VarChar, customerCode)
       .query(`
-        SELECT TOP 1 balance_amount AS last_payment_amount, real_date AS last_payment_date
-        FROM Payment
+        SELECT TOP 1 balance_payment AS last_payment_amount, real_time AS last_payment_date
+        FROM pending_payment
         WHERE party_code = @code 
-        ORDER BY real_date DESC
+        ORDER BY real_time DESC
       `);
 
     const lastPayment = paymentResult.recordset[0] || { last_payment_amount: 0, last_payment_date: null };
