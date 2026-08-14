@@ -1,6 +1,17 @@
+
 const { poolPromise, sql } = require("../db");
 
+console.log("🔥 REPORT CONTROLLER FILE LOADED 🔥");
+
 exports.getReports = async (req, res) => {
+
+  console.log("🔥🔥🔥 GET REPORTS CALLED 🔥🔥🔥");
+
+  console.log("TYPE =", req.query.type);
+  console.log("FILTER MODE =", req.query.filterMode);
+  console.log("FROM =", req.query.from);
+  console.log("TO =", req.query.to);
+
   const { type, from, to, search, filterMode } = req.query;
 
   try {
@@ -259,6 +270,165 @@ else if (type === "bank") {
   });
 }
 
+else if (type === "grn") {
+  query = `
+    SELECT
+      g.grn_no AS grn_no,
+      g.supplier_code AS supplier_code,
+      g.supplier_name AS supplier_name,
+      g.supplier_invoice_number AS supplier_invoice_number,
+      g.supplier_invoice_date AS supplier_invoice_date,
+
+      gd.product_code AS product_code,
+      gd.product_name AS product_name,
+      gd.invoice_qty AS invoice_qty,
+      gd.unit_price AS unit_price,
+      gd.amount AS amount,
+
+      g.gross_amount AS gross_amount,
+      g.discount_amount AS discount_amount,
+      g.net_amount AS net_amount,
+
+      g.login_user AS login_user,
+      g.real_date AS real_date
+
+    FROM GRN_Details AS g
+
+    INNER JOIN GRN_Grid_Details AS gd
+      ON g.grn_no = gd.grn_no
+
+    WHERE 1 = 1
+  `;
+
+  dateColumn = "g.real_date";
+  nameColumn = "g.supplier_name";
+}
+
+else if (type === "payment") {
+
+  query = `
+    SELECT
+      ps.payment_id,
+      ps.ref_no AS ref_number,
+      ps.paid_amount AS payment,
+      ps.real_date AS setoff_real_date,
+      ISNULL(ps.advance_payment, 0) AS advance_payment,
+
+      pp.party_code,
+      pp.party_name,
+      pp.payable_amount,
+      pp.balance_payment,
+      pp.payment_date,
+      pp.status
+
+    FROM Payment_setoff AS ps
+
+    LEFT JOIN pending_payment AS pp
+      ON LTRIM(RTRIM(ps.ref_no)) =
+         LTRIM(RTRIM(pp.ref_number))
+
+    WHERE 1 = 1
+  `;
+
+  dateColumn = "ps.real_date";
+  nameColumn = "pp.party_name";
+}
+
+else if (type === "returns") {
+
+  query = `
+    SELECT
+      return_number,
+      return_type,
+      product_code,
+      product_name,
+      qty,
+      amount,
+      ref_no,
+      return_date,
+      reason,
+      reason_other,
+      remaks,
+      party_code,
+      party_name,
+      user_name,
+      real_date
+
+    FROM Return_Details
+
+    WHERE 1 = 1
+  `;
+
+  dateColumn = "real_date";
+  nameColumn = "product_name";
+}
+
+
+else if (type === "employees") {
+
+  query = `
+    SELECT
+      employeeNo,
+      firstName,
+      lastName,
+      callingName,
+      address,
+      position,
+      login_user,
+      phoneNumber,
+      birthday,
+      active,
+
+      LTRIM(
+        STUFF(
+          CASE WHEN customer_details = 1
+            THEN ', Customer Details' ELSE '' END +
+          CASE WHEN supplier_details = 1
+            THEN ', Supplier Details' ELSE '' END +
+          CASE WHEN product_details = 1
+            THEN ', Product Details' ELSE '' END +
+          CASE WHEN production = 1
+            THEN ', Production' ELSE '' END +
+          CASE WHEN grn = 1
+            THEN ', GRN' ELSE '' END +
+          CASE WHEN sale = 1
+            THEN ', Sales' ELSE '' END +
+          CASE WHEN advance_payment = 1
+            THEN ', Advance Payment' ELSE '' END +
+          CASE WHEN material_order = 1
+            THEN ', Material Order' ELSE '' END +
+          CASE WHEN goods_dispatch_note = 1
+            THEN ', Goods Dispatch Note' ELSE '' END +
+          CASE WHEN stock_control = 1
+            THEN ', Stock Control' ELSE '' END +
+          CASE WHEN payment_setoff = 1
+            THEN ', Payment Setoff' ELSE '' END +
+          CASE WHEN expenses = 1
+            THEN ', Expenses' ELSE '' END +
+          CASE WHEN bank = 1
+            THEN ', Bank' ELSE '' END +
+          CASE WHEN return_items = 1
+            THEN ', Return' ELSE '' END +
+          CASE WHEN report = 1
+            THEN ', Reports' ELSE '' END +
+          CASE WHEN admin = 1
+            THEN ', Admin' ELSE '' END,
+          1,
+          2,
+          ''
+        )
+      ) AS access
+
+    FROM Admin_Panel
+
+    WHERE 1 = 1
+  `;
+
+  dateColumn = "[date]";
+  nameColumn = "callingName";
+}
+
+
     else 
       {
       return res.status(400).json({ message: "Invalid report type" });
@@ -266,11 +436,32 @@ else if (type === "bank") {
 
     /* ================= DATE RANGE ================= */
 
-    if (filterMode === "range" && from && to) {
-      query += ` AND ${dateColumn} BETWEEN @from AND @to`;
-      request.input("from", sql.Date, new Date(from));
-      request.input("to", sql.Date, new Date(to));
-    }
+ if (filterMode === "range" && from && to) {
+
+  console.log("DATE FILTER REQUEST");
+  console.log("TYPE:", type);
+  console.log("FROM:", from);
+  console.log("TO:", to);
+
+  request.input(
+    "fromDate",
+    sql.Date,
+    from
+  );
+
+  request.input(
+    "toDate",
+    sql.Date,
+    to
+  );
+
+  query += `
+    AND ${dateColumn} >= @fromDate
+    AND ${dateColumn} < DATEADD(day, 1, @toDate)
+  `;
+}
+
+
 
     /* ================= SEARCH ================= */
 
@@ -296,6 +487,68 @@ else if (type === "bank") {
     
   }
 
+  else if (type === "grn") {
+  query += `
+      AND (
+        COALESCE(g.grn_no, '') LIKE '%' + @search + '%'
+        OR COALESCE(g.supplier_code, '') LIKE '%' + @search + '%'
+        OR COALESCE(g.supplier_name, '') LIKE '%' + @search + '%'
+        OR COALESCE(g.supplier_invoice_number, '') LIKE '%' + @search + '%'
+        OR COALESCE(gd.product_code, '') LIKE '%' + @search + '%'
+        OR COALESCE(gd.product_name, '') LIKE '%' + @search + '%'
+      )
+    `;
+}
+
+else if (type === "returns") {
+
+  query += `
+    AND (
+      COALESCE(return_number, '') LIKE '%' + @search + '%'
+      OR COALESCE(return_type, '') LIKE '%' + @search + '%'
+      OR COALESCE(product_code, '') LIKE '%' + @search + '%'
+      OR COALESCE(product_name, '') LIKE '%' + @search + '%'
+      OR COALESCE(ref_no, '') LIKE '%' + @search + '%'
+      OR COALESCE(reason, '') LIKE '%' + @search + '%'
+      OR COALESCE(reason_other, '') LIKE '%' + @search + '%'
+      OR COALESCE(party_code, '') LIKE '%' + @search + '%'
+      OR COALESCE(party_name, '') LIKE '%' + @search + '%'
+      OR COALESCE(user_name, '') LIKE '%' + @search + '%'
+    )
+  `;
+}
+
+else if (type === "payment") {
+
+  query += `
+    AND (
+      COALESCE(ps.ref_no, '') LIKE '%' + @search + '%'
+      OR COALESCE(pp.party_code, '') LIKE '%' + @search + '%'
+      OR COALESCE(pp.party_name, '') LIKE '%' + @search + '%'
+      OR COALESCE(ps.payment_id, '') LIKE '%' + @search + '%'
+    )
+  `;
+}
+
+
+else if (type === "employees") {
+
+  query += `
+    AND (
+      COALESCE(employeeNo, '') LIKE '%' + @search + '%'
+      OR COALESCE(firstName, '') LIKE '%' + @search + '%'
+      OR COALESCE(lastName, '') LIKE '%' + @search + '%'
+      OR COALESCE(callingName, '') LIKE '%' + @search + '%'
+      OR COALESCE(address, '') LIKE '%' + @search + '%'
+      OR COALESCE(position, '') LIKE '%' + @search + '%'
+      OR COALESCE(login_user, '') LIKE '%' + @search + '%'
+      OR COALESCE(phoneNumber, '') LIKE '%' + @search + '%'
+      OR COALESCE(active, '') LIKE '%' + @search + '%'
+    )
+  `;
+}
+
+
   else {
     query += ` AND ${nameColumn} LIKE '%' + @search + '%'`;
   }
@@ -306,13 +559,16 @@ else if (type === "bank") {
 
     query += ` ORDER BY ${dateColumn} DESC`;
 
-    console.log("FINAL SQL:", query);
+console.log("FINAL SQL:", query);
 
-    const result = await request.query(query);
-    return res.json(result.recordset || []);
+const result = await request.query(query);
+
+return res.json(result.recordset || []);
 
   } catch (err) {
     console.error("Report Error:", err);
     return res.status(500).json({ message: err.message });
   }
+
+  
 };

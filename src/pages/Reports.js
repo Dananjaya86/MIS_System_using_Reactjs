@@ -122,29 +122,75 @@ useEffect(() => {
       { key: "balance", label: "Balance" },
     ],
     grn: [
-      { key: "date", label: "Date" },
-      { key: "supplierName", label: "Supplier Name" },
-      { key: "productCode", label: "Product Code" },
-      { key: "name", label: "Name" },
-      { key: "stockInQty", label: "Stock In Qty" },
-      { key: "amount", label: "Amount" },
-    ],
+  { key: "grn_no", label: "GRN No" },
+  { key: "supplier_code", label: "Supplier Code" },
+  { key: "supplier_name", label: "Supplier Name" },
+  { key: "supplier_invoice_number", label: "Supplier Invoice No" },
+  { key: "supplier_invoice_date", label: "Supplier Invoice Date" },
+
+  { key: "product_code", label: "Product Code" },
+  { key: "product_name", label: "Product Name" },
+  { key: "invoice_qty", label: "Invoice Qty" },
+  { key: "unit_price", label: "Unit Price" },
+  { key: "amount", label: "Amount" },
+
+  { key: "gross_amount", label: "Gross Amount" },
+  { key: "discount_amount", label: "Discount" },
+  { key: "net_amount", label: "Net Amount" },
+
+  { key: "login_user", label: "Login User" },
+  { key: "real_date", label: "Real Date" },
+],
     payment: [
-      { key: "date", label: "Date" },
-      { key: "vendorCode", label: "Vendor Code" },
-      { key: "vendorName", label: "Vendor Name" },
-      { key: "amount", label: "Amount" },
-      { key: "mode", label: "Mode" },
-      { key: "accountNumber", label: "Account Number" },
-    ],
+
+  { key: "ref_number", label: "Ref Number" },
+  { key: "party_code", label: "Party Code" },
+  { key: "party_name", label: "Party Name" },
+  { key: "payable_amount", label: "Payable Amount" },
+  { key: "payment", label: "Payment" },
+  { key: "balance_payment", label: "Balance Payment" },
+  { key: "setoff_real_date", label: "Payment Date" },
+  { key: "status", label: "Status" },
+  { key: "payment_id", label: "Payment ID" },
+  { key: "advance_payment", label: "Advance Payment" }
+
+],
     returns: [
-      { key: "date", label: "Date" },
-      { key: "vendorCode", label: "Vendor Code" },
-      { key: "vendorName", label: "Vendor Name" },
-      { key: "itemCode", label: "Item Code" },
-      { key: "name", label: "Name" },
-      { key: "qty", label: "Qty" },
-    ],
+
+  { key: "return_number", label: "Return Number" },
+  { key: "return_type", label: "Return Type" },
+  { key: "product_code", label: "Product Code" },
+  { key: "product_name", label: "Product Name" },
+  { key: "qty", label: "Qty" },
+  { key: "amount", label: "Amount" },
+  { key: "ref_no", label: "Reference No" },
+  { key: "return_date", label: "Return Date" },
+  { key: "reason", label: "Reason" },
+  { key: "reason_other", label: "Other Reason" },
+  { key: "remaks", label: "Remarks" },
+  { key: "party_code", label: "Party Code" },
+  { key: "party_name", label: "Party Name" },
+  { key: "user_name", label: "User" },
+  { key: "real_date", label: "Real Date" }
+
+],
+
+employees: [
+
+  { key: "employeeNo", label: "Employee No" },
+  { key: "firstName", label: "First Name" },
+  { key: "lastName", label: "Last Name" },
+  { key: "callingName", label: "Calling Name" },
+  { key: "address", label: "Address" },
+  { key: "position", label: "Position" },
+  { key: "login_user", label: "Login User" },
+  { key: "phoneNumber", label: "Phone" },
+  { key: "birthday", label: "Birthday" },
+  { key: "active", label: "Status" },
+  { key: "access", label: "Access" }
+
+],
+
   };
 
   const columns = REPORT_COLUMNS[reportType] || [];
@@ -331,7 +377,13 @@ const displayRows =
 }
 
   
-  const doc = new jsPDF("l", "pt", "a4"); // landscape 
+  const doc = new jsPDF(
+  "l",
+  "pt",
+  (reportType === "grn" || reportType === "returns")
+    ? "a3"
+    : "a4"
+); 
   const pageWidth = doc.internal.pageSize.getWidth();
 
   // Header
@@ -446,6 +498,507 @@ autoTable(doc, {
 }
 
 
+// ================= GRN PRINT =================
+if (reportType === "grn") {
+
+  const grnRows = rows.map(r => [
+    r.grn_no ?? "",
+    r.supplier_code ?? "",
+    r.supplier_name ?? "",
+    r.supplier_invoice_number ?? "",
+
+    r.supplier_invoice_date
+      ? new Date(r.supplier_invoice_date).toLocaleDateString()
+      : "",
+
+    r.product_code ?? "",
+    r.product_name ?? "",
+
+    r.invoice_qty !== null && r.invoice_qty !== undefined
+      ? Number(r.invoice_qty).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })
+      : "",
+
+    r.unit_price !== null && r.unit_price !== undefined
+      ? Number(r.unit_price).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })
+      : "",
+
+    r.amount !== null && r.amount !== undefined
+      ? Number(r.amount).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })
+      : "",
+
+    r.gross_amount !== null && r.gross_amount !== undefined
+      ? Number(r.gross_amount).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })
+      : "",
+
+    r.discount_amount !== null && r.discount_amount !== undefined
+      ? Number(r.discount_amount).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })
+      : "",
+
+    r.net_amount !== null && r.net_amount !== undefined
+      ? Number(r.net_amount).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })
+      : "",
+
+    r.login_user ?? "",
+
+    r.real_date
+      ? new Date(r.real_date).toLocaleString()
+      : ""
+  ]);
+
+
+  autoTable(doc, {
+    startY: 105,
+
+    head: [[
+      "GRN No",
+      "Supplier Code",
+      "Supplier Name",
+      "Supplier Invoice No",
+      "Supplier Invoice Date",
+      "Product Code",
+      "Product Name",
+      "Invoice Qty",
+      "Unit Price",
+      "Amount",
+      "Gross Amount",
+      "Discount",
+      "Net Amount",
+      "Login User",
+      "Real Date"
+    ]],
+
+    body: grnRows,
+
+    theme: "grid",
+
+    styles: {
+      fontSize: 7,
+      cellPadding: 3,
+      overflow: "linebreak",
+      valign: "middle"
+    },
+
+    headStyles: {
+      fillColor: [43, 116, 228],
+      textColor: 255,
+      fontSize: 7,
+      fontStyle: "bold",
+      halign: "center"
+    },
+
+    columnStyles: {
+      0: { cellWidth: 60 },
+      1: { cellWidth: 65 },
+      2: { cellWidth: 100 },
+      3: { cellWidth: 75 },
+      4: { cellWidth: 70 },
+      5: { cellWidth: 65 },
+      6: { cellWidth: 100 },
+      7: { cellWidth: 55, halign: "right" },
+      8: { cellWidth: 65, halign: "right" },
+      9: { cellWidth: 70, halign: "right" },
+      10: { cellWidth: 70, halign: "right" },
+      11: { cellWidth: 65, halign: "right" },
+      12: { cellWidth: 70, halign: "right" },
+      13: { cellWidth: 55 },
+      14: { cellWidth: 80 }
+    },
+
+    margin: {
+      left: 20,
+      right: 20
+    },
+
+    pageBreak: "auto",
+    rowPageBreak: "auto",
+
+    didDrawPage: () => {
+
+      const username =
+        localStorage.getItem("username") || "Unknown User";
+
+      const pageNumber =
+        doc.internal.getNumberOfPages();
+
+      const currentPage =
+        doc.internal.getCurrentPageInfo().pageNumber;
+
+      const pageHeight =
+        doc.internal.pageSize.getHeight();
+
+      doc.setFontSize(8);
+
+      doc.text(
+        `Printed by: ${username} | ${new Date().toLocaleString()} | Page ${currentPage} of ${pageNumber}`,
+        doc.internal.pageSize.getWidth() / 2,
+        pageHeight - 15,
+        {
+          align: "center"
+        }
+      );
+    }
+  });
+
+
+  doc.save(
+    `GRN-Report-${fromDate || "all"}_to_${toDate || "all"}.pdf`
+  );
+
+  return;
+}
+
+// ================= PAYMENT PRINT =================
+if (reportType === "payment") {
+
+  const paymentRows = rows.map(r => [
+
+    r.ref_number ?? "",
+
+    r.party_code ?? "",
+
+    r.party_name ?? "",
+
+    r.payable_amount !== null &&
+    r.payable_amount !== undefined
+      ? Number(r.payable_amount).toLocaleString(
+          undefined,
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }
+        )
+      : "",
+
+    r.payment !== null &&
+    r.payment !== undefined
+      ? Number(r.payment).toLocaleString(
+          undefined,
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }
+        )
+      : "",
+
+    r.balance_payment !== null &&
+    r.balance_payment !== undefined
+      ? Number(r.balance_payment).toLocaleString(
+          undefined,
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }
+        )
+      : "",
+
+    r.payment_date
+      ? new Date(r.payment_date).toLocaleDateString()
+      : "",
+
+    r.status ?? "",
+
+    r.payment_id ?? "",
+
+    r.advance_payment !== null &&
+    r.advance_payment !== undefined
+      ? Number(r.advance_payment).toLocaleString(
+          undefined,
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }
+        )
+      : ""
+
+  ]);
+
+
+  autoTable(doc, {
+
+    startY: 105,
+
+    head: [[
+
+      "Ref Number",
+      "Party Code",
+      "Party Name",
+      "Payable Amount",
+      "Payment",
+      "Balance Payment",
+      "Payment Date",
+      "Status",
+      "Payment ID",
+      "Advance Payment"
+
+    ]],
+
+    body: paymentRows,
+
+    theme: "grid",
+
+    styles: {
+      fontSize: 8,
+      cellPadding: 4,
+      overflow: "linebreak",
+      valign: "middle"
+    },
+
+    headStyles: {
+      fillColor: [43, 116, 228],
+      textColor: 255,
+      fontSize: 8,
+      fontStyle: "bold",
+      halign: "center"
+    },
+
+    columnStyles: {
+
+      0: {
+        cellWidth: 70
+      },
+
+      1: {
+        cellWidth: 65
+      },
+
+      2: {
+        cellWidth: 110
+      },
+
+      3: {
+        cellWidth: 80,
+        halign: "right"
+      },
+
+      4: {
+        cellWidth: 75,
+        halign: "right"
+      },
+
+      5: {
+        cellWidth: 85,
+        halign: "right"
+      },
+
+      6: {
+        cellWidth: 75
+      },
+
+      7: {
+        cellWidth: 70
+      },
+
+      8: {
+        cellWidth: 75
+      },
+
+      9: {
+        cellWidth: 85,
+        halign: "right"
+      }
+
+    },
+
+    margin: {
+      left: 20,
+      right: 20
+    },
+
+    pageBreak: "auto",
+    rowPageBreak: "auto",
+
+    didDrawPage: () => {
+
+      const username =
+        localStorage.getItem("username") ||
+        "Unknown User";
+
+      const pageNumber =
+        doc.internal.getNumberOfPages();
+
+      const currentPage =
+        doc.internal.getCurrentPageInfo()
+          .pageNumber;
+
+      const pageHeight =
+        doc.internal.pageSize.getHeight();
+
+      doc.setFontSize(8);
+
+      doc.text(
+        `Printed by: ${username} | ${new Date().toLocaleString()} | Page ${currentPage} of ${pageNumber}`,
+        doc.internal.pageSize.getWidth() / 2,
+        pageHeight - 15,
+        {
+          align: "center"
+        }
+      );
+
+    }
+
+  });
+
+
+  doc.save(
+    `Payment-Report-${fromDate || "all"}_to_${toDate || "all"}.pdf`
+  );
+
+  return;
+}
+
+// ================= RETURN PRINT =================
+if (reportType === "returns") {
+
+  const returnRows = rows.map(r => [
+
+    r.return_number ?? "",
+
+    r.return_type ?? "",
+
+    r.product_code ?? "",
+
+    r.product_name ?? "",
+
+    r.qty !== null && r.qty !== undefined
+      ? Number(r.qty).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })
+      : "",
+
+    r.amount !== null && r.amount !== undefined
+      ? Number(r.amount).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })
+      : "",
+
+    r.ref_no ?? "",
+
+    r.return_date
+      ? new Date(r.return_date).toLocaleDateString()
+      : "",
+
+    r.reason ?? "",
+
+    r.reason_other ?? "",
+
+    r.remaks ?? "",
+
+    r.party_code ?? "",
+
+    r.party_name ?? "",
+
+    r.user_name ?? "",
+
+    r.real_date
+      ? new Date(r.real_date).toLocaleString()
+      : ""
+
+  ]);
+
+  autoTable(doc, {
+
+    startY: 105,
+
+    head: [[
+      "Return No",
+      "Return Type",
+      "Product Code",
+      "Product Name",
+      "Qty",
+      "Amount",
+      "Ref No",
+      "Return Date",
+      "Reason",
+      "Other Reason",
+      "Remarks",
+      "Party Code",
+      "Party Name",
+      "User",
+      "Real Date"
+    ]],
+
+    body: returnRows,
+
+    theme: "grid",
+
+    styles: {
+      fontSize: 7,
+      cellPadding: 3,
+      overflow: "linebreak",
+      valign: "middle"
+    },
+
+    headStyles: {
+      fillColor: [43, 116, 228],
+      textColor: 255,
+      fontSize: 7,
+      fontStyle: "bold",
+      halign: "center"
+    },
+
+    margin: {
+      left: 20,
+      right: 20
+    },
+
+    pageBreak: "auto",
+    rowPageBreak: "auto",
+
+    didDrawPage: () => {
+
+      const username =
+        localStorage.getItem("username") || "Unknown User";
+
+      const pageNumber =
+        doc.internal.getNumberOfPages();
+
+      const currentPage =
+        doc.internal.getCurrentPageInfo().pageNumber;
+
+      const pageHeight =
+        doc.internal.pageSize.getHeight();
+
+      doc.setFontSize(8);
+
+      doc.text(
+        `Printed by: ${username} | ${new Date().toLocaleString()} | Page ${currentPage} of ${pageNumber}`,
+        doc.internal.pageSize.getWidth() / 2,
+        pageHeight - 15,
+        {
+          align: "center"
+        }
+      );
+    }
+
+  });
+
+  doc.save(
+    `Return-Report-${fromDate || "all"}_to_${toDate || "all"}.pdf`
+  );
+
+  return;
+}
+
 
   // Prepare table
   const tableColumns = columns.map(c => ({ header: c.label, dataKey: c.key }));
@@ -479,6 +1032,78 @@ autoTable(doc, {
       doc.text(footerText, pageWidth / 2, doc.internal.pageSize.getHeight() - 20, { align: "center" });
     }
   });
+
+  const totalQty = rows.reduce(
+  (sum, r) => sum + Number(r.invoice_qty || 0),
+  0
+);
+
+const totalGross = rows.reduce(
+  (sum, r) => sum + Number(r.gross_amount || 0),
+  0
+);
+
+const totalDiscount = rows.reduce(
+  (sum, r) => sum + Number(r.discount_amount || 0),
+  0
+);
+
+const totalNet = rows.reduce(
+  (sum, r) => sum + Number(r.net_amount || 0),
+  0
+);
+
+const summaryY = doc.lastAutoTable.finalY + 20;
+
+autoTable(doc, {
+  startY: summaryY,
+
+  head: [[
+    "Total Invoice Qty",
+    "Gross Amount",
+    "Total Discount",
+    "Net Amount"
+  ]],
+
+  body: [[
+    totalQty.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }),
+
+    totalGross.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }),
+
+    totalDiscount.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }),
+
+    totalNet.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })
+  ]],
+
+  styles: {
+    fontSize: 9,
+    fontStyle: "bold"
+  },
+
+  headStyles: {
+    fillColor: [43, 116, 228],
+    textColor: 255
+  },
+
+  theme: "grid",
+
+  margin: {
+    left: 20,
+    right: 20
+  }
+});
 
   doc.save(`${reportType}-report-${fromDate || "all"}_to_${toDate || "all"}.pdf`);
 }
