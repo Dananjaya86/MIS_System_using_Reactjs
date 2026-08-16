@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Menu from "../componants/Menu";
+import AlertBox from "../componants/Alertboxre";
 import "./admin.css";
+import Budget from "./Budget";
+
 
 export default function Admin() {
   const [form, setForm] = useState({
@@ -34,6 +37,20 @@ export default function Admin() {
   const [date, setDate] = useState("");
   const [username, setUsername] = useState("");
 
+  const [showBudget, setShowBudget] = useState(false);
+
+ const [alertBox, setAlertBox] = useState({
+    show: false,
+    type: "info",
+    title: "",
+    message: "",
+    onConfirm: null
+});
+
+
+
+
+
   const PERMISSIONS = [
     "Customer Details", "Supplier Details", "Product Details", "Production",
     "GRN", "Sale", "Advance Payment", "Material Order",
@@ -47,6 +64,36 @@ export default function Admin() {
     setDate(today.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }));
     fetchAdmins();
   }, []);
+
+
+const showAlert = (
+    type,
+    title,
+    message,
+    onConfirm = null
+) => {
+
+    setAlertBox({
+        show: true,
+        type,
+        title,
+        message,
+        onConfirm
+    });
+
+};
+
+
+const closeAlert = () => {
+
+    setAlertBox(prev => ({
+        ...prev,
+        show: false,
+        onConfirm: null
+    }));
+
+};
+
 
   const getAuthHeaders = () => ({
     "Content-Type": "application/json",
@@ -80,13 +127,28 @@ export default function Admin() {
     const { name, value } = e.target;
 
     if (name === "username" && value.trim()) {
-      const exists = await checkUsernameExists(value.trim());
-      if (exists) {
-        alert("Username exists. Choose another username");
-        setForm(prev => ({ ...prev, username: "" }));
+
+    const exists =
+        await checkUsernameExists(
+            value.trim()
+        );
+
+    if (exists) {
+
+        showAlert(
+            "warning",
+            "Username Already Exists",
+            "This username already exists. Please choose another username."
+        );
+
+        setForm(prev => ({
+            ...prev,
+            username: ""
+        }));
+
         return;
-      }
     }
+}
 
     setForm(prev => ({ ...prev, [name]: value }));
 
@@ -147,10 +209,58 @@ export default function Admin() {
 
   const handleAdd = async (e) => {
     e.preventDefault();
-    if (!form.lastName.trim()) return alert("Enter last name to generate EmployeeNo");
-    if (!form.employeeNo) return alert("Employee number missing — please re-enter last name");
-    if (!form.username.trim() || !form.password.trim()) return alert("Username and password required");
-    if (form.password !== form.confirmPassword) return alert("Passwords do not match");
+    if (!form.lastName.trim()) {
+
+    showAlert(
+        "warning",
+        "Last Name Required",
+        "Please enter the last name to generate the Employee Number."
+    );
+
+    return;
+}
+
+
+if (!form.employeeNo) {
+
+    showAlert(
+        "warning",
+        "Employee Number Missing",
+        "Please enter the last name again to generate the Employee Number."
+    );
+
+    return;
+}
+
+
+if (
+    !form.username.trim() ||
+    !form.password.trim()
+) {
+
+    showAlert(
+        "warning",
+        "Login Details Required",
+        "Username and password are required."
+    );
+
+    return;
+}
+
+
+if (
+    form.password !==
+    form.confirmPassword
+) {
+
+    showAlert(
+        "error",
+        "Password Mismatch",
+        "Password and Confirm Password do not match."
+    );
+
+    return;
+}
 
     const body = { ...form, login_user: username };
 
@@ -161,21 +271,62 @@ export default function Admin() {
         body: JSON.stringify(body),
       });
       const data = await res.json();
-      if (!res.ok) return alert(data.error || "Failed to add admin");
+      if (!res.ok) {
 
-      alert(`✅ Admin added successfully. EmployeeNo: ${data.employeeNo}`);
+    showAlert(
+        "error",
+        "Add Failed",
+        data.error ||
+        "Failed to add admin."
+    );
+
+    return;
+}
+
+      showAlert(
+    "success",
+    "Admin Added Successfully",
+    `Employee Number: ${data.employeeNo}`
+);
       await fetchAdmins();
       handleExit();
     } catch (err) {
       console.error("Add failed:", err);
-      alert("Failed to add admin. Check console.");
+      showAlert(
+    "error",
+    "Add Failed",
+    "Failed to add the administrator. Please check the server or try again."
+);
     }
   };
 
   const handleEdit = async (e) => {
     e.preventDefault();
-    if (!form.employeeNo) return alert("Select an employee first");
-    if (form.password !== form.confirmPassword) return alert("Passwords do not match");
+    if (!form.employeeNo) {
+
+    showAlert(
+        "warning",
+        "Employee Not Selected",
+        "Please select an employee from the table first."
+    );
+
+    return;
+}
+
+
+if (
+    form.password !==
+    form.confirmPassword
+) {
+
+    showAlert(
+        "error",
+        "Password Mismatch",
+        "Password and Confirm Password do not match."
+    );
+
+    return;
+}
 
     const body = { ...form, login_user: username };
     if (!form.password) delete body.password;
@@ -187,38 +338,121 @@ export default function Admin() {
         body: JSON.stringify(body),
       });
       const data = await res.json();
-      if (!res.ok) return alert(data.error || "Update failed");
+      if (!res.ok) {
 
-      alert(`✅ ${data.message}`);
+    showAlert(
+        "error",
+        "Update Failed",
+        data.error ||
+        "Update failed."
+    );
+
+    return;
+}
+
+      showAlert(
+    "success",
+    "Update Successful",
+    data.message
+);
       await fetchAdmins();
       handleExit();
     } catch (err) {
       console.error("Edit failed:", err);
-      alert("Update failed. Check console.");
+      showAlert(
+    "error",
+    "Update Failed",
+    "Update failed. Please check the console or try again."
+);
     }
   };
 
   const handleDelete = async () => {
-    if (!form.employeeNo) return alert("Select an employee first");
-    if (!window.confirm("Are you sure you want to delete this admin?")) return;
 
-    try {
-      const res = await fetch(`http://localhost:5000/api/admin/delete/${form.employeeNo}`, {
-        method: "PUT",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ login_user: username }),
-      });
-      const data = await res.json();
-      if (!res.ok) return alert(data.error || "Delete failed");
+    if (!form.employeeNo) {
 
-      alert(`🗑️ ${data.message}`);
-      await fetchAdmins();
-      handleExit();
-    } catch (err) {
-      console.error("Delete failed:", err);
-      alert("Delete failed. Check console.");
+        showAlert(
+            "warning",
+            "Employee Not Selected",
+            "Please select an employee first."
+        );
+
+        return;
     }
-  };
+
+
+    showAlert(
+        "question",
+        "Delete Employee?",
+        `Are you sure you want to delete Employee ${form.employeeNo}?`,
+        async () => {
+
+            try {
+
+                const res =
+                    await fetch(
+                        `http://localhost:5000/api/admin/delete/${form.employeeNo}`,
+                        {
+                            method: "PUT",
+                            headers: getAuthHeaders(),
+                            body: JSON.stringify({
+                                login_user:
+                                    username
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await res.json();
+
+
+                if (!res.ok) {
+
+                    showAlert(
+                        "error",
+                        "Delete Failed",
+                        data.error ||
+                        "Unable to delete the employee."
+                    );
+
+                    return;
+                }
+
+
+                showAlert(
+                    "success",
+                    "Employee Deleted",
+                    data.message ||
+                    "Employee deleted successfully."
+                );
+
+
+                await fetchAdmins();
+
+                handleExit();
+
+
+            } catch (err) {
+
+                console.error(
+                    "Delete failed:",
+                    err
+                );
+
+
+                showAlert(
+                    "error",
+                    "Delete Failed",
+                    "Failed to delete the employee. Please try again."
+                );
+
+            }
+
+        }
+    );
+
+};
 
   const handleRowClick = (row) => {
     setForm({
@@ -421,7 +655,12 @@ export default function Admin() {
             onChange={e => { setSearchQuery(e.target.value); setCurrentPage(1); }}
             className="search-boxad"
           />
-          <button className="btnbudget" >Budget</button>
+          <button
+    className="btnbudget"
+    onClick={() => setShowBudget(true)}
+>
+    Budget
+</button>
           <select
             value={rowsPerPage}
             onChange={e => { setRowsPerPage(Number(e.target.value)); setCurrentPage(1); }}
@@ -483,6 +722,21 @@ export default function Admin() {
             </button>
           ))}
         </div>
+        {showBudget && (
+          <Budget
+            onClose={() => setShowBudget(false)}
+          />
+        )}
+
+         <AlertBox
+    show={alertBox.show}
+    type={alertBox.type}
+    title={alertBox.title}
+    message={alertBox.message}
+    onClose={closeAlert}
+    onConfirm={alertBox.onConfirm}
+/>
+
       </div>
     </div>
   );

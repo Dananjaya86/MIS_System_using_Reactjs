@@ -20,6 +20,8 @@ const bankRoutes = require("./routes/bankRoutes");
 const recRoutes = require("./routes/recRoutes");
 const returnRoutes = require("./routes/returnRoutes");
 const reportRoutes = require("./routes/reportRoutes");
+const budgetRoutes = require("./routes/budgetRoute");
+const dashboardRoutes = require("./routes/dashboardRoute");
 
 const app = express();
 const PORT = 5000;
@@ -46,6 +48,8 @@ app.use("/api/bank", bankRoutes);
 app.use("/api/reconcile", recRoutes);
 app.use("/api/returns", returnRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/budget", budgetRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 
 
