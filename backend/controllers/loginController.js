@@ -102,4 +102,193 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { login };
+// ============================================================
+// FORGOT USERNAME
+// ============================================================
+
+const forgotUsername = async (req, res) => {
+  const { employeeNo, idNo } = req.body;
+
+  if (!employeeNo || !idNo) {
+    return res.status(400).json({
+      success: false,
+      message: "Employee No and ID No are required",
+    });
+  }
+
+  try {
+    const pool = await poolPromise;
+
+    const result = await pool
+      .request()
+      .input(
+        "employeeNo",
+        sql.VarChar(50),
+        employeeNo.trim()
+      )
+      .input(
+        "idNo",
+        sql.VarChar(100),
+        idNo.trim()
+      )
+      .query(`
+        SELECT
+          l.username,
+          l.employeeNo
+        FROM dbo.login_details l
+        INNER JOIN dbo.Admin_Panel a
+          ON a.employeeNo = l.employeeNo
+        WHERE l.employeeNo = @employeeNo
+          AND a.idNo = @idNo
+          AND l.active = 'Yes'
+          AND a.active = 'Yes'
+      `);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Employee details could not be verified",
+      });
+    }
+
+    return res.json({
+      success: true,
+      username: result.recordset[0].username,
+    });
+
+  } catch (err) {
+    console.error("Forgot username error:", err);
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+
+// ============================================================
+// FORGOT PASSWORD
+// ============================================================
+
+const forgotPassword = async (req, res) => {
+  const {
+    employeeNo,
+    idNo,
+    newPassword,
+  } = req.body;
+
+  if (!employeeNo || !idNo || !newPassword) {
+    return res.status(400).json({
+      success: false,
+      message:
+        "Employee No, ID No and new password are required",
+    });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({
+      success: false,
+      message:
+        "Password must contain at least 6 characters",
+    });
+  }
+
+  try {
+    const pool = await poolPromise;
+
+    // --------------------------------------------------------
+    // Verify employee
+    // --------------------------------------------------------
+
+    const verifyResult = await pool
+      .request()
+      .input(
+        "employeeNo",
+        sql.VarChar(50),
+        employeeNo.trim()
+      )
+      .input(
+        "idNo",
+        sql.VarChar(100),
+        idNo.trim()
+      )
+      .query(`
+        SELECT l.employeeNo
+        FROM dbo.login_details l
+        INNER JOIN dbo.Admin_Panel a
+          ON a.employeeNo = l.employeeNo
+        WHERE l.employeeNo = @employeeNo
+          AND a.idNo = @idNo
+          AND l.active = 'Yes'
+          AND a.active = 'Yes'
+      `);
+
+    if (verifyResult.recordset.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Employee details could not be verified",
+      });
+    }
+
+    // --------------------------------------------------------
+    // Hash new password
+    // --------------------------------------------------------
+
+    const hashedPassword = await bcrypt.hash(
+      newPassword,
+      10
+    );
+
+    // --------------------------------------------------------
+    // Update password
+    // --------------------------------------------------------
+
+    await pool
+      .request()
+      .input(
+        "employeeNo",
+        sql.VarChar(50),
+        employeeNo.trim()
+      )
+      .input(
+        "password",
+        sql.VarChar(255),
+        hashedPassword
+      )
+      .query(`
+        UPDATE dbo.login_details
+        SET password = @password,
+            active = 'Yes'
+        WHERE employeeNo = @employeeNo
+      `);
+
+    return res.json({
+      success: true,
+      message: "Password reset successfully",
+    });
+
+  } catch (err) {
+    console.error("Forgot password error:", err);
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+
+
+
+// ============================================================
+// EXPORT
+// ============================================================
+
+module.exports = {
+  login,
+  forgotUsername,
+  forgotPassword,
+};
+
+

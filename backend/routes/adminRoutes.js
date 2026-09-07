@@ -13,7 +13,7 @@ router.get("/", verifyToken, adminController.getAllAdmins);
 router.get("/generate/:lastName", verifyToken, adminController.generateEmployeeNo);
 
 // Get admin by employee number
-router.get("/:employeeNo", verifyToken, adminController.getAdminById);
+
 
 //  Add new admin
 router.post("/add", verifyToken, adminController.addAdmin);
@@ -24,7 +24,11 @@ router.put("/update/:employeeNo", verifyToken, adminController.updateAdmin);
 //  delete admin with employee number 
 router.put("/delete/:employeeNo", verifyToken, adminController.deleteAdmin);
 
-router.get("/check-username", verifyToken, adminController.checkUsername);
+router.get( "/check-username",  verifyToken,  adminController.checkUsername);
+
+router.put( "/reset-password/:employeeNo", verifyToken, adminController.resetPassword);
+
+router.get("/:employeeNo", verifyToken, adminController.getAdminById);
 
 module.exports = router;
 

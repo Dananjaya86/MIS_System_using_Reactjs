@@ -28,6 +28,8 @@
     
     router.post("/invoice/save", invoiceController.saveInvoice);
 
+    router.put( "/customers/:code/status", invoiceController.updateCustomerStatus);
+
     // invoiceRoutes.js
     router.get("/invoice/pdf/:invoiceNo", invoiceController.generateInvoicePdf);
     router.get("/invoice/print/:invoiceNo", invoiceController.generateInvoicePdf);

@@ -150,6 +150,11 @@ const closeAlert = () => {
     }
 }
 
+
+
+
+
+
     setForm(prev => ({ ...prev, [name]: value }));
 
     if (name === "lastName" && value.trim() && isNewMode) {
@@ -163,6 +168,118 @@ const closeAlert = () => {
         .finally(() => setIsGeneratingEmpNo(false));
     }
   };
+
+
+
+   // ============================================================
+// RESET PASSWORD
+// ============================================================
+
+const [showResetModal, setShowResetModal] = useState(false);
+const [resetPassword, setResetPassword] = useState("");
+const [showResetPassword, setShowResetPassword] = useState(false);
+
+const handleResetPassword = () => {
+  if (!form.employeeNo) {
+    showAlert(
+      "warning",
+      "Employee Not Selected",
+      "Please select an employee first."
+    );
+    return;
+  }
+
+  // Clear old password
+  setResetPassword("");
+  setShowResetPassword(false);
+
+  // Open reset password popup
+  setShowResetModal(true);
+};
+
+
+// ============================================================
+// CONFIRM RESET PASSWORD
+// ============================================================
+
+const handleConfirmResetPassword = async () => {
+  if (!resetPassword) {
+    showAlert(
+      "warning",
+      "Password Required",
+      "Please enter a new password."
+    );
+    return;
+  }
+
+  if (resetPassword.length < 6) {
+    showAlert(
+      "warning",
+      "Invalid Password",
+      "Password must contain at least 6 characters."
+    );
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      showAlert(
+        "error",
+        "Authentication Error",
+        "Your login session has expired. Please login again."
+      );
+      return;
+    }
+
+    const response = await fetch(
+      `http://localhost:5000/api/admin/reset-password/${form.employeeNo}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          newPassword: resetPassword,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+        data.error ||
+        "Password reset failed."
+      );
+    }
+
+    // Close modal
+    setResetPassword("");
+    setShowResetPassword(false);
+    setShowResetModal(false);
+
+    showAlert(
+      "success",
+      "Password Reset Successful",
+      `Password for Employee ${form.employeeNo} has been reset successfully.`
+    );
+
+  } catch (error) {
+    console.error("Reset password error:", error);
+
+    showAlert(
+      "error",
+      "Reset Password Failed",
+      error.message || "Unable to reset password."
+    );
+  }
+};
+
+
 
   const handlePermissionChange = (perm) => {
     if (isReadOnly) return;
@@ -641,10 +758,131 @@ if (
                 <button type="button" className="btnad btn-deletead" onClick={handleDelete}>Delete</button>
                 <button type="button" className="btnad btn-clearad" onClick={resetForm}>Clear</button>
                 <button type="button" className="btnad btn-exitad" onClick={handleExit}>Exit</button>
+                <button type="button" onClick={handleResetPassword} style={{
+      backgroundColor: "#f59e0b",
+      color: "white",
+      border: "none",
+      padding: "10px 18px",
+      borderRadius: "6px",
+      cursor: "pointer",
+      fontWeight: "600",
+    }}
+  >
+    Reset Password
+  </button>
               </>
             )}
           </div>
         </form>
+
+{showResetModal && (
+  <div className="reset-modal-overlay">
+
+    <div className="reset-modal">
+
+      {/* HEADER */}
+      <div className="reset-modal-header">
+
+        <div className="reset-modal-icon">
+          🔐
+        </div>
+
+        <div className="reset-modal-title">
+          <h2>Reset Password</h2>
+          <p>Update employee login password</p>
+        </div>
+
+        <button
+          type="button"
+          className="reset-close-btn"
+          onClick={() => setShowResetModal(false)}
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      {/* EMPLOYEE */}
+      <div className="reset-employee-card">
+
+        <div className="reset-user-icon">
+          👤
+        </div>
+
+        <div>
+          <span>Employee Number</span>
+          <strong>{form.employeeNo}</strong>
+        </div>
+
+      </div>
+
+
+      {/* PASSWORD */}
+      <div className="reset-password-section">
+
+        <label>New Password</label>
+
+        <div className="reset-password-wrapper">
+
+          <input
+            type={showResetPassword ? "text" : "password"}
+            value={resetPassword}
+            onChange={(e) =>
+              setResetPassword(e.target.value)
+            }
+            placeholder="Enter new password"
+            autoFocus
+          />
+
+          <button
+            type="button"
+            className="reset-eye-btn"
+            onClick={() =>
+              setShowResetPassword(!showResetPassword)
+            }
+          >
+            {showResetPassword ? "🙈" : "👁️"}
+          </button>
+
+        </div>
+
+        <div className="reset-password-hint">
+          Password must contain at least 6 characters.
+        </div>
+
+      </div>
+
+
+      {/* BUTTONS */}
+      <div className="reset-modal-buttons">
+
+        <button
+          type="button"
+          className="reset-cancel-btn"
+          onClick={() => {
+            setResetPassword("");
+            setShowResetModal(false);
+          }}
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          className="reset-confirm-btn"
+          onClick={handleConfirmResetPassword}
+        >
+          🔐 Reset Password
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+)}
+        
 
         
         <div className="search-paginationad">

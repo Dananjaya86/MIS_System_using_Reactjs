@@ -23,6 +23,7 @@ const reportRoutes = require("./routes/reportRoutes");
 const budgetRoutes = require("./routes/budgetRoute");
 const dashboardRoutes = require("./routes/dashboardRoute");
 
+
 const app = express();
 const PORT = 5000;
 
@@ -40,6 +41,7 @@ app.use("/api/grn", grnRoutes);
 app.use("/api/invoice", invoiceRoutes);
 app.use("/api/advancepay", advancepayRoutes);
 app.use("/api/dispatch" , dispatchRoutes);
+app.use("/api/stockcontrol", stockAdjustmentRoutes);
 app.use("/api/stock", stockAdjustmentRoutes);
 app.use("/api/material-order", materialOrderRoutes);
 app.use("/api/paysetoff", paysetoffRoutes);
@@ -54,5 +56,8 @@ app.use("/api/dashboard", dashboardRoutes);
 
 
 
-app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
 

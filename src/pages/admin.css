@@ -418,3 +418,486 @@
   font-style: italic;
   color: rgb(28, 28, 177);
 }
+
+/* =====================================================
+   RESET PASSWORD BUTTON
+   ===================================================== */
+
+.reset-password-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 17px;
+
+  background: linear-gradient(
+    135deg,
+    #5b4ce1,
+    #7567f5
+  );
+
+  color: #fff;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow: 0 4px 10px rgba(91, 76, 225, 0.25);
+
+  transition: all 0.2s ease;
+}
+
+.reset-password-btn:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 6px 15px rgba(91, 76, 225, 0.35);
+}
+
+
+/* =====================================================
+   OVERLAY
+   ===================================================== */
+
+.reset-modal-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 99999;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(15, 23, 42, 0.58);
+
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+
+  animation: resetOverlayIn 0.2s ease;
+}
+
+
+/* =====================================================
+   MODAL
+   ===================================================== */
+
+.reset-modal {
+  width: 420px;
+
+  max-width: 100%;
+
+  background: #fff;
+
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.25);
+
+  animation: resetModalIn 0.25s ease;
+}
+
+
+/* =====================================================
+   HEADER
+   ===================================================== */
+
+.reset-modal-header {
+  display: flex;
+
+  align-items: center;
+
+  padding: 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #5146d8,
+      #7164f4
+    );
+
+  color: #fff;
+}
+
+.reset-modal-icon {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin-right: 13px;
+
+  border-radius: 12px;
+
+  background: rgba(255,255,255,0.18);
+
+  font-size: 22px;
+}
+
+.reset-modal-title {
+  flex: 1;
+}
+
+.reset-modal-title h2 {
+  margin: 0;
+
+  font-size: 19px;
+
+  font-weight: 700;
+}
+
+.reset-modal-title p {
+  margin: 4px 0 0;
+
+  font-size: 12px;
+
+  color: rgba(255,255,255,0.78);
+}
+
+
+/* =====================================================
+   CLOSE
+   ===================================================== */
+
+.reset-close-btn {
+  width: 32px;
+  height: 32px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: rgba(255,255,255,0.15);
+
+  color: #fff;
+
+  font-size: 23px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.reset-close-btn:hover {
+  background: rgba(255,255,255,0.28);
+
+  transform: rotate(90deg);
+}
+
+
+/* =====================================================
+   EMPLOYEE CARD
+   ===================================================== */
+
+.reset-employee-card {
+  display: flex;
+
+  align-items: center;
+
+  margin: 20px 20px 18px;
+
+  padding: 13px 15px;
+
+  border: 1px solid #e4e7f3;
+
+  border-radius: 11px;
+
+  background: #f7f8ff;
+}
+
+.reset-user-icon {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin-right: 12px;
+
+  border-radius: 10px;
+
+  background: #e5e7ff;
+
+  font-size: 18px;
+}
+
+.reset-employee-card span {
+  display: block;
+
+  margin-bottom: 3px;
+
+  font-size: 11px;
+
+  color: #858899;
+}
+
+.reset-employee-card strong {
+  font-size: 15px;
+
+  color: #252637;
+}
+
+
+/* =====================================================
+   PASSWORD
+   ===================================================== */
+
+.reset-password-section {
+  padding: 0 20px;
+}
+
+.reset-password-section label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  color: #30313d;
+}
+
+.reset-password-wrapper {
+  position: relative;
+}
+
+.reset-password-wrapper input {
+  width: 100%;
+
+  height: 46px;
+
+  box-sizing: border-box;
+
+  padding: 0 48px 0 14px;
+
+  border: 1px solid #d9dce7;
+
+  border-radius: 9px;
+
+  outline: none;
+
+  font-size: 14px;
+
+  color: #252637;
+
+  transition: 0.2s;
+}
+
+.reset-password-wrapper input:focus {
+  border-color: #6559e8;
+
+  box-shadow:
+    0 0 0 3px rgba(101,89,232,0.12);
+}
+
+.reset-password-wrapper input::placeholder {
+  color: #a1a4b0;
+}
+
+
+/* =====================================================
+   EYE BUTTON
+   ===================================================== */
+
+.reset-eye-btn {
+  position: absolute;
+
+  right: 7px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  width: 35px;
+  height: 35px;
+
+  border: none;
+
+  border-radius: 6px;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  font-size: 16px;
+}
+
+.reset-eye-btn:hover {
+  background: #f1f2f7;
+}
+
+
+/* =====================================================
+   PASSWORD HINT
+   ===================================================== */
+
+.reset-modal .reset-password-hint {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+
+  margin-top: 7px;
+  padding: 0;
+
+  font-size: 11px;
+  line-height: 16px;
+
+  color: #8a8d99;
+
+  position: relative;
+  z-index: 1;
+
+  overflow: visible;
+}
+
+/* =====================================================
+   BUTTONS
+   ===================================================== */
+
+.reset-modal-buttons {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  padding: 22px 20px 20px;
+}
+
+.reset-cancel-btn {
+  height: 42px;
+
+  padding: 0 18px;
+
+  border: 1px solid #d8dbe4;
+
+  border-radius: 8px;
+
+  background: #fff;
+
+  color: #5c5e69;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.reset-cancel-btn:hover {
+  background: #f5f6f8;
+}
+
+.reset-confirm-btn {
+  height: 42px;
+
+  padding: 0 18px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: linear-gradient(
+    135deg,
+    #5146d8,
+    #7164f4
+  );
+
+  color: #fff;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 4px 10px rgba(81,70,216,0.25);
+
+  transition: 0.2s;
+}
+
+.reset-confirm-btn:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 6px 14px rgba(81,70,216,0.35);
+}
+
+
+/* =====================================================
+   ANIMATION
+   ===================================================== */
+
+@keyframes resetOverlayIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes resetModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
+@media (max-width: 480px) {
+
+  .reset-modal {
+    width: 100%;
+    border-radius: 15px;
+  }
+
+  .reset-modal-header {
+    padding: 17px;
+  }
+
+  .reset-employee-card {
+    margin: 17px;
+  }
+
+  .reset-password-section {
+    padding: 0 17px;
+  }
+
+  .reset-modal-buttons {
+    padding: 20px 17px 17px;
+  }
+}
+
+/* =====================================================
+   ALERT BOX - SHOW ABOVE RESET PASSWORD POPUP
+   ===================================================== */
+
+.alert-overlay,
+.alert-box-overlay,
+.alert-container {
+  z-index: 1000000 !important;
+}

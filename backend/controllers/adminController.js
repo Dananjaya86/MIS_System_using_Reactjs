@@ -299,3 +299,196 @@ exports.deleteAdmin = async (req, res) => {
     res.status(500).json({ error: "Error deleting admin" });
   }
 };
+
+
+// ============================================================
+// ADMIN RESET PASSWORD
+// ============================================================
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const employeeNo = String(req.params.employeeNo || "").trim();
+    const newPassword = String(req.body.newPassword || "").trim();
+
+    console.log("=================================");
+    console.log("ADMIN RESET PASSWORD");
+    console.log("Employee No:", employeeNo);
+    console.log("Password Received:", newPassword.length > 0);
+    console.log("=================================");
+
+    // --------------------------------------------------------
+    // VALIDATION
+    // --------------------------------------------------------
+
+    if (!employeeNo) {
+      return res.status(400).json({
+        success: false,
+        message: "Employee No is required",
+      });
+    }
+
+    if (!newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "New password is required",
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must contain at least 6 characters",
+      });
+    }
+
+    const pool = await poolPromise;
+
+    // --------------------------------------------------------
+    // CHECK ADMIN
+    // --------------------------------------------------------
+
+    const adminResult = await pool
+      .request()
+      .input("employeeNo", sql.VarChar(50), employeeNo)
+      .query(`
+        SELECT employeeNo, active
+        FROM dbo.Admin_Panel
+        WHERE LTRIM(RTRIM(employeeNo)) = @employeeNo
+      `);
+
+    console.log("Admin Result:", adminResult.recordset);
+
+    if (adminResult.recordset.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `Admin not found for Employee No: ${employeeNo}`,
+      });
+    }
+
+    // --------------------------------------------------------
+    // CHECK LOGIN ACCOUNT
+    // --------------------------------------------------------
+
+    const loginResult = await pool
+      .request()
+      .input("employeeNo", sql.VarChar(50), employeeNo)
+      .query(`
+        SELECT employeeNo, username, active
+        FROM dbo.login_details
+        WHERE LTRIM(RTRIM(employeeNo)) = @employeeNo
+      `);
+
+    console.log("Login Result:", loginResult.recordset);
+
+    if (loginResult.recordset.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message:
+          `Login account not found for Employee No: ${employeeNo}`,
+      });
+    }
+
+    // --------------------------------------------------------
+    // HASH PASSWORD
+    // --------------------------------------------------------
+
+    const hashedPassword = await bcrypt.hash(
+      newPassword,
+      10
+    );
+
+    console.log("Password hash created.");
+
+    // --------------------------------------------------------
+    // UPDATE LOGIN PASSWORD
+    // --------------------------------------------------------
+
+    const updateResult = await pool
+      .request()
+      .input("employeeNo", sql.VarChar(50), employeeNo)
+      .input("password", sql.VarChar(255), hashedPassword)
+      .query(`
+        UPDATE dbo.login_details
+        SET
+          password = @password,
+          active = 'Yes'
+        WHERE LTRIM(RTRIM(employeeNo)) = @employeeNo
+      `);
+
+    console.log(
+      "Update rows:",
+      updateResult.rowsAffected
+    );
+
+    // --------------------------------------------------------
+    // CHECK UPDATE
+    // --------------------------------------------------------
+
+    if (
+      !updateResult.rowsAffected ||
+      updateResult.rowsAffected[0] !== 1
+    ) {
+      return res.status(500).json({
+        success: false,
+        message:
+          "Password update failed. Login account was not updated.",
+      });
+    }
+
+    // --------------------------------------------------------
+    // VERIFY NEW PASSWORD
+    // --------------------------------------------------------
+
+    const verifyResult = await pool
+      .request()
+      .input("employeeNo", sql.VarChar(50), employeeNo)
+      .query(`
+        SELECT password
+        FROM dbo.login_details
+        WHERE LTRIM(RTRIM(employeeNo)) = @employeeNo
+      `);
+
+    if (verifyResult.recordset.length === 0) {
+      return res.status(500).json({
+        success: false,
+        message: "Password updated but verification failed.",
+      });
+    }
+
+    const passwordVerified = await bcrypt.compare(
+      newPassword,
+      verifyResult.recordset[0].password
+    );
+
+    if (!passwordVerified) {
+      return res.status(500).json({
+        success: false,
+        message:
+          "Password update verification failed.",
+      });
+    }
+
+    console.log("Password verification: SUCCESS");
+
+    // --------------------------------------------------------
+    // SUCCESS
+    // --------------------------------------------------------
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset successfully",
+    });
+
+  } catch (err) {
+    console.error(
+      "Admin reset password error:",
+      err
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: err.message,
+    });
+  }
+};

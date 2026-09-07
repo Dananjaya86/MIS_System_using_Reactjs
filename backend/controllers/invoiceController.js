@@ -89,6 +89,70 @@ exports.getCustomerPaymentInfo = async (req, res) => {
 };
 
 
+// =============================================================
+// UPDATE CUSTOMER STATUS
+// =============================================================
+
+exports.updateCustomerStatus = async (req, res) => {
+    try {
+        const customerCode = req.params.code;
+        const { status } = req.body;
+
+        if (!customerCode) {
+            return res.status(400).json({
+                success: false,
+                message: "Customer code is required"
+            });
+        }
+
+        if (!status) {
+            return res.status(400).json({
+                success: false,
+                message: "Customer status is required"
+            });
+        }
+
+        const pool = await poolPromise;
+
+        const result = await pool.request()
+            .input("customerCode", sql.VarChar(50), customerCode)
+            .input("status", sql.VarChar(50), status)
+            .query(`
+                UPDATE Customer_Details
+                SET
+                    status = @status,
+                    real_date = GETDATE()
+                WHERE customer_code = @customerCode
+            `);
+
+        if (result.rowsAffected[0] === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Customer not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Customer status updated successfully",
+            customer_code: customerCode,
+            status: status
+        });
+
+    } catch (error) {
+        console.error(
+            "UPDATE CUSTOMER STATUS ERROR:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to update customer status",
+            error: error.message
+        });
+    }
+};
+
 
 
 exports.getCustomerByCode = async (req, res) => {
@@ -708,9 +772,3 @@ const zPosition = tableY + 30;
     res.status(500).json({ message: err.message });
   }
 };
-
-
-
-
-
-

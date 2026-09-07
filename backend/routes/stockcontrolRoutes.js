@@ -17,6 +17,8 @@ router.get("/adjustments", controller.getStockAdjustments);
 /* Single adjustment for PDF */
 router.get("/adjustment/:id", controller.getSingleAdjustment);
 
+router.get("/history/:code", controller.getStockHistory);
+
 
 
 module.exports = router;

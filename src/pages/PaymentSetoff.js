@@ -237,14 +237,58 @@
 
       // advance  auto select
       if (data.length === 1) {
-        setForm(prev => ({
-          ...prev,
-          advancePayment: Number(data[0].advance_payment_amount).toFixed(2),
-          advancePayId: data[0].advance_pay_id,
-        }));
-        setSelectedAdvanceId(data[0].advance_pay_id);
-        return;
-      }
+  const advanceAmount =
+    Number(data[0].advance_payment_amount || 0);
+
+  setForm(prev => {
+    const totalCredit =
+      Number(prev.totalCredit || 0);
+
+    const paidAmount =
+      Number(prev.paidAmount || 0);
+
+    // Paid amount අඩු කළාට පස්සේ ඉතිරි invoice amount
+    const remainingBeforeAdvance =
+      Math.max(0, totalCredit - paidAmount);
+
+    // Advance එක invoice balance එකට වඩා වැඩි නම්,
+    // අවශ්‍ය amount එක විතරක් use කරනවා.
+    const advanceUsed =
+      Math.min(
+        advanceAmount,
+        remainingBeforeAdvance
+      );
+
+    // Advance payment එකත් අඩු කරලා final balance එක
+    const balanceAmount =
+      Math.max(
+        0,
+        remainingBeforeAdvance - advanceUsed
+      );
+
+    return {
+      ...prev,
+
+      // Advance Payment field
+      advancePayment:
+        advanceUsed.toFixed(2),
+
+      // Selected advance ID
+      advancePayId:
+        data[0].advance_pay_id,
+
+      // Final Balance
+      balanceAmount:
+        balanceAmount.toFixed(2),
+    };
+  });
+
+  setSelectedAdvanceId(
+    data[0].advance_pay_id
+  );
+
+  return;
+}
 
       
       setAdvanceData(data);
@@ -337,29 +381,117 @@
 
 
     // ---------------- HANDLERS ----------------
-    const handleChange = (e) => { const { name, value } = e.target; setForm((prev) => { 
-      let newForm = { ...prev, [name]: value }; 
-      if (name === "paidAmount") {
-  const paid = parseFloat(value || 0);
-  const adv = parseFloat(prev.advancePayment || 0);
-  const credit = parseFloat(prev.totalCredit || 0);
+    const handleChange = (e) => {
+  const { name, value } = e.target;
 
-  let balance = 0;
+  setForm((prev) => {
 
-  // 🔵 Advance Pay Mode
-  if (currentType === "advancepay") {
-    balance = adv - paid;     // remaining advance
+    const newForm = {
+      ...prev,
+      [name]: value,
+    };
+
+    // ==========================================
+    // CUSTOMER / SUPPLIER PAYMENT CALCULATION
+    // ==========================================
+
+    if (
+      currentType !== "advancepay" &&
+      (name === "paidAmount" || name === "advancePayment")
+    ) {
+
+      const totalCredit =
+        Number(newForm.totalCredit || 0);
+
+      const paidAmount =
+        Number(newForm.paidAmount || 0);
+
+      const advancePayment =
+        Number(newForm.advancePayment || 0);
+
+      const balanceAmount =
+        Math.max(
+          0,
+          totalCredit -
+          paidAmount -
+          advancePayment
+        );
+
+      newForm.balanceAmount =
+        balanceAmount.toFixed(2);
+    }
+
+    // ==========================================
+    // ADVANCE PAYMENT MODE
+    // ==========================================
+
+    if (
+      currentType === "advancepay" &&
+      (name === "paidAmount" || name === "advancePayment")
+    ) {
+
+      const advancePayment =
+        Number(newForm.advancePayment || 0);
+
+      const paidAmount =
+        Number(newForm.paidAmount || 0);
+
+      const balanceAmount =
+        Math.max(
+          0,
+          advancePayment - paidAmount
+        );
+
+      newForm.balanceAmount =
+        balanceAmount.toFixed(2);
+    }
+
+    return newForm;
+  });
+};
+
+
+
+useEffect(() => {
+
+  if (currentType === "advancepay") return;
+
+  const totalCredit =
+    Number(form.totalCredit || 0);
+
+  const paidAmount =
+    Number(form.paidAmount || 0);
+
+  const advancePayment =
+    Number(form.advancePayment || 0);
+
+  const balanceAmount =
+    Math.max(
+      0,
+      totalCredit -
+      paidAmount -
+      advancePayment
+    ).toFixed(2);
+
+  if (form.balanceAmount !== balanceAmount) {
+
+    setForm(prev => ({
+      ...prev,
+      balanceAmount: balanceAmount,
+    }));
+
   }
-  // 🔵 Customer / Supplier
-  else {
-    balance = credit - paid - adv;
-  }
 
-  newForm.balanceAmount = balance > 0 ? balance.toFixed(2) : "0.00";
-}
+}, [
+  form.totalCredit,
+  form.paidAmount,
+  form.advancePayment,
+  currentType
+]);
 
-        return newForm; }); 
-      };
+
+
+
 
     const handleSelectRow = (row) => {
     const totalCredit = row.balance_payment
@@ -592,13 +724,55 @@ setGridData(prev => [...prev, newRow]);
       if (!Array.isArray(data) || data.length === 0) return;
 
       if (data.length === 1) {
-        
-        setForm(prev => ({
-          ...prev,
-          advancePayment: Number(data[0].advance_payment_amount).toFixed(2),
-          advancePayId: data[0].advance_pay_id,
-        }));
-      } else if (data.length > 1) {
+  const advanceAmount =
+    Number(data[0].advance_payment_amount || 0);
+
+  setForm(prev => {
+    const totalCredit =
+      Number(prev.totalCredit || 0);
+
+    const paidAmount =
+      Number(prev.paidAmount || 0);
+
+    // Paid amount අඩු කළාට පස්සේ ඉතිරි invoice amount
+    const remainingAmount =
+      Math.max(
+        0,
+        totalCredit - paidAmount
+      );
+
+    // Invoice balance එකට අවශ්‍ය advance amount එක විතරයි භාවිතා කරන්නේ
+    const advanceUsed =
+      Math.min(
+        advanceAmount,
+        remainingAmount
+      );
+
+    // Advance එකත් අඩු කළාට පස්සේ final balance
+    const balanceAmount =
+      Math.max(
+        0,
+        remainingAmount - advanceUsed
+      );
+
+    return {
+      ...prev,
+
+      advancePayment:
+        advanceUsed.toFixed(2),
+
+      advancePayId:
+        data[0].advance_pay_id,
+
+      balanceAmount:
+        balanceAmount.toFixed(2),
+    };
+  });
+
+  setSelectedAdvanceId(
+    data[0].advance_pay_id
+  );
+} else if (data.length > 1) {
         
         setAdvanceData(data);
         setShowAdvancePopup(true);

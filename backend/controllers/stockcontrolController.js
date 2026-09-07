@@ -6,14 +6,45 @@ const { poolPromise, sql } = require("../db");
 exports.getProducts = async (req, res) => {
   try {
     const pool = await poolPromise;
+
     const result = await pool.request().query(`
-      SELECT product_code, product_name
-      FROM Product_Details
-      ORDER BY product_name
+      SELECT
+        p.product_code,
+        p.product_name,
+
+        ISNULL(
+          (
+            SELECT TOP 1
+              sd.available_stock
+            FROM Stock_Details sd
+            WHERE sd.product_code = p.product_code
+            ORDER BY sd.real_date DESC
+          ),
+          0
+        ) AS available_stock
+
+      FROM Product_Details p
+
+      ORDER BY p.product_name
     `);
-    res.json(result.recordset);
+
+    console.log(
+      "STOCK PRODUCTS RESULT:",
+      JSON.stringify(result.recordset, null, 2)
+    );
+
+    res.status(200).json(result.recordset);
+
   } catch (err) {
-    res.status(500).json({ message: err.message });
+
+    console.error(
+      "GET STOCK PRODUCTS ERROR:",
+      err
+    );
+
+    res.status(500).json({
+      message: err.message
+    });
   }
 };
 
@@ -209,6 +240,46 @@ exports.getSingleAdjustment = async (req, res) => {
     res.json(result.recordset[0]);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+/* ---------------------------------------------------
+   Stock History by Product
+--------------------------------------------------- */
+exports.getStockHistory = async (req, res) => {
+  try {
+    const { code } = req.params;
+
+    const pool = await poolPromise;
+
+    const result = await pool.request()
+      .input("code", sql.VarChar, code)
+      .query(`
+        SELECT
+          product_code,
+          product_name,
+          stock_in,
+          stock_out,
+          available_stock,
+          login_user,
+          real_date
+        FROM Stock_Details
+        WHERE product_code = @code
+        ORDER BY real_date DESC
+      `);
+
+    res.status(200).json(result.recordset);
+
+  } catch (err) {
+
+    console.error(
+      "GET STOCK HISTORY ERROR:",
+      err
+    );
+
+    res.status(500).json({
+      message: err.message
+    });
   }
 };
 
