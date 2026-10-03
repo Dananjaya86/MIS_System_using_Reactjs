@@ -491,7 +491,7 @@ export default function CustomerDetails() {
         <table className="customer-gridcus">
           <thead>
             <tr>
-              <th>ID no</th>
+              <th>ID </th>
               <th>Code</th>
               <th>Name</th>
               <th>Address</th>
