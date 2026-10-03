@@ -1163,7 +1163,6 @@ const getDashboard = async (req, res) => {
             `);
 
 
-
         // =====================================================
         // 10. ADD PERCENTAGES
         // =====================================================
@@ -1260,200 +1259,294 @@ const getDashboard = async (req, res) => {
             );
 
 
+            // =====================================================
+// BEST SALES REPRESENTATIVE
+// Based on Annual Achievement %
+// =====================================================
+
+const bestSalesRep =
+    [...repPerformance]
+        .sort((a, b) => {
+
+            const percentageA =
+                Number(a.annualPercentage || 0);
+
+            const percentageB =
+                Number(b.annualPercentage || 0);
+
+            if (percentageB !== percentageA) {
+                return percentageB - percentageA;
+            }
+
+            // If achievement % is same,
+            // use annual sales as tie breaker
+
+            return (
+                Number(b.annualSales || 0) -
+                Number(a.annualSales || 0)
+            );
+
+        })[0] || null;
+
+
+
+
+       // =====================================================
+        // MOBILE DASHBOARD KPI
+        // =====================================================
+
+        const mobileDashboardResult =
+            await pool.request().query(`
+
+                DECLARE @Today DATE =
+                    CAST(GETDATE() AS DATE);
+
+                DECLARE @Tomorrow DATE =
+                    DATEADD(DAY, 1, @Today);
+
+
+                DECLARE @TodaySales DECIMAL(18,2);
+
+                SELECT
+                    @TodaySales =
+                        ISNULL(
+                            SUM(
+                                ISNULL(total_invoice_amount, 0)
+                            ),
+                            0
+                        )
+                FROM Invoice
+                WHERE
+                    real_date >= @Today
+                    AND real_date < @Tomorrow;
+
+
+                DECLARE @CustomerCount INT;
+
+                SELECT
+                    @CustomerCount =
+                        COUNT(*)
+                FROM Customer_Details
+                WHERE
+                    LOWER(
+                        LTRIM(
+                            RTRIM(
+                                ISNULL(status, '')
+                            )
+                        )
+                    ) <> 'inactive';
+
+
+                DECLARE @PendingAmount DECIMAL(18,2);
+
+                DECLARE @PendingCustomers INT;
+
+                SELECT
+                    @PendingAmount =
+                        ISNULL(
+                            SUM(
+                                CASE
+                                    WHEN ISNULL(balance_amount, 0) > 0
+                                    THEN balance_amount
+                                    ELSE 0
+                                END
+                            ),
+                            0
+                        ),
+
+                    @PendingCustomers =
+                        COUNT(
+                            CASE
+                                WHEN ISNULL(balance_amount, 0) > 0
+                                THEN 1
+                            END
+                        )
+
+                FROM Customer_Details;
+
+
+                DECLARE @LowStockCount INT;
+
+                ;WITH LatestStock AS
+                (
+                    SELECT
+                        product_code,
+                        available_stock,
+
+                        ROW_NUMBER() OVER
+                        (
+                            PARTITION BY product_code
+                            ORDER BY real_date DESC
+                        ) AS RN
+
+                    FROM Stock_Details
+                )
+
+                SELECT
+                    @LowStockCount =
+                        COUNT(*)
+
+                FROM LatestStock
+
+                WHERE
+                    RN = 1
+                    AND ISNULL(available_stock, 0) <= 10;
+
+
+                SELECT
+
+                    @TodaySales AS TodaySales,
+
+                    @CustomerCount AS CustomerCount,
+
+                    @PendingAmount AS PendingAmount,
+
+                    @PendingCustomers AS PendingCustomers,
+
+                    @LowStockCount AS LowStockCount;
+
+            `);
+
+
+        const mobileDashboard =
+            mobileDashboardResult.recordset[0] || {};
+
+
+        const todaySales =
+            safeNumber(
+                mobileDashboard.TodaySales
+            );
+
+
+        const customerCount =
+            Number(
+                mobileDashboard.CustomerCount || 0
+            );
+
+
+        const pendingAmount =
+            safeNumber(
+                mobileDashboard.PendingAmount
+            );
+
+
+        const pendingCustomers =
+            Number(
+                mobileDashboard.PendingCustomers || 0
+            );
+
+
+        const lowStockCount =
+            Number(
+                mobileDashboard.LowStockCount || 0
+            );
+
 
         // =====================================================
-        // 11. RESPONSE
+        // RESPONSE
         // =====================================================
 
         res.json({
 
             success: true,
 
+            lastUpdated: new Date(),
 
-            lastUpdated:
-                new Date(),
-
-
-            // =================================================
-            // SUMMARY
-            // =================================================
-
+            // EXISTING DATA
             summary: {
-
                 totalSale,
-
                 totalReturn,
-
                 netSale,
-
                 yearSales,
-
                 yearBudget,
-
                 achievement
-
             },
 
+            bestSalesRep: bestSalesRep
+    ? {
+        name: bestSalesRep.salesRepName,
+        loginUser: bestSalesRep.loginUser,
+        amount: bestSalesRep.annualSales,
+        annualBudget: bestSalesRep.annualBudget,
+        annualSales: bestSalesRep.annualSales,
+        annualPercentage: bestSalesRep.annualPercentage
+    }
+    : null,
 
-            // =================================================
-            // BEST SALES REPRESENTATIVE
-            // =================================================
-
-            bestSalesRep:
-
-                bestRep
-
-                    ? {
-
-                        name:
-                            bestRep.SalesRepName,
-
-
-                        loginUser:
-                            bestRep.LoginUser,
-
-
-                        amount:
-                            safeNumber(
-                                bestRep.SalesAmount
-                            )
-
-                    }
-
-                    : null,
-
-
-            // =================================================
-            // PRODUCTS
-            // =================================================
 
             products:
                 productsResult.recordset.map(
                     item => ({
-
                         productCode:
                             item.ProductCode,
-
 
                         productName:
                             item.ProductName,
 
-
                         qty:
-                            safeNumber(
-                                item.Qty
-                            ),
-
+                            safeNumber(item.Qty),
 
                         amount:
-                            safeNumber(
-                                item.Amount
-                            )
-
+                            safeNumber(item.Amount)
                     })
                 ),
 
-
-            // =================================================
-            // CUSTOMERS
-            // =================================================
 
             customers:
                 customersResult.recordset.map(
                     item => ({
-
                         customerCode:
                             item.CustomerCode,
-
 
                         customerName:
                             item.CustomerName,
 
-
                         qty:
-                            safeNumber(
-                                item.Qty
-                            ),
-
+                            safeNumber(item.Qty),
 
                         amount:
-                            safeNumber(
-                                item.Amount
-                            )
-
+                            safeNumber(item.Amount)
                     })
                 ),
 
-
-            // =================================================
-            // SALES BY DATE
-            // =================================================
 
             salesByDate:
                 dailySalesResult.recordset.map(
                     item => ({
-
                         day:
-                            Number(
-                                item.SaleDay
-                            ),
-
+                            Number(item.SaleDay),
 
                         amount:
-                            safeNumber(
-                                item.Amount
-                            )
-
+                            safeNumber(item.Amount)
                     })
                 ),
 
 
-            // =================================================
-            // MONTHLY SALES
-            // =================================================
-
             monthlySales: {
-
                 lastMonth:
                     safeNumber(
                         monthlySales.LastMonthSales
                     ),
 
-
                 currentMonth:
                     currentMonthSales
-
             },
 
 
-            // =================================================
-            // MONTHLY BUDGET
-            // =================================================
-
             monthlyBudget: {
-
                 annualBudget,
-
 
                 monthlyBudget,
 
-
                 currentMonthSales,
-
 
                 remaining:
                     monthlyRemaining,
 
-
                 achievement:
                     monthlyAchievement
-
             },
 
-
-            // =================================================
-            // YEARLY BUDGET
-            // =================================================
 
             yearlyBudget: {
 
@@ -1461,31 +1554,72 @@ const getDashboard = async (req, res) => {
                     yearlyBudgetRow.BudgetYear ||
                     new Date().getFullYear(),
 
-
                 budget:
                     safeNumber(
                         yearlyBudgetRow.TotalBudget
                     ),
 
-
                 achieved:
                     yearSales,
 
-
                 percentage:
                     achievement
-
             },
 
 
+            // =====================================================
+// SALES REPRESENTATIVE PERFORMANCE
+// =====================================================
+
+salesRepPerformance:
+    repPerformance,
+
+
             // =================================================
-            // SALES REPRESENTATIVE PERFORMANCE
+            // MOBILE DASHBOARD
             // =================================================
 
-            salesRepPerformance:
-                repPerformance
+            mobileDashboard: {
+
+                annualSales:
+                    yearSales,
+
+                annualBudget:
+                    yearBudget,
+
+                annualAchievement:
+                    achievement,
+
+                monthlySales:
+                    currentMonthSales,
+
+                monthlyBudget:
+                    monthlyBudget,
+
+                monthlyAchievement:
+                    monthlyAchievement,
+
+                pendingAmount:
+                    pendingAmount,
+
+                pendingCustomers:
+                    pendingCustomers,
+
+                todaySales:
+                    todaySales,
+
+                lowStockCount:
+                    lowStockCount,
+
+                customerCount:
+                    customerCount
+            }
 
         });
+
+
+
+
 
 
     } catch (error) {
@@ -1513,6 +1647,8 @@ const getDashboard = async (req, res) => {
     }
 
 };
+
+
 
 
 // ============================================================

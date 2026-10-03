@@ -6,6 +6,14 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = "rilawala158853mattegoda";
 
 const login = async (req, res) => {
+
+console.log("=================================");
+console.log("LOGIN API HIT");
+console.log("REQUEST BODY:", req.body);
+console.log("=================================");
+
+
+
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -52,6 +60,8 @@ const login = async (req, res) => {
     }
 
     const user = result.recordset[0];
+
+    console.log("LOGIN USER:", user);
 
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
