@@ -7,12 +7,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     permissions:
       contents: read
-      id-token: write
 
     steps:
       - name: Checkout code
@@ -23,9 +22,37 @@ jobs:
         with:
           node-version: '24.x'
 
-      - name: Install dependencies
+      - name: Verify backend package
         working-directory: ./backend
-        run: npm ci
+        run: |
+          npm install
+          npm list moment
+          npm list number-to-words
+
+      - name: Remove node_modules
+        working-directory: ./backend
+        run: rm -rf node_modules
+
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-app
+          path: backend
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download backend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-app
+          path: ./backend
 
       - name: Login to Azure
         uses: azure/login@v2
