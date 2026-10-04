@@ -21,11 +21,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24.x'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
 
-      - name: Verify backend package
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Verify required dependencies
         working-directory: ./backend
         run: |
-          npm install
           npm list moment
           npm list number-to-words
 
@@ -38,6 +43,7 @@ jobs:
         with:
           name: backend-app
           path: backend
+          if-no-files-found: error
 
   deploy:
     runs-on: ubuntu-latest
