@@ -28,15 +28,13 @@ jobs:
         working-directory: ./backend
         run: npm ci
 
-      - name: Verify required dependencies
+      - name: Verify dependencies
         working-directory: ./backend
         run: |
-          npm list moment
-          npm list number-to-words
-
-      - name: Remove node_modules
-        working-directory: ./backend
-        run: rm -rf node_modules
+          npm ls dotenv
+          npm ls moment
+          npm ls number-to-words
+          node -e "require('dotenv'); require('moment'); require('number-to-words'); console.log('Dependencies OK')"
 
       - name: Upload backend artifact
         uses: actions/upload-artifact@v4
