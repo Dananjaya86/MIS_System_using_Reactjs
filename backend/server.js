@@ -31,6 +31,17 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
+```javascript
+// Root route - Backend health check
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "DreamNova MIS API is running",
+    status: "OK"
+  });
+});
+```
+
 
 app.use("/api/login", loginRoutes);
 app.use("/api/admin", adminRoutes);
