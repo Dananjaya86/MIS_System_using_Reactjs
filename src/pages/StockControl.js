@@ -99,7 +99,7 @@ useEffect(() => {
 
   const fetchProducts = async () => {
   try {
-    const res = await fetch("http://localhost:5000/api/stock/products");
+    const res = await fetch("${process.env.REACT_APP_API_URL}/stock/products");
     const data = await res.json();
     setProducts(data);
     setProductSearch("");   
@@ -112,7 +112,7 @@ useEffect(() => {
 
 const loadStockAdjustments = async () => {
   try {
-    const res = await fetch("http://localhost:5000/api/stock/adjustments");
+    const res = await fetch("${process.env.REACT_APP_API_URL}/stock/adjustments");
     const data = await res.json();
     setAdjustments(data);
     setCurrentPage(1); 
@@ -138,7 +138,7 @@ const selectProduct = async (product) => {
 
   try {
     const res = await fetch(
-      `http://localhost:5000/api/stock/available/${product.product_code}`
+      `${process.env.REACT_APP_API_URL}/stock/available/${product.product_code}`
     );
     const data = await res.json();
     setForm((prev) => ({
@@ -348,7 +348,7 @@ const resetToLoadState = () => {
         login_user: username || "Unknown",
       };
 
-      const response = await fetch("http://localhost:5000/api/stock/adjustment", {
+      const response = await fetch("${process.env.REACT_APP_API_URL}/stock/adjustment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

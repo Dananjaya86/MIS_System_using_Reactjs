@@ -6,7 +6,7 @@ import Namewithdateacc from "../componants/Namewithdateacc";
 import "./sales.css";
 
 
-const API = "http://localhost:5000/api/invoice";
+const API = "${process.env.REACT_APP_API_URL}/invoice";
 
 export default function SalesPage() {
   const [saleType, setSaleType] = useState("cash");
@@ -586,7 +586,7 @@ if (res.ok) {
   }
 
   try {
-    const response = await fetch(`http://localhost:5000/api/invoice/search?q=${value}`);
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/invoice/search?q=${value}`);
     if (!response.ok) throw new Error("Network response not ok");
 
     const data = await response.json();

@@ -72,7 +72,7 @@ const AdvancePayment = () => {
 
   const fetchPayments = async () => {
     try {
-      const resp = await fetch(`http://localhost:5000/api/advancepay/all?status=${statusFilter}`);
+      const resp = await fetch(`${process.env.REACT_APP_API_URL}/advancepay/all?status=${statusFilter}`);
       if (!resp.ok) throw new Error("Failed to fetch payments");
       const data = await resp.json();
       setAllPayments(Array.isArray(data) ? data : []);
@@ -90,7 +90,7 @@ const AdvancePayment = () => {
 
   const fetchNextAdpNumber = async () => {
     try {
-      const resp = await fetch("http://localhost:5000/api/advancepay/next-id");
+      const resp = await fetch("${process.env.REACT_APP_API_URL}/advancepay/next-id");
       const data = await resp.json();
       return data.nextId || "ADP00001";
     } catch (err) {
@@ -118,8 +118,8 @@ const AdvancePayment = () => {
   const fetchSearch = async (q = "") => {
     const endpoint =
       partyType === "customer"
-        ? `http://localhost:5000/api/advancepay/search/customers?keyword=${encodeURIComponent(q)}`
-        : `http://localhost:5000/api/advancepay/search/suppliers?keyword=${encodeURIComponent(q)}`;
+        ? `${process.env.REACT_APP_API_URL}/advancepay/search/customers?keyword=${encodeURIComponent(q)}`
+        : `${process.env.REACT_APP_API_URL}/advancepay/search/suppliers?keyword=${encodeURIComponent(q)}`;
     try {
       const resp = await fetch(endpoint);
       if (!resp.ok) throw new Error("Search failed");
@@ -245,7 +245,7 @@ const AdvancePayment = () => {
 
     try {
       for (const row of gridData) {
-        const res = await fetch("http://localhost:5000/api/advancepay/save", {
+        const res = await fetch("${process.env.REACT_APP_API_URL}/advancepay/save", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -403,7 +403,7 @@ const AdvancePayment = () => {
 
     try {
     const res = await fetch(
-      `http://localhost:5000/api/advancepay/update-status/${form.adpaynumber}`,
+      `${process.env.REACT_APP_API_URL}/advancepay/update-status/${form.adpaynumber}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

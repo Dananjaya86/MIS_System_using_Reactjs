@@ -51,7 +51,7 @@ const username = localStorage.getItem("username");
 
   const loadTypes = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/expencess/types");
+      const res = await fetch("${process.env.REACT_APP_API_URL}/expencess/types");
       const data = await res.json();
       setTypes(data);
     } catch (err) {
@@ -83,7 +83,7 @@ const saveNewBankAccount = async () => {
   }
 
   try {
-    await fetch("http://localhost:5000/api/expencess/bank_accounts", {
+    await fetch("${process.env.REACT_APP_API_URL}/expencess/bank_accounts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -130,7 +130,7 @@ const [banks, setBanks] = useState([]);
 
 const loadBanks = async () => {
   try {
-    const res = await fetch("http://localhost:5000/api/expencess/bank_accounts");
+    const res = await fetch("${process.env.REACT_APP_API_URL}/expencess/bank_accounts");
     const data = await res.json();
     setBanks(data);
   } catch (err) {
@@ -159,7 +159,7 @@ useEffect(() => {
   }
 
   try {
-    await fetch("http://localhost:5000/api/expencess/types", {
+    await fetch("${process.env.REACT_APP_API_URL}/expencess/types", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -281,7 +281,7 @@ const handleSave = () => {
       try {
 
         for (const row of gridData) {
-          await fetch("http://localhost:5000/api/expencess/details", {
+          await fetch("${process.env.REACT_APP_API_URL}/expencess/details", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

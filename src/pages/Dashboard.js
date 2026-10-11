@@ -145,7 +145,7 @@ export default function Dashboard() {
 
         const response =
             await fetch(
-                "http://localhost:5000/api/dashboard",
+                "${process.env.REACT_APP_API_URL}/dashboard",
                 {
                     headers: {
                         Authorization:

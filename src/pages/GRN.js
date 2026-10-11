@@ -40,7 +40,7 @@ export default function GRN() {
   // Generate new GRN number
   const fetchNextGrnNumber = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/grn/new-number");
+      const res = await fetch("${process.env.REACT_APP_API_URL}/grn/new-number");
       const data = await res.json();
       setForm((prev) => ({ ...prev, grnNo: data.grn_no }));
     } catch {
@@ -52,7 +52,7 @@ export default function GRN() {
   const searchSuppliers = async (query) => {
     if (!query) return setSupplierList([]);
     try {
-      const res = await fetch(`http://localhost:5000/api/grn/suppliers?query=${encodeURIComponent(query)}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/grn/suppliers?query=${encodeURIComponent(query)}`);
       const data = await res.json();
       setSupplierList(data);
     } catch (err) {
@@ -64,7 +64,7 @@ export default function GRN() {
   const searchProducts = async (query) => {
     if (!query) return setProductList([]);
     try {
-      const res = await fetch(`http://localhost:5000/api/grn/products?query=${encodeURIComponent(query)}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/grn/products?query=${encodeURIComponent(query)}`);
       const data = await res.json();
       setProductList(data);
     } catch (err) {
@@ -147,7 +147,7 @@ export default function GRN() {
     const username = localStorage.getItem("username");
 
     //  Save GRN Header
-    const saveHeaderRes = await fetch("http://localhost:5000/api/grn/save", {
+    const saveHeaderRes = await fetch("${process.env.REACT_APP_API_URL}/grn/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -167,7 +167,7 @@ export default function GRN() {
 
     //  Save GRN Grid Rows
     for (let row of rows) {
-      await fetch("http://localhost:5000/api/grn/save-grid", {
+      await fetch("${process.env.REACT_APP_API_URL}/grn/save-grid", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -182,7 +182,7 @@ export default function GRN() {
     }
 
     //  Fetch latest pending payment balance
-    const pendingRes = await fetch(`http://localhost:5000/api/grn/pending/${form.supplierCode}`);
+    const pendingRes = await fetch(`${process.env.REACT_APP_API_URL}/grn/pending/${form.supplierCode}`);
     const pendingData = await pendingRes.json();
     const latestBalance = pendingData?.balance_payment || net;
 
@@ -227,7 +227,7 @@ export default function GRN() {
 
   const fetchLastRecords = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/grn/search?query=");
+      const res = await fetch("${process.env.REACT_APP_API_URL}/grn/search?query=");
       const data = await res.json();
       const sortedData = data.sort((a, b) => b.grn_no.localeCompare(a.grn_no));
       setLastRecords(sortedData.slice(0, rowLimit));
@@ -246,7 +246,7 @@ export default function GRN() {
 
   const handleSearch = async (query) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/grn/search?query=${encodeURIComponent(query)}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/grn/search?query=${encodeURIComponent(query)}`);
       const data = await res.json();
       setSearchResults(data.sort((a, b) => b.grn_no.localeCompare(a.grn_no)));
     } catch (err) {
@@ -254,12 +254,12 @@ export default function GRN() {
     }
   };
 
-  const handleViewPdf = (grn_no) => window.open(`http://localhost:5000/api/grn/pdf/${grn_no}`, "_blank");
+  const handleViewPdf = (grn_no) => window.open(`${process.env.REACT_APP_API_URL}/grn/pdf/${grn_no}`, "_blank");
   const handlePrint = useReactToPrint({ content: () => printRef.current });
 
   const handleLoadSavedGrn = async (grn_no) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/grn/${grn_no}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/grn/${grn_no}`);
       const data = await res.json();
 
       if (!data.header) {

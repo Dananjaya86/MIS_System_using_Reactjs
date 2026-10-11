@@ -24,17 +24,17 @@ const [suppliers, setSuppliers] = useState([]);
 
 
 useEffect(() => {
-  fetch("http://localhost:5000/api/products")
+  fetch("${process.env.REACT_APP_API_URL}/products")
     .then(res => res.json())
     .then(data => setProducts(Array.isArray(data) ? data : data.products || []))
     .catch(() => setProducts([]));
 
-  fetch("http://localhost:5000/api/customers")
+  fetch("${process.env.REACT_APP_API_URL}/customers")
     .then(res => res.json())
     .then(data => setCustomers(Array.isArray(data) ? data : data.customers || []))
     .catch(() => setCustomers([]));
 
-  fetch("http://localhost:5000/api/suppliers")
+  fetch("${process.env.REACT_APP_API_URL}/suppliers")
     .then(res => res.json())
     .then(data => setSuppliers(Array.isArray(data) ? data : data.suppliers || []))
     .catch(() => setSuppliers([]));

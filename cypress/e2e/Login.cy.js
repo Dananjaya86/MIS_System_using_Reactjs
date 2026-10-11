@@ -19,7 +19,7 @@ describe("Login Page Tests", () => {
 
   it("should login successfully with valid credentials", () => {
     // Intercept the login POST request
-    cy.intercept("POST", "http://localhost:5000/api/login").as("loginRequest");
+    cy.intercept("POST", "https://dreamnova-mis-api-g8dpetbjhuhahyh6.southeastasia-01.azurewebsites.net/api/login").as("loginRequest");
 
     cy.get("input[placeholder='Username']").type("dana143");
     cy.get("input[placeholder='Password']").type("123**");
@@ -38,7 +38,7 @@ describe("Login Page Tests", () => {
   });
 
   it("should show error for invalid login", () => {
-    cy.intercept("POST", "http://localhost:5000/api/login").as("loginRequest");
+    cy.intercept("POST", "https://dreamnova-mis-api-g8dpetbjhuhahyh6.southeastasia-01.azurewebsites.net/api/login").as("loginRequest");
 
     cy.get("input[placeholder='Username']").type("wronguser");
     cy.get("input[placeholder='Password']").type("wrongpass");

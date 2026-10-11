@@ -53,7 +53,7 @@ const customerDropdownRef = useRef();
 const loadNextReturnNumber = async () => {
   try {
     setReturnNoLoading(true);
-    const res = await fetch("http://localhost:5000/api/returns/next-return-number");
+    const res = await fetch("${process.env.REACT_APP_API_URL}/returns/next-return-number");
     const data = await res.json();
     setReturnNumber(data.returnNumber); 
   } catch (err) {
@@ -141,7 +141,7 @@ const handlePrintPDFByNumber = async () => {
     return showAlert("warning", "Missing", "Enter Return Number");
 
   try {
-    const res = await fetch(`http://localhost:5000/api/returns/${pdfReturnNumber}`);
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/returns/${pdfReturnNumber}`);
     const data = await res.json();
 
     if (data.length === 0)
@@ -283,7 +283,7 @@ const handlePrintPDFByNumber = async () => {
     }
     try {
       const res = await fetch(
-        `http://localhost:5000/api/returns/products/search?q=${encodeURIComponent(value)}`
+        `${process.env.REACT_APP_API_URL}/returns/products/search?q=${encodeURIComponent(value)}`
       );
       const data = await res.json();
       setPopupProducts(data);
@@ -328,7 +328,7 @@ const handlePrintPDFByNumber = async () => {
   }
   try {
     const type = returnType === "fromCustomer" ? "customers" : "suppliers";
-    const res = await fetch(`http://localhost:5000/api/returns/${type}/search?q=${encodeURIComponent(value)}`);
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/returns/${type}/search?q=${encodeURIComponent(value)}`);
     const data = await res.json();
     setPopupCustomers(data);
     setShowCustomerDropdown(true);
@@ -543,7 +543,7 @@ const handleSave = async () => {
   })),
     };
 
-    const res = await fetch("http://localhost:5000/api/returns/save", {
+    const res = await fetch("${process.env.REACT_APP_API_URL}/returns/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

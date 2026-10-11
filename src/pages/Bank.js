@@ -78,13 +78,13 @@ const [setoff, setSetoff] = useState({
 
   
   useEffect(() => {
-  fetch("http://localhost:5000/api/bank/accounts")
+  fetch("`${process.env.REACT_APP_API_URL}/bank/accounts")
     .then(res => res.json())
     .then(data => setAccounts(data));
 }, []);
 
 useEffect(() => {
-  fetch("http://localhost:5000/api/bank/cheque/list")
+  fetch("`${process.env.REACT_APP_API_URL}/bank/cheque/list")
     .then(res => res.json())
     .then(data => setChequeGrid(data))
     .catch(err => console.error(err));
@@ -193,7 +193,7 @@ const handleReturnChequeEnter = async () => {
       username: username
     };
 
-    const res = await fetch("http://localhost:5000/api/bank/cheque/save", {
+    const res = await fetch("`${process.env.REACT_APP_API_URL}/bank/cheque/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -203,7 +203,7 @@ const handleReturnChequeEnter = async () => {
     if (!res.ok) throw new Error(data.message);
 
     
-    const listRes = await fetch("http://localhost:5000/api/bank/cheque/list");
+    const listRes = await fetch("`${process.env.REACT_APP_API_URL}/bank/cheque/list");
     const list = await listRes.json();
     setChequeGrid(list);
 
@@ -250,7 +250,7 @@ const handleSetoffSave = async () => {
 };
 
   try {
-    const res = await fetch("http://localhost:5000/api/bank/return-setoff", {
+    const res = await fetch("`${process.env.REACT_APP_API_URL}/bank/return-setoff", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -263,7 +263,7 @@ const handleSetoffSave = async () => {
     setShowSetoffPopup(false);
 
     
-    const listRes = await fetch("http://localhost:5000/api/bank/cheque/list");
+    const listRes = await fetch("`${process.env.REACT_APP_API_URL}/bank/cheque/list");
     const list = await listRes.json();
     setChequeGrid(list);
 
@@ -293,7 +293,7 @@ const handleExit = () => {
     rows: gridData
   };
 
-  const res = await fetch("http://localhost:5000/api/bank/save", {
+  const res = await fetch("${process.env.REACT_APP_API_URL}/bank/save", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -759,7 +759,7 @@ setIsAdding(false);
   className="btnbn btn-setoffbn"
   onClick={async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/bank/bank/return-cheque/settled");
+      const res = await fetch("${process.env.REACT_APP_API_URL}/bank/bank/return-cheque/settled");
       if (!res.ok) throw new Error("Failed to fetch settled cheques");
 
       const data = await res.json();
@@ -858,7 +858,7 @@ setIsAdding(false);
 
           try {
             const res = await fetch(
-              `http://localhost:5000/api/bank/bank/return-cheque/search?cheque_no=${searchCheque}`
+              `${process.env.REACT_APP_API_URL}/bank/bank/return-cheque/search?cheque_no=${searchCheque}`
             );
             if (!res.ok) throw new Error("Search failed");
 

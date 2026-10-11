@@ -110,7 +110,7 @@ const handlePrintPdf = (dispatchNo) => {
 
   async function fetchNewDispatchNo() {
     try {
-      const res = await fetch("http://localhost:5000/api/dispatch/newno");
+      const res = await fetch("${process.env.REACT_APP_API_URL}/dispatch/newno");
       if (!res.ok) throw new Error("Failed to get dispatch number");
       const data = await res.json();
       return data.dispatchNo;
@@ -124,7 +124,7 @@ const handlePrintPdf = (dispatchNo) => {
 
 async function loadDispatchSearch(q = "", field = "all") {
   try {
-    const url = `http://localhost:5000/api/dispatch/search?q=${encodeURIComponent(q)}&field=${encodeURIComponent(field)}`;
+    const url = `${process.env.REACT_APP_API_URL}/dispatch/search?q=${encodeURIComponent(q)}&field=${encodeURIComponent(field)}`;
     const res = await fetch(url);
 
     if (!res.ok) {
@@ -282,7 +282,7 @@ async function saveData() {
   };
 
   try {
-    const res = await fetch("http://localhost:5000/api/dispatch/save", {
+    const res = await fetch("${process.env.REACT_APP_API_URL}/dispatch/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -379,7 +379,7 @@ async function saveData() {
 
   async function loadProducts(q) {
     try {
-      const url = `http://localhost:5000/api/dispatch/products${q ? `?q=${encodeURIComponent(q)}` : ""}`;
+      const url = `${process.env.REACT_APP_API_URL}/dispatch/products${q ? `?q=${encodeURIComponent(q)}` : ""}`;
       const res = await fetch(url);
       if (!res.ok) throw new Error("Failed to load products");
       const data = await res.json();

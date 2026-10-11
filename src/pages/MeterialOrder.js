@@ -95,7 +95,7 @@ const formatAmount = (value) =>
 
   const loadOrderNo = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/material-order/new-order-no");
+      const res = await axios.get("${process.env.REACT_APP_API_URL}/material-order/new-order-no");
       setFormData(prev => ({ ...prev, orderNo: res.data.orderNo }));
     } catch (err) {
       showAlert("error", "Error", "Failed to load new order number");
@@ -122,7 +122,7 @@ const showConfirm = (title, message, onYes) => {
 const openView = async () => {
   try {
     setShowViewModal(true);
-    const res = await axios.get("http://localhost:5000/api/material-order/search");
+    const res = await axios.get("${process.env.REACT_APP_API_URL}/material-order/search");
     setViewResults(res.data);
   } catch (err) {
     console.error(err);
@@ -152,7 +152,7 @@ const filteredViews = viewResults.filter(o => {
 
   const viewAndPrint = async (orderNo) => {
   const res = await axios.get(
-    `http://localhost:5000/api/material-order/${orderNo}`
+    `${process.env.REACT_APP_API_URL}/material-order/${orderNo}`
   );
   const { order, details, supplier } = res.data;
   generatePDF(order, details, supplier);
@@ -167,7 +167,7 @@ const filteredViews = viewResults.filter(o => {
   // Supplier popup window
   const openSupplierPopup = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/material-order/suppliers");
+      const res = await axios.get("${process.env.REACT_APP_API_URL}/material-order/suppliers");
       setSuppliers(Array.isArray(res.data) ? res.data : []);
       setShowSupplierModal(true);
     } catch (err) {
@@ -184,7 +184,7 @@ const filteredViews = viewResults.filter(o => {
   setShowSupplierModal(false);
 
   try {
-    const res = await axios.get(`http://localhost:5000/api/material-order/advance-payment/${s.sup_code}`);
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/material-order/advance-payment/${s.sup_code}`);
     const { sum, breakdown } = res.data;
 
     setAdvancePay(sum || 0);
@@ -203,7 +203,7 @@ const filteredViews = viewResults.filter(o => {
   // Product popup window
   const openProductPopup = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/material-order/products"); 
+      const res = await axios.get("${process.env.REACT_APP_API_URL}/material-order/products"); 
       setProducts(Array.isArray(res.data) ? res.data : []);
       setShowProductModal(true);
     } catch (err) {
@@ -214,7 +214,7 @@ const filteredViews = viewResults.filter(o => {
   const selectProduct = async (p) => {
   try {
     const res = await axios.get(
-      `http://localhost:5000/api/material-order/product-info/${p.product_code}`
+      `${process.env.REACT_APP_API_URL}/material-order/product-info/${p.product_code}`
     );
 
     setFormData(prev => ({
@@ -358,7 +358,7 @@ const handleModify = (index) => {
     "Do you want to save this order?",
     async () => {
       try {
-        await axios.post("http://localhost:5000/api/material-order/save", {
+        await axios.post("${process.env.REACT_APP_API_URL}/material-order/save", {
           orderNo: formData.orderNo,
           supplierCode: formData.supplierCode,
           supplierName: formData.supplierName,
@@ -375,7 +375,7 @@ const handleModify = (index) => {
   "Order saved successfully! Do you want to print?",
   async () => {
     const res = await axios.get(
-      `http://localhost:5000/api/material-order/${formData.orderNo}`
+      `${process.env.REACT_APP_API_URL}/material-order/${formData.orderNo}`
     );
     const { order, details, supplier } = res.data;
     generatePDF(order, details, supplier);

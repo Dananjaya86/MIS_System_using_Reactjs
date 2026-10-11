@@ -175,7 +175,7 @@ const closeAlert = () => {
         try {
 
             const res = await fetch(
-                "http://localhost:5000/api/budget/years",
+                "${process.env.REACT_APP_API_URL}/budget/years",
                 {
                     headers: getAuthHeaders()
                 }
@@ -284,7 +284,7 @@ const closeAlert = () => {
         try {
 
             const res = await fetch(
-                "http://localhost:5000/api/budget/sales-reps",
+                "${process.env.REACT_APP_API_URL}/budget/sales-reps",
                 {
                     headers: getAuthHeaders()
                 }
@@ -351,7 +351,7 @@ const closeAlert = () => {
 
 
             const res = await fetch(
-                `http://localhost:5000/api/budget/summary/${year}`,
+                `${process.env.REACT_APP_API_URL}/budget/summary/${year}`,
                 {
                     headers: getAuthHeaders()
                 }
@@ -452,7 +452,7 @@ const closeAlert = () => {
         try {
 
             const res = await fetch(
-                `http://localhost:5000/api/budget/remaining/${year}`,
+                `${process.env.REACT_APP_API_URL}/budget/remaining/${year}`,
                 {
                     headers: getAuthHeaders()
                 }
@@ -627,7 +627,7 @@ const closeAlert = () => {
 
 
             const res = await fetch(
-                "http://localhost:5000/api/budget/add",
+                "${process.env.REACT_APP_API_URL}/budget/add",
                 {
                     method: "POST",
 
@@ -827,7 +827,7 @@ const closeAlert = () => {
 
 
             const res = await fetch(
-                "http://localhost:5000/api/budget/change",
+                "${process.env.REACT_APP_API_URL}/budget/change",
                 {
                     method: "PUT",
 

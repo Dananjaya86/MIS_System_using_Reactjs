@@ -102,7 +102,7 @@ const closeAlert = () => {
 
   const fetchAdmins = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/admin/", { headers: getAuthHeaders() });
+      const res = await fetch("${process.env.REACT_APP_API_URL}/admin/", { headers: getAuthHeaders() });
       const data = await res.json();
       setGridData(Array.isArray(data) ? data.map(d => ({ ...d, permissions: d.permissions || {} })) : []);
     } catch (err) {
@@ -112,7 +112,7 @@ const closeAlert = () => {
 
   const checkUsernameExists = async (username) => {
     try {
-      const res = await fetch("http://localhost:5000/api/admin/", { headers: getAuthHeaders() });
+      const res = await fetch("${process.env.REACT_APP_API_URL}/admin/", { headers: getAuthHeaders() });
       const data = await res.json();
       const exists = data.some(u => u.username.toLowerCase() === username.toLowerCase());
       return exists;
@@ -159,7 +159,7 @@ const closeAlert = () => {
 
     if (name === "lastName" && value.trim() && isNewMode) {
       setIsGeneratingEmpNo(true);
-      fetch(`http://localhost:5000/api/admin/generate/${value}`, { headers: getAuthHeaders() })
+      fetch(`${process.env.REACT_APP_API_URL}/admin/generate/${value}`, { headers: getAuthHeaders() })
         .then(res => res.json())
         .then(data => {
           if (data.employeeNo) setForm(prev => ({ ...prev, employeeNo: data.employeeNo }));
@@ -234,7 +234,7 @@ const handleConfirmResetPassword = async () => {
     }
 
     const response = await fetch(
-      `http://localhost:5000/api/admin/reset-password/${form.employeeNo}`,
+      `${process.env.REACT_APP_API_URL}/admin/reset-password/${form.employeeNo}`,
       {
         method: "PUT",
         headers: {
@@ -382,7 +382,7 @@ if (
     const body = { ...form, login_user: username };
 
     try {
-      const res = await fetch("http://localhost:5000/api/admin/add", {
+      const res = await fetch("${process.env.REACT_APP_API_URL}/admin/add", {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(body),
@@ -449,7 +449,7 @@ if (
     if (!form.password) delete body.password;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/update/${form.employeeNo}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/admin/update/${form.employeeNo}`, {
         method: "PUT",
         headers: getAuthHeaders(),
         body: JSON.stringify(body),
@@ -508,7 +508,7 @@ if (
 
                 const res =
                     await fetch(
-                        `http://localhost:5000/api/admin/delete/${form.employeeNo}`,
+                        `${process.env.REACT_APP_API_URL}/admin/delete/${form.employeeNo}`,
                         {
                             method: "PUT",
                             headers: getAuthHeaders(),

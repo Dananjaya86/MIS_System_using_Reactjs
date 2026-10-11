@@ -73,11 +73,11 @@
         let url = "";
 
         if (currentType  === "customer") {
-          url = "http://localhost:5000/api/customers";
+          url = "${process.env.REACT_APP_API_URL}/customers";
         } else if (currentType  === "supplier") {
-          url = "http://localhost:5000/api/suppliers";
+          url = "${process.env.REACT_APP_API_URL}/suppliers";
         } else if (currentType  === "advancepay") {
-          url = "http://localhost:5000/api/paysetoff/advance";
+          url = "${process.env.REACT_APP_API_URL}/paysetoff/advance";
         }
 
         const res = await fetch(url);
@@ -122,7 +122,7 @@
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/paysetoff/advance/by-party?code=${selectedCode}`
+        `${process.env.REACT_APP_API_URL}/paysetoff/advance/by-party?code=${selectedCode}`
       );
       const data = await res.json();
 
@@ -156,11 +156,11 @@
       let url = "";
 
       if (currentType  === "customer") {
-        url = "http://localhost:5000/api/paysetoff/pending?party=cus";
+        url = "${process.env.REACT_APP_API_URL}/paysetoff/pending?party=cus";
       } else if (currentType  === "supplier") {
-        url = "http://localhost:5000/api/paysetoff/pending?party=sup";
+        url = "${process.env.REACT_APP_API_URL}/paysetoff/pending?party=sup";
       } else if (currentType  === "advancepay") {
-        url = "http://localhost:5000/api/paysetoff/advance";
+        url = "${process.env.REACT_APP_API_URL}/paysetoff/advance";
       } else {
         return;
       }
@@ -229,7 +229,7 @@
   const fetchAdvanceByParty = async (partyCode) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/paysetoff/advance/by-party?code=${partyCode}`
+        `${process.env.REACT_APP_API_URL}/paysetoff/advance/by-party?code=${partyCode}`
       );
       const data = await res.json();
 
@@ -717,7 +717,7 @@ setGridData(prev => [...prev, newRow]);
     
     try {
       const res = await fetch(
-        `http://localhost:5000/api/paysetoff/advance/by-party?code=${row.party_code}`
+        `${process.env.REACT_APP_API_URL}/paysetoff/advance/by-party?code=${row.party_code}`
       );
       const data = await res.json();
 
@@ -838,7 +838,7 @@ setGridData(prev => [...prev, newRow]);
     setIsSaving(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/paysetoff/save", {
+      const res = await fetch("${process.env.REACT_APP_API_URL}/paysetoff/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
