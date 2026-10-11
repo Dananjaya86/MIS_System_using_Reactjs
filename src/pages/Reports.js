@@ -281,7 +281,7 @@ const displayRows =
       url += `&search=${encodeURIComponent(searchText.trim())}`;
     }
 
-    const res = await fetch(`http://localhost:5000${url}`);
+    const res = await fetch(`${process.env.REACT_APP_API_URL}${url}`);
 
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
