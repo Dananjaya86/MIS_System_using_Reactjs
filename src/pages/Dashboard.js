@@ -145,7 +145,7 @@ export default function Dashboard() {
 
         const response =
             await fetch(
-                '${process.env.REACT_APP_API_URL}/dashboard',
+                `${process.env.REACT_APP_API_URL}/dashboard`,
                 {
                     headers: {
                         Authorization:
