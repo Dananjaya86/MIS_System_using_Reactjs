@@ -5,7 +5,7 @@ import "./productdetails.css";
 import Namewithdateacc from "../componants/Namewithdateacc";
 import AlertBox from "../componants/Alertboxre";
 
-const apiBase = '${process.env.REACT_APP_API_URL}/products';
+const apiBase = `${process.env.REACT_APP_API_URL}/products`;
 
 export default function ProductDetails() {
   const [products, setProducts] = useState([]);

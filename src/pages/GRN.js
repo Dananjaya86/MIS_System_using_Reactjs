@@ -227,7 +227,7 @@ export default function GRN() {
 
   const fetchLastRecords = async () => {
     try {
-      const res = await fetch('${process.env.REACT_APP_API_URL}/grn/search?query=');
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/grn/search?query=`);
       const data = await res.json();
       const sortedData = data.sort((a, b) => b.grn_no.localeCompare(a.grn_no));
       setLastRecords(sortedData.slice(0, rowLimit));

@@ -175,7 +175,7 @@ const closeAlert = () => {
         try {
 
             const res = await fetch(
-                '${process.env.REACT_APP_API_URL}/budget/years',
+                `${process.env.REACT_APP_API_URL}/budget/years`,
                 {
                     headers: getAuthHeaders()
                 }
@@ -284,7 +284,7 @@ const closeAlert = () => {
         try {
 
             const res = await fetch(
-                '${process.env.REACT_APP_API_URL}/budget/sales-reps',
+                `${process.env.REACT_APP_API_URL}/budget/sales-reps`,
                 {
                     headers: getAuthHeaders()
                 }
@@ -627,7 +627,7 @@ const closeAlert = () => {
 
 
             const res = await fetch(
-                '${process.env.REACT_APP_API_URL}/budget/add',
+                `${process.env.REACT_APP_API_URL}/budget/add`,
                 {
                     method: "POST",
 
@@ -827,7 +827,7 @@ const closeAlert = () => {
 
 
             const res = await fetch(
-                '${process.env.REACT_APP_API_URL}/budget/change',
+                `${process.env.REACT_APP_API_URL}/budget/change`,
                 {
                     method: "PUT",
 

@@ -95,7 +95,7 @@ const formatAmount = (value) =>
 
   const loadOrderNo = async () => {
     try {
-      const res = await axios.get('${process.env.REACT_APP_API_URL}/material-order/new-order-no');
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/material-order/new-order-no`);
       setFormData(prev => ({ ...prev, orderNo: res.data.orderNo }));
     } catch (err) {
       showAlert("error", "Error", "Failed to load new order number");
@@ -122,7 +122,7 @@ const showConfirm = (title, message, onYes) => {
 const openView = async () => {
   try {
     setShowViewModal(true);
-    const res = await axios.get('${process.env.REACT_APP_API_URL}/material-order/search');
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/material-order/search`);
     setViewResults(res.data);
   } catch (err) {
     console.error(err);
@@ -167,7 +167,7 @@ const filteredViews = viewResults.filter(o => {
   // Supplier popup window
   const openSupplierPopup = async () => {
     try {
-      const res = await axios.get('${process.env.REACT_APP_API_URL}/material-order/suppliers');
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/material-order/suppliers`);
       setSuppliers(Array.isArray(res.data) ? res.data : []);
       setShowSupplierModal(true);
     } catch (err) {
@@ -203,7 +203,7 @@ const filteredViews = viewResults.filter(o => {
   // Product popup window
   const openProductPopup = async () => {
     try {
-      const res = await axios.get('${process.env.REACT_APP_API_URL}/material-order/products'); 
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/material-order/products`); 
       setProducts(Array.isArray(res.data) ? res.data : []);
       setShowProductModal(true);
     } catch (err) {
@@ -358,7 +358,7 @@ const handleModify = (index) => {
     "Do you want to save this order?",
     async () => {
       try {
-        await axios.post('${process.env.REACT_APP_API_URL}/material-order/save', {
+        await axios.post(`${process.env.REACT_APP_API_URL}/material-order/save`, {
           orderNo: formData.orderNo,
           supplierCode: formData.supplierCode,
           supplierName: formData.supplierName,

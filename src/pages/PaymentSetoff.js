@@ -73,11 +73,11 @@
         let url = "";
 
         if (currentType  === "customer") {
-          url = '${process.env.REACT_APP_API_URL}/customers';
+          url = `${process.env.REACT_APP_API_URL}/customers`;
         } else if (currentType  === "supplier") {
-          url = '${process.env.REACT_APP_API_URL}/suppliers';
+          url = `${process.env.REACT_APP_API_URL}/suppliers`;
         } else if (currentType  === "advancepay") {
-          url = '${process.env.REACT_APP_API_URL}/paysetoff/advance';
+          url = `${process.env.REACT_APP_API_URL}/paysetoff/advance`;
         }
 
         const res = await fetch(url);
@@ -156,11 +156,11 @@
       let url = "";
 
       if (currentType  === "customer") {
-        url = '${process.env.REACT_APP_API_URL}/paysetoff/pending?party=cus';
+        url = `${process.env.REACT_APP_API_URL}/paysetoff/pending?party=cus`;
       } else if (currentType  === "supplier") {
-        url = '${process.env.REACT_APP_API_URL}/paysetoff/pending?party=sup';
+        url = `${process.env.REACT_APP_API_URL}/paysetoff/pending?party=sup`;
       } else if (currentType  === "advancepay") {
-        url = '${process.env.REACT_APP_API_URL}/paysetoff/advance';
+        url = `${process.env.REACT_APP_API_URL}/paysetoff/advance`;
       } else {
         return;
       }
@@ -838,7 +838,7 @@ setGridData(prev => [...prev, newRow]);
     setIsSaving(true);
 
     try {
-      const res = await fetch('${process.env.REACT_APP_API_URL}/paysetoff/save', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/paysetoff/save`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
