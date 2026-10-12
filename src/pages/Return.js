@@ -53,7 +53,7 @@ const customerDropdownRef = useRef();
 const loadNextReturnNumber = async () => {
   try {
     setReturnNoLoading(true);
-    const res = await fetch("${process.env.REACT_APP_API_URL}/returns/next-return-number");
+    const res = await fetch('${process.env.REACT_APP_API_URL}/returns/next-return-number');
     const data = await res.json();
     setReturnNumber(data.returnNumber); 
   } catch (err) {
@@ -543,7 +543,7 @@ const handleSave = async () => {
   })),
     };
 
-    const res = await fetch("${process.env.REACT_APP_API_URL}/returns/save", {
+    const res = await fetch('${process.env.REACT_APP_API_URL}/returns/save', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

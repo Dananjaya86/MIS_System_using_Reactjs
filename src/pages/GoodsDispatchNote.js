@@ -110,7 +110,7 @@ const handlePrintPdf = (dispatchNo) => {
 
   async function fetchNewDispatchNo() {
     try {
-      const res = await fetch("${process.env.REACT_APP_API_URL}/dispatch/newno");
+      const res = await fetch('${process.env.REACT_APP_API_URL}/dispatch/newno');
       if (!res.ok) throw new Error("Failed to get dispatch number");
       const data = await res.json();
       return data.dispatchNo;
@@ -282,7 +282,7 @@ async function saveData() {
   };
 
   try {
-    const res = await fetch("${process.env.REACT_APP_API_URL}/dispatch/save", {
+    const res = await fetch('${process.env.REACT_APP_API_URL}/dispatch/save', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

@@ -40,7 +40,7 @@ export default function GRN() {
   // Generate new GRN number
   const fetchNextGrnNumber = async () => {
     try {
-      const res = await fetch("${process.env.REACT_APP_API_URL}/grn/new-number");
+      const res = await fetch('${process.env.REACT_APP_API_URL}/grn/new-number');
       const data = await res.json();
       setForm((prev) => ({ ...prev, grnNo: data.grn_no }));
     } catch {
@@ -147,7 +147,7 @@ export default function GRN() {
     const username = localStorage.getItem("username");
 
     //  Save GRN Header
-    const saveHeaderRes = await fetch("${process.env.REACT_APP_API_URL}/grn/save", {
+    const saveHeaderRes = await fetch('${process.env.REACT_APP_API_URL}/grn/save', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -167,7 +167,7 @@ export default function GRN() {
 
     //  Save GRN Grid Rows
     for (let row of rows) {
-      await fetch("${process.env.REACT_APP_API_URL}/grn/save-grid", {
+      await fetch('${process.env.REACT_APP_API_URL}/grn/save-grid', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -227,7 +227,7 @@ export default function GRN() {
 
   const fetchLastRecords = async () => {
     try {
-      const res = await fetch("${process.env.REACT_APP_API_URL}/grn/search?query=");
+      const res = await fetch('${process.env.REACT_APP_API_URL}/grn/search?query=');
       const data = await res.json();
       const sortedData = data.sort((a, b) => b.grn_no.localeCompare(a.grn_no));
       setLastRecords(sortedData.slice(0, rowLimit));

@@ -102,7 +102,7 @@ const closeAlert = () => {
 
   const fetchAdmins = async () => {
     try {
-      const res = await fetch("${process.env.REACT_APP_API_URL}/admin/", { headers: getAuthHeaders() });
+      const res = await fetch('${process.env.REACT_APP_API_URL}/admin/', { headers: getAuthHeaders() });
       const data = await res.json();
       setGridData(Array.isArray(data) ? data.map(d => ({ ...d, permissions: d.permissions || {} })) : []);
     } catch (err) {
@@ -112,7 +112,7 @@ const closeAlert = () => {
 
   const checkUsernameExists = async (username) => {
     try {
-      const res = await fetch("${process.env.REACT_APP_API_URL}/admin/", { headers: getAuthHeaders() });
+      const res = await fetch('${process.env.REACT_APP_API_URL}/admin/', { headers: getAuthHeaders() });
       const data = await res.json();
       const exists = data.some(u => u.username.toLowerCase() === username.toLowerCase());
       return exists;
@@ -382,7 +382,7 @@ if (
     const body = { ...form, login_user: username };
 
     try {
-      const res = await fetch("${process.env.REACT_APP_API_URL}/admin/add", {
+      const res = await fetch('${process.env.REACT_APP_API_URL}/admin/add', {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(body),

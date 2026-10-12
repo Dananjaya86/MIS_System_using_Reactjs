@@ -90,7 +90,7 @@ const AdvancePayment = () => {
 
   const fetchNextAdpNumber = async () => {
     try {
-      const resp = await fetch("${process.env.REACT_APP_API_URL}/advancepay/next-id");
+      const resp = await fetch('${process.env.REACT_APP_API_URL}/advancepay/next-id');
       const data = await resp.json();
       return data.nextId || "ADP00001";
     } catch (err) {
@@ -245,7 +245,7 @@ const AdvancePayment = () => {
 
     try {
       for (const row of gridData) {
-        const res = await fetch("${process.env.REACT_APP_API_URL}/advancepay/save", {
+        const res = await fetch('${process.env.REACT_APP_API_URL}/advancepay/save', {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

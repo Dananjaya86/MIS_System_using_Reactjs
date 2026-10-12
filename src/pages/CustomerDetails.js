@@ -4,7 +4,7 @@ import "./customerdetails.css";
 import  Namewithdateacc from "../componants/Namewithdateacc";
 
 
-const apiBase = "${process.env.REACT_APP_API_URL}/customers";
+const apiBase = '${process.env.REACT_APP_API_URL}/customers';
 
 export default function CustomerDetails() {
   const [customers, setCustomers] = useState([]);

@@ -293,7 +293,7 @@ const handleExit = () => {
     rows: gridData
   };
 
-  const res = await fetch("${process.env.REACT_APP_API_URL}/bank/save", {
+  const res = await fetch('${process.env.REACT_APP_API_URL}/bank/save', {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -759,7 +759,7 @@ setIsAdding(false);
   className="btnbn btn-setoffbn"
   onClick={async () => {
     try {
-      const res = await fetch("${process.env.REACT_APP_API_URL}/bank/bank/return-cheque/settled");
+      const res = await fetch('${process.env.REACT_APP_API_URL}/bank/bank/return-cheque/settled');
       if (!res.ok) throw new Error("Failed to fetch settled cheques");
 
       const data = await res.json();

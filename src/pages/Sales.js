@@ -6,7 +6,7 @@ import Namewithdateacc from "../componants/Namewithdateacc";
 import "./sales.css";
 
 
-const API = "${process.env.REACT_APP_API_URL}/invoice";
+const API = '${process.env.REACT_APP_API_URL}/invoice';
 
 export default function SalesPage() {
   const [saleType, setSaleType] = useState("cash");

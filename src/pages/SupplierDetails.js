@@ -4,7 +4,7 @@ import AlertBox from "../componants/Alertboxre";
 import "./suplierdetails.css";
 import  Namewithdateacc from "../componants/Namewithdateacc";
 
-const apiBase = "${process.env.REACT_APP_API_URL}/suppliers";
+const apiBase = '${process.env.REACT_APP_API_URL}/suppliers';
 
 export default function SupplierDetails() {
   const [suppliers, setSuppliers] = useState([]);
