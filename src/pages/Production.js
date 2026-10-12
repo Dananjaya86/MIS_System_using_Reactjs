@@ -4,7 +4,7 @@ import Menu from "../componants/Menu";
 import Namewithdateacc from "../componants/Namewithdateacc";
 import AlertBoxRe from "../componants/Alertboxre";
 
-const API = '${process.env.REACT_APP_API_URL}/production';
+const API = `${process.env.REACT_APP_API_URL}/production`;
 
 export default function Production() {
   // UI state

@@ -68,7 +68,7 @@ const showAlert = (type, title, message, onConfirm = null) => {
 
 
 useEffect(() => {
-  fetch('${process.env.REACT_APP_API_URL}/reconcile/pending-statements')
+  fetch(`${process.env.REACT_APP_API_URL}/reconcile/pending-statements`)
     .then(res => res.json())
     .then(data => {
       setBankRows(
@@ -120,7 +120,7 @@ const deleteBankRow = (row) => {
       try {
         const dateObj = new Date(row.date + "T00:00:00"); 
 
-        const res = await fetch('${process.env.REACT_APP_API_URL}/reconcile/delete-bank', {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/reconcile/delete-bank`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -195,7 +195,7 @@ const handleSaveAndClose = async () => {
   };
 
   try {
-    const res = await fetch('${process.env.REACT_APP_API_URL}/reconcile/save', {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/reconcile/save`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
