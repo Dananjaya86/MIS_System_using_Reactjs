@@ -382,7 +382,7 @@ if (
     const body = { ...form, login_user: username };
 
     try {
-      const res = await fetch('${process.env.REACT_APP_API_URL}/admin/add', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/admin/add`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(body),
