@@ -78,13 +78,13 @@ const [setoff, setSetoff] = useState({
 
   
   useEffect(() => {
-  fetch("`${process.env.REACT_APP_API_URL}/bank/accounts")
+  fetch(`${process.env.REACT_APP_API_URL}/bank/accounts`)
     .then(res => res.json())
     .then(data => setAccounts(data));
 }, []);
 
 useEffect(() => {
-  fetch("`${process.env.REACT_APP_API_URL}/bank/cheque/list")
+  fetch(`${process.env.REACT_APP_API_URL}/bank/cheque/list`)
     .then(res => res.json())
     .then(data => setChequeGrid(data))
     .catch(err => console.error(err));

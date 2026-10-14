@@ -266,7 +266,7 @@ const displayRows =
     }
 
     // Build API URL
-    let url = `/api/reports?type=${reportType.toLowerCase()}&filterMode=${filterMode}`;
+    let url = `/reports?type=${reportType.toLowerCase()}&filterMode=${filterMode}`;
 
     if (filterMode === "range") {
       if (!fromDate || !toDate) {
