@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import './namewithdate.css';
+import "./namewithdate.css";
 
 export default function Namewithdate() {
   const [date, setDate] = useState("");
