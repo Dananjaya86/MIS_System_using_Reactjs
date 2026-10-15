@@ -16,8 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
 
+
     env:
       CI: "false"
+      REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
 
     steps:
       - uses: actions/checkout@v3
