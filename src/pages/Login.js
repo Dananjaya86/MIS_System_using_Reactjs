@@ -28,11 +28,24 @@ export default function Login() {
       
     
 
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
+    const API_URL = process.env.REACT_APP_API_URL;
+
+console.log("API URL:", API_URL);
+
+if (!API_URL) {
+  showAlert(
+    "error",
+    "Configuration Error",
+    "API URL is missing. Please check frontend environment variables."
+  );
+  return;
+}
+
+const response = await fetch(`${API_URL}/login`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ username, password }),
+});
 
     const data = await response.json();
     if (data.success) {
