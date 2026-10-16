@@ -137,6 +137,7 @@ const response = await fetch(`${API_URL}/login`, {
             Cancel
           </button>
         </div>
+        <p>@2026 All right issued, Software by Dananjaya dasanayake</p>
       </div>
       {renderAlert()}
     </div>
